@@ -9,18 +9,19 @@ IF (WIN32)
     ENDIF(NOT DEFINED DLLFileList)
 ENDIF(WIN32)
 
-# Add hpp and cpp files to Snake variable
+# Add hpp and cpp files
 file(GLOB TowerDef
         "*.hpp"
         "*.h"
         "*.cpp"
         )
 
-# Compile cpp files (from Snake variable)
+# Compile cpp files
 add_executable(TowerDefense ${TowerDef})
 target_link_libraries(TowerDefense ${all_libs})
 
 # copy files to dest
+# example to import ext files
 #file(COPY background.png background2.png bird.json bird.png DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
 
 IF (WIN32)
@@ -30,5 +31,5 @@ IF (WIN32)
     file(COPY ${DLLFileList} DESTINATION .)
 
     # Set working directory to ${CMAKE_CURRENT_BINARY_DIR}/Debug
-    set_target_properties(Exercise8-Bird PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Debug)
+    set_target_properties(TowerDefense PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Debug)
 ENDIF(WIN32)
