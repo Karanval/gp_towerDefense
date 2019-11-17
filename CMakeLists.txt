@@ -20,9 +20,6 @@ file(GLOB TowerDef
 add_executable(TowerDefense ${TowerDef})
 target_link_libraries(TowerDefense ${all_libs})
 
-# copy files to dest
-#file(COPY background.png background2.png bird.json bird.png DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
-
 IF (WIN32)
     # Copy dll files to ${CMAKE_CURRENT_BINARY_DIR}/Debug
     file(COPY ${DLLFileList} DESTINATION Debug)
@@ -30,5 +27,7 @@ IF (WIN32)
     file(COPY ${DLLFileList} DESTINATION .)
 
     # Set working directory to ${CMAKE_CURRENT_BINARY_DIR}/Debug
-    set_target_properties(Exercise8-Bird PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Debug)
+    #set_target_properties(Exercise8-Bird PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Debug)
 ENDIF(WIN32)
+
+add_subdirectory(data)

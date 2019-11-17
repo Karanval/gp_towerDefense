@@ -7,7 +7,8 @@
 #include <iterator>
 
 namespace ObjImporter {
-	void loadMaterial(std::shared_ptr<sre::Material> &material, std::string filepath, std::vector<glm::vec4>& uvs);
+	void loadMaterial(std::shared_ptr<sre::Material> &material, std::string filepath, std::vector<glm::vec4>& uvs,
+					  std::string texturePath = "");
 	void loadObj(std::shared_ptr<sre::Mesh> &mesh, std::string filepath, std::string &materialFilename);
 };
 

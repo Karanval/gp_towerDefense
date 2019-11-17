@@ -6,10 +6,12 @@
 template <class Container>
 void split(const std::string& str, Container& cont, char delim = ' ');
 
-void ObjImporter::loadMaterial(std::shared_ptr<sre::Material> &material, std::string filepath, std::vector<glm::vec4>& uvs) {
+void ObjImporter::loadMaterial(std::shared_ptr<sre::Material> &material, std::string filepath, std::vector<glm::vec4>& uvs,
+							   std::string texturepath) {
 	std::ifstream file;
 	file.open(filepath);
-	material = sre::Shader::getUnlit()->createMaterial();
+	material = sre::Shader::getStandardPhong()->createMaterial();
+	std::string texture;
 
 	if (file.is_open()) {
 		std::string line;
@@ -29,11 +31,18 @@ void ObjImporter::loadMaterial(std::shared_ptr<sre::Material> &material, std::st
 			else if (type == "Ks") material->setSpecularity(sre::Color(std::stof(values[1], nullptr),
 																	   std::stof(values[2], nullptr),
 																	   std::stof(values[3], nullptr)));
-			else if (type == "map_Kd") {
-				if (uvs.size() == 0) material->setTexture(sre::Texture::create().withFile(values[1]).withGenerateMipmaps(true).build());
-				else material->setTexture(sre::Texture::create().withFile(values[1]).withWrapUV(sre::Texture::Wrap::ClampToEdge).build());
-			}
+			else if (type == "map_Kd") texture = values[1];
 		}
+
+		if (texturepath == "" && texture != "") {
+			if (uvs.size() == 0) material->setTexture(sre::Texture::create().withFile(texture).withGenerateMipmaps(true).build());
+			else material->setTexture(sre::Texture::create().withFile(texture).withWrapUV(sre::Texture::Wrap::ClampToEdge).build());
+		}
+		else if (texturepath != "") {
+			if (uvs.size() == 0) material->setTexture(sre::Texture::create().withFile(texturepath).withGenerateMipmaps(true).build());
+			else material->setTexture(sre::Texture::create().withFile(texturepath).withWrapUV(sre::Texture::Wrap::ClampToEdge).build());
+		}
+
 		material->setMetallicRoughness(metallicRoughness);
 
 
