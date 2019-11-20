@@ -23,6 +23,7 @@ TowerDefense::TowerDefense() {
 }
 
 void TowerDefense::update(float deltaTime) {
+	fixedTime += deltaTime;
 	glm::vec3 fwdVec = lookat - camPos;
 	glm::normalize(fwdVec);
 	glm::vec3 leftVec = glm::cross(upVec, fwdVec);
@@ -57,12 +58,20 @@ void TowerDefense::render() {
 	sre::RenderPass rp = sre::RenderPass::create()
 						.withCamera(camera).withWorldLights(&lights)
 						.build();
-	for (int i = 0; i < meshes.size(); i++)
-		rp.draw(meshes[i], glm::translate(glm::vec3(0.0f, 0.0f, 0.0f)), materials[i]);
+
+	float x = 0.0f;
+	float z = 0.0f;
+	
+	for (int i = 0; i < meshes.size(); i++) {
+		z += 10.0f;
+		if (i % 5 == 0) {
+			x += 5.0f; z = 0;
+		}
+		rp.draw(meshes[i], glm::translate(glm::vec3(x, 0.0f, z)), materials[i]);
+	}
 }
 
 void TowerDefense::loadModel(std::string objName, std::string mtlName, std::string textureNameWithExt) {
-	//std::string name = "sphere";
 	std::shared_ptr<sre::Mesh> mesh;
 	std::shared_ptr<sre::Material> material;
 	std::string texture = textureNameWithExt == "" ? "" : texturePath + textureNameWithExt;
@@ -82,8 +91,7 @@ void TowerDefense::init() {
 	materials = std::vector<std::shared_ptr<sre::Material>>();
 	lights = sre::WorldLights();
 
-	loadModel("lego_brick1", "lego_brick1");
-	loadModel("lego_brick2", "lego_brick2");
+	for (int i = 0; i < 25; i++) loadModel("lego_brick1", "lego_brick1");
 
 	lights.setAmbientLight(glm::vec3(0.1f,0.1f,0.1f));
 	sre::Light light = sre::Light();
@@ -97,7 +105,7 @@ void TowerDefense::init() {
 	lookat = glm::vec3(0.0f, -1.0f, 0.0f);
 	upVec = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	camera.setOrthographicProjection(10.0f, 0.1f, 1000);
+	camera.setOrthographicProjection(20.0f, 0.1f, 1000);
 }
 
 void TowerDefense::keyInput(SDL_Event& event) {

@@ -7,9 +7,9 @@ class TowerDefense
 {
 public:
 	TowerDefense();
-	const std::string objectPath = "./data/models/";
-	const std::string materialPath = "./data/materials/";
-	const std::string texturePath = "./data/textures/";
+	const std::string objectPath = "../data/models/";
+	const std::string materialPath = "../data/materials/";
+	const std::string texturePath = "../data/textures/";
 
 private:
 	void init();
@@ -34,6 +34,8 @@ private:
 	bool right = false;
 	bool up = false;
 	bool down = false;
+
+	float fixedTime = 0.0f;
 
 };
 
