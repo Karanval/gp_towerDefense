@@ -105,7 +105,7 @@ void TowerDefense::init() {
 	lookat = glm::vec3(0.0f, -1.0f, 0.0f);
 	upVec = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	camera.setOrthographicProjection(20.0f, 0.1f, 1000);
+	camera.setPerspectiveProjection(75.0f, 0.1f, 1000.0f);
 }
 
 void TowerDefense::keyInput(SDL_Event& event) {
