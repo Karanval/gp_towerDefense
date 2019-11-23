@@ -21,12 +21,11 @@ public:
 
     bool removeComponent(std::shared_ptr<Component> component);
 
-    void renderSprite(sre::SpriteBatch::SpriteBatchBuilder& spriteBatchBuilder);
     void update(float deltaTime);
 
-    const glm::vec2 &getPosition() const;
+    const glm::vec3 &getPosition() const;
 
-    void setPosition(const glm::vec2 &position);
+    void setPosition(const glm::vec3 &position);
 
     float getRotation() const;
 
@@ -34,12 +33,17 @@ public:
 
     const std::vector<std::shared_ptr<Component>>& getComponents();
 
+	static std::shared_ptr<GameObject> createGameObject() {
+		std::shared_ptr<GameObject> obj = std::shared_ptr<GameObject>(new GameObject());
+		return obj;
+	}
+
     std::string name = "_";
 private:
     GameObject() = default;
     std::vector<std::shared_ptr<Component>> components;
 
-    glm::vec2 position;
+    glm::vec3 position;
     float rotation;
 
     friend class BirdGame;

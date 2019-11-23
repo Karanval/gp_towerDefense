@@ -3,6 +3,7 @@
 #include "sre/SDLRenderer.hpp"
 #include "sre/Material.hpp"
 #include <SDL_events.h>
+#include "GameObject.hpp"
 class TowerDefense
 {
 public:
@@ -17,12 +18,12 @@ private:
 	void render();
 	void keyInput(SDL_Event& event);
 	void mouseInput(SDL_Event& event);
-	void loadModel(std::string objName, std::string mtlName, std::string textureNameWithExt = "");
+	std::shared_ptr<GameObject> loadModel(std::string objName, std::string mtlName, std::string textureNameWithExt = "");
+	std::shared_ptr<GameObject> createGameObject();
 	
 	sre::SDLRenderer renderer;
 	sre::Camera camera;
-	std::vector<std::shared_ptr<sre::Mesh>> meshes;
-	std::vector<std::shared_ptr<sre::Material>> materials;
+	std::vector<std::shared_ptr<GameObject>> gameObjects;
 	sre::WorldLights lights;
 	glm::vec3 camPos;
 	glm::vec3 lookat;

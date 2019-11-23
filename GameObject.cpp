@@ -18,11 +18,11 @@ bool GameObject::removeComponent(std::shared_ptr<Component> component) {
     return false;
 }
 
-const glm::vec2 &GameObject::getPosition() const {
+const glm::vec3 &GameObject::getPosition() const {
     return position;
 }
 
-void GameObject::setPosition(const glm::vec2 &position) {
+void GameObject::setPosition(const glm::vec3 &position) {
     GameObject::position = position;
 }
 
@@ -32,12 +32,6 @@ float GameObject::getRotation() const {
 
 void GameObject::setRotation(float rotation) {
     GameObject::rotation = rotation;
-}
-
-void GameObject::renderSprite(sre::SpriteBatch::SpriteBatchBuilder &spriteBatchBuilder) {
-    for (auto& comp : components){
-        comp->renderSprite(spriteBatchBuilder);
-    }
 }
 
 void GameObject::update(float deltaTime) {

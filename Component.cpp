@@ -9,7 +9,7 @@ Component::Component(GameObject *gameObject)
 {
 }
 
-void Component::renderSprite(sre::SpriteBatch::SpriteBatchBuilder &spriteBatchBuilder) {
+void Component::renderSprite(sre::SpriteBatch::SpriteBatchBuilder& spriteBatchBuilder) {
 
 }
 

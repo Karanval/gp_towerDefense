@@ -2,6 +2,8 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include "TowerDefense.hpp"
 #include "ObjImporter.hpp"
+#include "MeshComponent.hpp"
+#include "MaterialComponent.hpp"
 
 TowerDefense::TowerDefense() {
 	renderer.init();
@@ -62,16 +64,16 @@ void TowerDefense::render() {
 	float x = 0.0f;
 	float z = 0.0f;
 	
-	for (int i = 0; i < meshes.size(); i++) {
-		z += 10.0f;
-		if (i % 5 == 0) {
-			x += 5.0f; z = 0;
-		}
-		rp.draw(meshes[i], glm::translate(glm::vec3(x, 0.0f, z)), materials[i]);
+	for (int i = 0; i < gameObjects.size(); i++) {
+		std::shared_ptr<GameObject> go = gameObjects[i];
+		rp.draw(go->getComponent<MeshComponent>()->getMesh(), 
+				glm::translate(go->getPosition()), 
+			    go->getComponent<MaterialComponent>()->getMaterial());
+		std::vector<glm::vec3> verts = std::vector<glm::vec3>();
 	}
 }
 
-void TowerDefense::loadModel(std::string objName, std::string mtlName, std::string textureNameWithExt) {
+std::shared_ptr<GameObject> TowerDefense::loadModel(std::string objName, std::string mtlName, std::string textureNameWithExt) {
 	std::shared_ptr<sre::Mesh> mesh;
 	std::shared_ptr<sre::Material> material;
 	std::string texture = textureNameWithExt == "" ? "" : texturePath + textureNameWithExt;
@@ -82,16 +84,30 @@ void TowerDefense::loadModel(std::string objName, std::string mtlName, std::stri
 	std::string chosenMtlPath = materialPath + (mtlName == "" ? mtlNameFromObj : mtlName) + ".mtl";
 	ObjImporter::loadMaterial(material, chosenMtlPath, mesh->getUVs(), texture);
 
-	meshes.push_back(mesh);
-	TowerDefense::materials.push_back(material);
+	//meshes.push_back(mesh);
+	//TowerDefense::materials.push_back(material);
+
+	std::shared_ptr<GameObject> obj = createGameObject();
+	obj->addComponent<MeshComponent>()->setMesh(mesh);
+	obj->addComponent<MaterialComponent>()->setMaterial(material);
+	
+	return obj;
 }
 
 void TowerDefense::init() {
-	meshes = std::vector<std::shared_ptr<sre::Mesh>>();
-	materials = std::vector<std::shared_ptr<sre::Material>>();
 	lights = sre::WorldLights();
+	float x = 0.0f;
+	float z = 0.0f;
+	for (int i = 0; i < 25; i++) {
+		z += 10.0f;
+		if (i % 5 == 0) {
+			x += 5.0f;
+			z = 0.0f;
+		}
+		std::shared_ptr<GameObject> obj = loadModel("lego_brick1", "lego_brick1");
+		obj->setPosition(glm::vec3(x, 0.0f, z));
 
-	for (int i = 0; i < 25; i++) loadModel("lego_brick1", "lego_brick1");
+	}
 
 	lights.setAmbientLight(glm::vec3(0.1f,0.1f,0.1f));
 	sre::Light light = sre::Light();
@@ -159,6 +175,12 @@ void TowerDefense::keyInput(SDL_Event& event) {
 
 void TowerDefense::mouseInput(SDL_Event& event) {
 
+}
+
+std::shared_ptr<GameObject> TowerDefense::createGameObject() {
+	std::shared_ptr<GameObject> obj = GameObject::createGameObject();
+	gameObjects.push_back(obj);
+	return obj;
 }
 
 int main() {
