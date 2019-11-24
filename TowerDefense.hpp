@@ -8,9 +8,6 @@ class TowerDefense
 {
 public:
 	TowerDefense();
-	const std::string objectPath = "../data/models/";
-	const std::string materialPath = "../data/materials/";
-	const std::string texturePath = "../data/textures/";
 
 private:
 	void init();
@@ -18,7 +15,6 @@ private:
 	void render();
 	void keyInput(SDL_Event& event);
 	void mouseInput(SDL_Event& event);
-	std::shared_ptr<GameObject> loadModel(std::string objName, std::string mtlName, std::string textureNameWithExt = "");
 	std::shared_ptr<GameObject> createGameObject();
 	
 	sre::SDLRenderer renderer;
