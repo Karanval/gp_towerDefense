@@ -2,9 +2,12 @@
 
 #include "sre/SDLRenderer.hpp"
 #include "sre/Material.hpp"
+#include "Box2D/Dynamics/b2World.h"
 #include <SDL_events.h>
 #include "GameObject.hpp"
-class TowerDefense
+#include "SpawnController.hpp"
+
+class TowerDefense : public b2ContactListener
 {
 public:
 	TowerDefense();
@@ -16,7 +19,8 @@ private:
 	void keyInput(SDL_Event& event);
 	void mouseInput(SDL_Event& event);
 	std::shared_ptr<GameObject> createGameObject();
-	
+
+	std::shared_ptr<SpawnController> spawner;
 	sre::SDLRenderer renderer;
 	sre::Camera camera;
 	std::vector<std::shared_ptr<GameObject>> gameObjects;

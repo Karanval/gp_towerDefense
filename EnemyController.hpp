@@ -3,11 +3,14 @@
 class EnemyController : public Component {
 public:
 	//explicit EnemyController(GameObject* gameObject);
-	explicit EnemyController(GameObject* gameObject, int health, float damage, int coinDrop, float speed);
+	explicit EnemyController(GameObject* gameObject);
 
+	void init(int health, float damage, int coinDrop, std::vector<glm::vec2> path);
 	void onCollisionStart(PhysicsComponent* comp) override;
 
 	void onCollisionEnd(PhysicsComponent* comp) override;
+
+	void update(float deltaTime) override;
 
 	int getHealth();
 
@@ -17,13 +20,15 @@ public:
 
 	int getCoinDrop();
 
-	void setSpeed(float newSpeed);
+	glm::vec2 getTilePosition();
 private:
+	glm::vec2 tilePosition;
+	glm::vec2 windowPosition;
+	glm::vec2 direction;
 	std::shared_ptr<PhysicsComponent> phys;
 	std::vector<glm::vec2> path;
 	int initialHealth;
 	int currentHealth;
 	float damage;
-	float speed;
 	int coinDrop;
 };
