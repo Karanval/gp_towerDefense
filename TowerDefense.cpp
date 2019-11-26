@@ -1,10 +1,4 @@
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/rotate_vector.hpp>
 #include "TowerDefense.hpp"
-#include "ObjImporter.hpp"
-#include "MeshComponent.hpp"
-#include "MaterialComponent.hpp"
-#include "ModelLoader.hpp"
 
 TowerDefense::TowerDefense() {
 	renderer.init();
@@ -80,7 +74,11 @@ void TowerDefense::render() {
 void TowerDefense::init() {
 	lights = sre::WorldLights();
 
-	std::shared_ptr<GameObject> towerObj = createGameObject();
+	std::shared_ptr<GameObject> obj = createGameObject();
+	TowerLoader::loadTower(obj, &gameObjects, "tower1");
+	
+
+	/*std::shared_ptr<GameObject> towerObj = createGameObject();
 	std::shared_ptr<TowerController> towerController = towerObj->addComponent<TowerController>();
 	float x = 0.0f;
 	float z = 0.0f;
@@ -98,7 +96,7 @@ void TowerDefense::init() {
 			obj->getComponent<BrickController>()->setLocalPosition(glm::vec3(x, 0.0f, z));
 		}
 
-	}
+	}*/
 
 	lights.setAmbientLight(glm::vec3(0.1f,0.1f,0.1f));
 	sre::Light light = sre::Light();

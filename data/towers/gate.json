@@ -1,0 +1,6 @@
+{"bricks":[
+  {"objName":"lego_brick1", "mtlName":"lego_brick1", "txtFilename":"", "position":{"x":0.0,"y":0.0,"z":0.0}},
+  {"objName":"window", "mtlName":"window", "txtFilename":"", "position":{"x":0.0,"y":5.0,"z":0.0}}
+],
+"position":{"x":0.0,"y":0.0,"z":0.0}
+}

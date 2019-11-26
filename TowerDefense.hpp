@@ -6,6 +6,7 @@
 #include "GameObject.hpp"
 #include "TowerController.hpp"
 #include "BrickController.hpp"
+#include "TowerLoader.hpp"
 class TowerDefense
 {
 public:
