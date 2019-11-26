@@ -4,6 +4,7 @@
 #include "ObjImporter.hpp"
 #include "MeshComponent.hpp"
 #include "MaterialComponent.hpp"
+#include "ModelLoader.hpp"
 
 TowerDefense::TowerDefense() {
 	renderer.init();
@@ -76,27 +77,6 @@ void TowerDefense::render() {
 	}
 }
 
-std::shared_ptr<GameObject> TowerDefense::loadModel(std::string objName, std::string mtlName, std::string textureNameWithExt) {
-	std::shared_ptr<sre::Mesh> mesh;
-	std::shared_ptr<sre::Material> material;
-	std::string texture = textureNameWithExt == "" ? "" : texturePath + textureNameWithExt;
-	
-	std::string mtlNameFromObj;
-	ObjImporter::loadObj(mesh, objectPath + objName + ".obj", mtlNameFromObj);
-
-	std::string chosenMtlPath = materialPath + (mtlName == "" ? mtlNameFromObj : mtlName) + ".mtl";
-	ObjImporter::loadMaterial(material, chosenMtlPath, mesh->getUVs(), texture);
-
-	//meshes.push_back(mesh);
-	//TowerDefense::materials.push_back(material);
-
-	std::shared_ptr<GameObject> obj = createGameObject();
-	obj->addComponent<MeshComponent>()->setMesh(mesh);
-	obj->addComponent<MaterialComponent>()->setMaterial(material);
-	
-	return obj;
-}
-
 void TowerDefense::init() {
 	lights = sre::WorldLights();
 
@@ -110,7 +90,8 @@ void TowerDefense::init() {
 			x += 5.0f;
 			z = 0.0f;
 		}
-		std::shared_ptr<GameObject> obj = loadModel("lego_brick1", "lego_brick1");
+		std::shared_ptr<GameObject> obj = createGameObject();
+		ModelLoader::loadModel(obj, "lego_brick1", "lego_brick1");
 		obj->setPosition(glm::vec3(x, 0.0f, z));
 		if (i > 10) {
 			obj->addComponent<BrickController>()->setTowerController(towerController);
