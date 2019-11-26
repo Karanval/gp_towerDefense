@@ -1,15 +1,22 @@
 #pragma once
 #include "Component.hpp"
+#include "GameObject.hpp"
+#include "TowerController.hpp"
 
-class BrickController : Component {
+class BrickController : public Component {
 public:
-	explicit BrickController(GameObject* gameObject, glm::ivec3 position, glm::ivec3 dimensions);
+	explicit BrickController(GameObject* gameObject);
 
 	void init(bool isStatic);
-	glm::ivec3 getPosition();
-	glm::ivec3 getDimensions();
+	glm::vec3 getPosition();
+	glm::vec3 getLocalPosition();
+	void setLocalPosition(glm::vec3 position);
+	std::shared_ptr<TowerController> getTowerController();
+	void setTowerController(std::shared_ptr<TowerController> towerController);
+	
 
 private:
-	glm::ivec3 position, dimensions;
+	glm::vec3 position = glm::vec3();
+	std::shared_ptr<TowerController> towerController;
 };
 

@@ -1,13 +1,20 @@
 #include "BrickController.hpp"
 
-BrickController::BrickController(GameObject* gameObject, glm::ivec3 position, glm::ivec3 dimensions) : Component(gameObject) {
-	BrickController::position = position;
-	BrickController::dimensions = dimensions;
+BrickController::BrickController(GameObject* gameObject) : Component(gameObject) {
 }
 
-glm::ivec3 BrickController::getPosition() {
-	return BrickController::position;
+glm::vec3 BrickController::getPosition() {
+	return towerController ? towerController->getPosition() + position : position;
 }
-glm::ivec3 BrickController::getDimensions() {
-	return BrickController::dimensions;
+glm::vec3 BrickController::getLocalPosition() {
+	return position;
+}
+void BrickController::setLocalPosition(glm::vec3 position) {
+	BrickController::position = position;
+}
+std::shared_ptr<TowerController> BrickController::getTowerController() {
+	return towerController;
+}
+void BrickController::setTowerController(std::shared_ptr<TowerController> towerController) {
+	BrickController::towerController = towerController;
 }

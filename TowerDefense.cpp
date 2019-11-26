@@ -66,8 +66,11 @@ void TowerDefense::render() {
 	
 	for (int i = 0; i < gameObjects.size(); i++) {
 		std::shared_ptr<GameObject> go = gameObjects[i];
+		if (!go->getComponent<MeshComponent>()) continue;
+		std::shared_ptr<BrickController> bc = gameObjects[i]->getComponent<BrickController>();
+		glm::vec3 pos = bc ? bc->getPosition() : go->getPosition();
 		rp.draw(go->getComponent<MeshComponent>()->getMesh(), 
-				glm::translate(go->getPosition()), 
+				glm::translate(pos), 
 			    go->getComponent<MaterialComponent>()->getMaterial());
 		std::vector<glm::vec3> verts = std::vector<glm::vec3>();
 	}
@@ -96,6 +99,9 @@ std::shared_ptr<GameObject> TowerDefense::loadModel(std::string objName, std::st
 
 void TowerDefense::init() {
 	lights = sre::WorldLights();
+
+	std::shared_ptr<GameObject> towerObj = createGameObject();
+	std::shared_ptr<TowerController> towerController = towerObj->addComponent<TowerController>();
 	float x = 0.0f;
 	float z = 0.0f;
 	for (int i = 0; i < 25; i++) {
@@ -106,6 +112,10 @@ void TowerDefense::init() {
 		}
 		std::shared_ptr<GameObject> obj = loadModel("lego_brick1", "lego_brick1");
 		obj->setPosition(glm::vec3(x, 0.0f, z));
+		if (i > 10) {
+			obj->addComponent<BrickController>()->setTowerController(towerController);
+			obj->getComponent<BrickController>()->setLocalPosition(glm::vec3(x, 0.0f, z));
+		}
 
 	}
 
@@ -145,6 +155,18 @@ void TowerDefense::keyInput(SDL_Event& event) {
 			break;
 		case SDLK_LCTRL:
 			down = true;
+			break;
+		case SDLK_1:
+			for (int i = 0; i < gameObjects.size(); i++) {
+				std::shared_ptr<TowerController> tc = gameObjects[i]->getComponent<TowerController>();
+				if (tc) tc->setPosition(tc->getPosition() - glm::vec3(1.0f, 0.0f, 0.0f));
+			}
+			break;
+		case SDLK_2:
+			for (int i = 0; i < gameObjects.size(); i++) {
+				std::shared_ptr<TowerController> tc = gameObjects[i]->getComponent<TowerController>();
+				if (tc) tc->setPosition(tc->getPosition() + glm::vec3(1.0f, 0.0f, 0.0f));
+			}
 			break;
 		}
 		break;

@@ -4,6 +4,8 @@
 #include "sre/Material.hpp"
 #include <SDL_events.h>
 #include "GameObject.hpp"
+#include "TowerController.hpp"
+#include "BrickController.hpp"
 class TowerDefense
 {
 public:
