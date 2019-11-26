@@ -33,3 +33,5 @@
 
 #custom
 *.vs
+/build
+/out
