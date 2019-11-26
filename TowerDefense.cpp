@@ -5,6 +5,8 @@
 #include "MeshComponent.hpp"
 #include "MaterialComponent.hpp"
 #include "ModelLoader.hpp"
+#include "Grid.hpp"
+#include "LevelLoader.hpp"
 
 TowerDefense::TowerDefense() {
 	renderer.init();
@@ -75,6 +77,8 @@ void TowerDefense::render() {
 			    go->getComponent<MaterialComponent>()->getMaterial());
 		std::vector<glm::vec3> verts = std::vector<glm::vec3>();
 	}
+
+	drawLevel(rp);
 }
 
 void TowerDefense::init() {
@@ -178,6 +182,14 @@ void TowerDefense::keyInput(SDL_Event& event) {
 
 void TowerDefense::mouseInput(SDL_Event& event) {
 
+}
+
+void TowerDefense::drawLevel(sre::RenderPass& rp) {
+	std::unique_ptr<Grid> grid = std::make_unique<Grid>();
+	std::unique_ptr<LevelLoader> level = std::make_unique<LevelLoader>();
+	const std::string mapPath = "../data/maps/";
+	grid->loadMap(mapPath + "level0.json");
+	level->generateLevel(grid->getTileValues(), rp);
 }
 
 std::shared_ptr<GameObject> TowerDefense::createGameObject() {

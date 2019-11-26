@@ -13,7 +13,6 @@ void Grid::loadMap(std::string filename) {
 	IStreamWrapper isw(fis);
 	Document d;
 	d.ParseStream(isw);
-
 	const Value& tileMap = d["tileMap"];
 	for (int i = 0; i < tileMap.Size(); i++) {
 		vector<int> row;
@@ -26,6 +25,10 @@ void Grid::loadMap(std::string filename) {
 
 int Grid::getTile(int x, int y) {
 	return tileValues.at(y).at(x);
+}
+
+std::vector<std::vector<int>> Grid::getTileValues() { 
+	return tileValues;
 }
 
 int Grid::getWidth() {
