@@ -75,7 +75,7 @@ void TowerDefense::init() {
 	lights = sre::WorldLights();
 
 	std::shared_ptr<GameObject> obj = createGameObject();
-	TowerLoader::loadTower(obj, &gameObjects, "tower1");
+	TowerLoader::loadTower(obj, &gameObjects, "sample");
 	
 
 	/*std::shared_ptr<GameObject> towerObj = createGameObject();
