@@ -27,15 +27,20 @@ TowerDefense::TowerDefense() {
 
 void TowerDefense::update(float deltaTime) {
 	fixedTime += deltaTime;
+	updateCamera();
+	
+}
+
+void TowerDefense::updateCamera() {
 	glm::vec3 fwdVec = lookat - camPos;
 	glm::normalize(fwdVec);
 	glm::vec3 leftVec = glm::cross(upVec, fwdVec);
 	if (fwd) {
-		camPos += fwdVec * 0.05f; 
+		camPos += fwdVec * 0.05f;
 		lookat += fwdVec * 0.05f;
 	}
 	else if (bwd) {
-		camPos -= fwdVec * 0.05f; 
+		camPos -= fwdVec * 0.05f;
 		lookat -= fwdVec * 0.05f;
 	}
 	if (left) {
@@ -47,11 +52,11 @@ void TowerDefense::update(float deltaTime) {
 		lookat -= leftVec * 0.05f;
 	}
 	if (up) {
-		camPos += upVec * 0.05f; 
+		camPos += upVec * 0.05f;
 		lookat += upVec * 0.05f;
 	}
 	else if (down) {
-		camPos -= upVec * 0.05f; 
+		camPos -= upVec * 0.05f;
 		lookat -= upVec * 0.05f;
 	}
 	camera.lookAt(camPos, lookat, upVec);
@@ -114,11 +119,7 @@ void TowerDefense::init() {
 	light.range = 100.0f;
 	lights.addLight(light);
 
-	camPos = glm::vec3(0.0f, 3.0f, -5.0f);
-	lookat = glm::vec3(0.0f, -1.0f, 0.0f);
-	upVec = glm::vec3(0.0f, 1.0f, 0.0f);
-
-	camera.setPerspectiveProjection(75.0f, 0.1f, 1000.0f);
+	setupCamera();
 }
 
 void TowerDefense::keyInput(SDL_Event& event) {
@@ -198,6 +199,14 @@ std::shared_ptr<GameObject> TowerDefense::createGameObject() {
 	std::shared_ptr<GameObject> obj = GameObject::createGameObject();
 	gameObjects.push_back(obj);
 	return obj;
+}
+
+void TowerDefense::setupCamera() {
+	camPos = glm::vec3(-300.0f, 300.0f, -300.0f);
+	lookat = glm::vec3(0.0f, 0.0f, 0.0f);
+	upVec = glm::vec3(0.0f, 1.0f, 0.0f);
+
+	camera.setPerspectiveProjection(800.0f, 0.1f, 1000.0f);
 }
 
 int main() {

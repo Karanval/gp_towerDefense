@@ -15,10 +15,12 @@ public:
 private:
 	void init();
 	void update(float deltaTime);
+	void updateCamera();
 	void render();
 	void keyInput(SDL_Event& event);
 	void mouseInput(SDL_Event& event);
 	void drawLevel(sre::RenderPass& rp);
+	void setupCamera();
 	std::shared_ptr<GameObject> createGameObject();
 	
 	sre::SDLRenderer renderer;
