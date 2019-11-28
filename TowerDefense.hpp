@@ -6,8 +6,10 @@
 #include <SDL_events.h>
 #include "GameObject.hpp"
 #include "SpawnController.hpp"
+#include "TowerController.hpp"
+#include "BrickController.hpp"
 
-class TowerDefense : public b2ContactListener
+class TowerDefense
 {
 public:
 	TowerDefense();
@@ -18,6 +20,7 @@ private:
 	void render();
 	void keyInput(SDL_Event& event);
 	void mouseInput(SDL_Event& event);
+	void drawLevel(sre::RenderPass& rp);
 	std::shared_ptr<GameObject> createGameObject();
 
 	std::shared_ptr<SpawnController> spawner;

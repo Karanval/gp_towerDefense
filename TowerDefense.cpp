@@ -5,6 +5,8 @@
 #include "MeshComponent.hpp"
 #include "MaterialComponent.hpp"
 #include "ModelLoader.hpp"
+#include "Grid.hpp"
+#include "LevelLoader.hpp"
 
 TowerDefense::TowerDefense() {
 	renderer.init();
@@ -71,13 +73,16 @@ void TowerDefense::render() {
 	
 	for (int i = 0; i < gameObjects.size(); i++) {
 		std::shared_ptr<GameObject> go = gameObjects[i];
-		if (go->getComponent<MaterialComponent>()) {
-			rp.draw(go->getComponent<MeshComponent>()->getMesh(),
-				glm::translate(go->getPosition()),
-				go->getComponent<MaterialComponent>()->getMaterial());
-			std::vector<glm::vec3> verts = std::vector<glm::vec3>();
-		}
+		if (!go->getComponent<MeshComponent>()) continue;
+		std::shared_ptr<BrickController> bc = gameObjects[i]->getComponent<BrickController>();
+		glm::vec3 pos = bc ? bc->getPosition() : go->getPosition();
+		rp.draw(go->getComponent<MeshComponent>()->getMesh(), 
+				glm::translate(pos), 
+			    go->getComponent<MaterialComponent>()->getMaterial());
+		std::vector<glm::vec3> verts = std::vector<glm::vec3>();
 	}
+	//TODO uncomment
+	//drawLevel(rp);
 }
 
 void TowerDefense::init() {
@@ -86,10 +91,14 @@ void TowerDefense::init() {
 	// Create Spawner
 	std::shared_ptr<GameObject> spawnObj = GameObject::createGameObject();
 	spawner = spawnObj->addComponent<SpawnController>();
-	spawner->setGameObjects(gameObjects);
+	spawner->setGameObjects(&gameObjects);
 	// TODO: replace with actual path when Grid is ready
 	spawner->startSpawningCycle({glm::vec2(5.0f,5.0f), glm::vec2(10.0f,10.0f) });
 	gameObjects.push_back(spawnObj);
+
+
+	std::shared_ptr<GameObject> towerObj = createGameObject();
+	std::shared_ptr<TowerController> towerController = towerObj->addComponent<TowerController>();
 
 	float x = 0.0f;
 	float z = 0.0f;
@@ -102,6 +111,10 @@ void TowerDefense::init() {
 		std::shared_ptr<GameObject> obj = createGameObject();
 		ModelLoader::loadModel(obj, "lego_brick1", "lego_brick1");
 		obj->setPosition(glm::vec3(x, 0.0f, z));
+		if (i > 10) {
+			obj->addComponent<BrickController>()->setTowerController(towerController);
+			obj->getComponent<BrickController>()->setLocalPosition(glm::vec3(x, 0.0f, z));
+		}
 
 	}
 
@@ -142,6 +155,18 @@ void TowerDefense::keyInput(SDL_Event& event) {
 		case SDLK_LCTRL:
 			down = true;
 			break;
+		case SDLK_1:
+			for (int i = 0; i < gameObjects.size(); i++) {
+				std::shared_ptr<TowerController> tc = gameObjects[i]->getComponent<TowerController>();
+				if (tc) tc->setPosition(tc->getPosition() - glm::vec3(1.0f, 0.0f, 0.0f));
+			}
+			break;
+		case SDLK_2:
+			for (int i = 0; i < gameObjects.size(); i++) {
+				std::shared_ptr<TowerController> tc = gameObjects[i]->getComponent<TowerController>();
+				if (tc) tc->setPosition(tc->getPosition() + glm::vec3(1.0f, 0.0f, 0.0f));
+			}
+			break;
 		}
 		break;
 	case SDL_KEYUP:
@@ -171,6 +196,14 @@ void TowerDefense::keyInput(SDL_Event& event) {
 
 void TowerDefense::mouseInput(SDL_Event& event) {
 
+}
+
+void TowerDefense::drawLevel(sre::RenderPass& rp) {
+	std::unique_ptr<Grid> grid = std::make_unique<Grid>();
+	std::unique_ptr<LevelLoader> level = std::make_unique<LevelLoader>();
+	const std::string mapPath = "../data/maps/";
+	grid->loadMap(mapPath + "level0.json");
+	level->generateLevel(grid->getTileValues(), rp);
 }
 
 std::shared_ptr<GameObject> TowerDefense::createGameObject() {
