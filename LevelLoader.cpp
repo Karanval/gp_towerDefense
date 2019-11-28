@@ -4,7 +4,7 @@
 #include <glm\gtc\matrix_transform.hpp>
 
 void LevelLoader::generateLevel(std::vector<std::vector<int>> tileValues, sre::RenderPass& rp) {
-	tileSize = glm::vec2(64,64);
+	tileSize = glm::vec2(32,32);
 	int x, z, tileType;
 
 	for (int i = 0; i < tileValues.size(); i++) {
