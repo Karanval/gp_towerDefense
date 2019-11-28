@@ -1,10 +1,10 @@
-# Blender MTL File: 'lego_brick_4x2.blend'
+# Blender MTL File: 'gate.blend'
 # Material Count: 1
 
-newmtl yellow
+newmtl lightgrey.001
 Ns 225.000000
 Ka 0.200000 0.200000 0.200000
-Kd 0.800000 0.362010 0.000000
+Kd 0.559601 0.559601 0.559601
 Ks 0.100000 0.100000 0.100000
 Ke 0.0 0.0 0.0
 Ni 1.000000

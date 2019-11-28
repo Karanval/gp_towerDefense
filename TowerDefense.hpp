@@ -8,7 +8,7 @@
 #include "SpawnController.hpp"
 #include "TowerController.hpp"
 #include "BrickController.hpp"
-
+#include "TowerLoader.hpp"
 class TowerDefense
 {
 public:
@@ -17,10 +17,12 @@ public:
 private:
 	void init();
 	void update(float deltaTime);
+	void updateCamera(float deltaTime);
 	void render();
 	void keyInput(SDL_Event& event);
 	void mouseInput(SDL_Event& event);
 	void drawLevel(sre::RenderPass& rp);
+	void setupCamera();
 	std::shared_ptr<GameObject> createGameObject();
 
 	std::shared_ptr<SpawnController> spawner;
