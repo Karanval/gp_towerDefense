@@ -9,21 +9,39 @@
 #include "TowerController.hpp"
 #include "BrickController.hpp"
 #include "TowerLoader.hpp"
-class TowerDefense
+#include "Box2DDebugDraw.hpp"
+
+class TowerDefense : public b2ContactListener
 {
 public:
 	TowerDefense();
 
+	static TowerDefense* instance;
+	static constexpr float32 timeStep = 1.0f / 60.0f;
+
 private:
 	void init();
+	void initPhysics();
 	void update(float deltaTime);
 	void updateCamera(float deltaTime);
+	void updatePhysics();
+	void BeginContact(b2Contact* contact);
+	void EndContact(b2Contact* contact);
+	void handleContact(b2Contact* contact, bool begin);
 	void render();
 	void keyInput(SDL_Event& event);
 	void mouseInput(SDL_Event& event);
 	void drawLevel(sre::RenderPass& rp);
 	void setupCamera();
 	std::shared_ptr<GameObject> createGameObject();
+	void deregisterPhysicsComponent(PhysicsComponent* r);
+	void registerPhysicsComponent(PhysicsComponent* r);
+
+	b2World* world = nullptr;
+	Box2DDebugDraw debugDraw;
+	bool doDebugDraw = false;
+	const float  physicsScale = 100;
+	std::map<b2Fixture*, PhysicsComponent*> physicsComponentLookup;
 
 	std::shared_ptr<SpawnController> spawner;
 	sre::SDLRenderer renderer;
@@ -43,6 +61,7 @@ private:
 
 	float fixedTime = 0.0f;
 
+	friend class PhysicsComponent;
 };
 
 

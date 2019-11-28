@@ -1,11 +1,14 @@
 #pragma once
 #include "Component.hpp"
+#include "PhysicsComponent.hpp"
+
 class EnemyController : public Component {
 public:
 	//explicit EnemyController(GameObject* gameObject);
 	explicit EnemyController(GameObject* gameObject);
 
 	void init(int health, float damage, int coinDrop, std::vector<glm::vec2> path);
+
 	void onCollisionStart(PhysicsComponent* comp) override;
 
 	void onCollisionEnd(PhysicsComponent* comp) override;
@@ -31,4 +34,10 @@ private:
 	int currentHealth;
 	float damage;
 	int coinDrop;
+	float totalTime;
+	float tileSize = 32;
+	glm::vec2 pos;
+	int width;
+
+	void moveTo(glm::vec2 tilePos);
 };

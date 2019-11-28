@@ -5,8 +5,12 @@
 #include "ModelLoader.hpp"
 #include "Grid.hpp"
 #include "LevelLoader.hpp"
+#include "PhysicsComponent.hpp"
 
-TowerDefense::TowerDefense() {
+TowerDefense* TowerDefense::instance = nullptr;
+
+TowerDefense::TowerDefense() : debugDraw(physicsScale){
+	instance = this;
 	renderer.init();
 	init();
 
@@ -28,6 +32,7 @@ TowerDefense::TowerDefense() {
 void TowerDefense::update(float deltaTime) {
 	fixedTime += deltaTime;
 	updateCamera(deltaTime);
+	updatePhysics();
 	
 }
 
@@ -66,6 +71,23 @@ void TowerDefense::updateCamera(float deltaTime) {
 	}
 }
 
+void TowerDefense::updatePhysics() {
+	const float32 timeStep = 1.0f / 60.0f;
+	const int positionIterations = 2;
+	const int velocityIterations = 6;
+	world->Step(timeStep, velocityIterations, positionIterations);
+
+	for (auto phys : physicsComponentLookup) {
+		if (phys.second->rbType == b2_staticBody) continue; 
+		auto position = phys.second->body->GetPosition();
+		float angle = phys.second->body->GetAngle();
+		auto gameObject = phys.second->getGameObject();
+		//TODO add actual z
+		gameObject->setPosition(glm::vec3((position.x * physicsScale), position.y * physicsScale, 5));
+		gameObject->setRotation(angle);
+	}
+}
+
 void TowerDefense::render() {
 	sre::RenderPass rp = sre::RenderPass::create()
 						.withCamera(camera).withWorldLights(&lights)
@@ -85,10 +107,20 @@ void TowerDefense::render() {
 		std::vector<glm::vec3> verts = std::vector<glm::vec3>();
 	}
 	//TODO uncomment
-	//drawLevel(rp);
+	drawLevel(rp);
+
+	if (doDebugDraw) {
+		world->DrawDebugData();
+		rp.drawLines(debugDraw.getLines());
+		debugDraw.clear();
+	}
 }
 
 void TowerDefense::init() {
+	if (world != nullptr) { // deregister call backlistener to avoid getting callbacks when recreating the world
+		world->SetContactListener(nullptr);
+	}
+	initPhysics();
 	lights = sre::WorldLights();
 
 	// Create Spawner
@@ -96,7 +128,7 @@ void TowerDefense::init() {
 	spawner = spawnObj->addComponent<SpawnController>();
 	spawner->setGameObjects(&gameObjects);
 	// TODO: replace with actual path when Grid is ready
-	spawner->startSpawningCycle({glm::vec2(5.0f,5.0f), glm::vec2(10.0f,10.0f) });
+	spawner->startSpawningCycle({glm::vec2(5.0f,0.0f), glm::vec2(10.0f,0.0f) });
 	gameObjects.push_back(spawnObj);
 
 	std::shared_ptr<GameObject> obj = createGameObject();
@@ -135,10 +167,40 @@ void TowerDefense::init() {
 	setupCamera();
 }
 
+void TowerDefense::initPhysics() {
+	float gravity = 0; 
+	delete world;
+	world = new b2World(b2Vec2(0, gravity));
+	world->SetContactListener(this);
+
+	if (doDebugDraw) {
+		world->SetDebugDraw(&debugDraw);
+	}
+}
+
+void TowerDefense::BeginContact(b2Contact* contact) {
+	b2ContactListener::BeginContact(contact);
+	handleContact(contact, true);
+}
+
+void TowerDefense::EndContact(b2Contact* contact) {
+	b2ContactListener::EndContact(contact);
+	handleContact(contact, false);
+}
+
+void TowerDefense::handleContact(b2Contact* contact, bool begin) {}
+
 void TowerDefense::keyInput(SDL_Event& event) {
 	switch (event.type) {
 	case SDL_KEYDOWN:
 		switch (event.key.keysym.sym) {
+		case SDLK_k:
+			// press 'k' for physics debug
+			doDebugDraw = !doDebugDraw;
+			if (doDebugDraw)
+				world->SetDebugDraw(&debugDraw);
+			else
+				world->SetDebugDraw(nullptr);
 		case SDLK_w:
 			fwd = true;
 			break;
@@ -220,6 +282,17 @@ void TowerDefense::setupCamera() {
 	upVec = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	camera.setPerspectiveProjection(800.0f, 0.1f, 1000.0f);
+}
+
+void TowerDefense::deregisterPhysicsComponent(PhysicsComponent* r) {
+	auto iter = physicsComponentLookup.find(r->fixture);
+	if (iter != physicsComponentLookup.end()) {
+		physicsComponentLookup.erase(iter);
+	}
+}
+
+void TowerDefense::registerPhysicsComponent(PhysicsComponent* r) {
+	physicsComponentLookup[r->fixture] = r;
 }
 
 int main() {
