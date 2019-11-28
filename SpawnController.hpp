@@ -6,7 +6,7 @@ class SpawnController : public Component {
 public:
 	explicit SpawnController(GameObject* gameObject);
 
-	void setGameObjects(std::vector<std::shared_ptr<GameObject>> gameObjects);
+	void setGameObjects(std::vector<std::shared_ptr<GameObject>>* gameObjects);
 
 	void update(float deltaTime) override;
 
@@ -19,7 +19,7 @@ private:
 	//Timer
 	float time = 0;
 	float waitTimeAmount;
-	std::vector<std::shared_ptr<GameObject>> gameObjects;
+	std::vector<std::shared_ptr<GameObject>>* gameObjects;
 	std::vector<glm::vec2> monsterPath;
 
 };
