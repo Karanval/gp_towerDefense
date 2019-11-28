@@ -17,6 +17,7 @@ private:
 	void render();
 	void keyInput(SDL_Event& event);
 	void mouseInput(SDL_Event& event);
+	void drawLevel(sre::RenderPass& rp);
 	std::shared_ptr<GameObject> createGameObject();
 	
 	sre::SDLRenderer renderer;
