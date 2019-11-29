@@ -25,6 +25,10 @@ TowerDefense::TowerDefense() {
 	renderer.startEventLoop();
 }
 
+TowerDefense::~TowerDefense() {
+	//ImGui::End();
+}
+
 void TowerDefense::update(float deltaTime) {
 	fixedTime += deltaTime;
 	updateCamera();
@@ -82,6 +86,7 @@ void TowerDefense::render() {
 	}
 
 	drawLevel(rp);
+	drawGUI();
 }
 
 void TowerDefense::init() {
@@ -89,6 +94,7 @@ void TowerDefense::init() {
 
 	std::shared_ptr<GameObject> obj = createGameObject();
 	TowerLoader::loadTower(obj, &gameObjects, "sample");
+
 	
 
 	/*std::shared_ptr<GameObject> towerObj = createGameObject();
@@ -120,6 +126,7 @@ void TowerDefense::init() {
 	lights.addLight(light);
 
 	setupCamera();
+	setupGUI();
 }
 
 void TowerDefense::keyInput(SDL_Event& event) {
@@ -208,6 +215,53 @@ void TowerDefense::setupCamera() {
 
 	camera.setPerspectiveProjection(800.0f, 0.1f, 1000.0f);
 }
+
+void TowerDefense::setupGUI() {
+	// Font
+	ImFontAtlas* fonts = ImGui::GetIO().Fonts;
+	fonts->AddFontDefault();
+	std::string fontName = miscPath + "AceRecords.ttf";
+	int fontSize = 26;
+	aceRecordsFont = fonts->AddFontFromFileTTF(fontName.c_str(), fontSize);
+	
+	// Images
+	gateImg = sre::Texture::create().withFile(ModelLoader::texturePath + "gate_view.png")
+									.withFilterSampling(false).build();
+}
+
+void TowerDefense::drawGUI() {
+	ImVec2 winPos = ImVec2(0, sre::Renderer::instance->getWindowSize().y - bottomMenuHeight);
+	ImVec2 winSize = ImVec2(sre::Renderer::instance->getWindowSize().x, bottomMenuHeight);
+	ImVec4 background = ImVec4(0.0f, 0.0f, 0.5f, slideVal);
+	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);
+	ImVec4 transparent = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+	ImVec2 imgMargin = ImVec2(/*right*/5, /*top*/5);
+	bool showBorder = checkVal;
+	ImGui::SetNextWindowPos(winPos, ImGuiSetCond_Always);
+	ImGui::SetNextWindowSize(winSize, ImGuiSetCond_Always);
+	ImGui::PushFont(aceRecordsFont);
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, background);
+	ImGui::PushStyleColor(ImGuiCol_Button, transparent);
+	if (showBorder) ImGui::PushStyleColor(ImGuiCol_Border, borderCol);
+	ImGui::Begin("", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+	ImGui::BeginGroup();
+	ImGui::Text("Awesome");
+	ImGui::SliderFloat("background", &slideVal, 0.0f, 1.0f);
+	ImGui::Checkbox("border", &checkVal);
+	ImGui::EndGroup();
+	ImGui::SetCursorPosX(winSize.x - 128 + imgMargin.x);
+	ImGui::SetCursorPosY(winSize.y - bottomMenuHeight + imgMargin.y);
+	ImTextureID textureID = gateImg->getNativeTexturePtr();
+	if (ImGui::ImageButton(textureID, ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) {
+		std::cout << "YAY! \n";
+	}
+	ImGui::End();
+	ImGui::PopFont();
+	if (showBorder) ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+}
+
 
 int main() {
 	new TowerDefense();
