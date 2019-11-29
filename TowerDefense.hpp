@@ -2,8 +2,10 @@
 
 #include "sre/SDLRenderer.hpp"
 #include "sre/Material.hpp"
+#include "Box2D/Dynamics/b2World.h"
 #include <SDL_events.h>
 #include "GameObject.hpp"
+#include "SpawnController.hpp"
 #include "TowerController.hpp"
 #include "BrickController.hpp"
 #include "TowerLoader.hpp"
@@ -17,16 +19,18 @@ private:
 	~TowerDefense();
 	void init();
 	void update(float deltaTime);
-	void updateCamera();
+	void updateCamera(float deltaTime);
 	void render();
 	void keyInput(SDL_Event& event);
 	void mouseInput(SDL_Event& event);
 	void drawLevel(sre::RenderPass& rp);
 	void setupCamera();
-	void TowerDefense::setupGUI();
+	void setupGUI();
 	std::shared_ptr<GameObject> createGameObject();
-	void TowerDefense::drawGUI();
+	void drawGUI();
 	
+
+	std::shared_ptr<SpawnController> spawner;
 	sre::SDLRenderer renderer;
 	sre::Camera camera;
 	std::vector<std::shared_ptr<GameObject>> gameObjects;

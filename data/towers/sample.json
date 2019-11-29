@@ -12,7 +12,7 @@
   {"objName":"4x1_bars", "mtlName":"red", "txtFilename":"", "position":{"x":4.0,"y":0.0,"z":0.0}},
   {"objName":"4x2", "mtlName":"blue", "txtFilename":"", "position":{"x":6.0,"y":0.0,"z":0.0}},
   {"objName":"4x2_thin_flat", "mtlName":"lightblue", "txtFilename":"", "position":{"x":8.0,"y":0.0,"z":0.0}},
-  {"objName":"4x4_slope", "mtlName":"grey", "txtFilename":"", "position":{"x":10.0,"y":0.0,"z":0.0}},
+  {"objName":"2x2_slope", "mtlName":"grey", "txtFilename":"", "position":{"x":10.0,"y":0.0,"z":0.0}},
   {"objName":"4x4_thin", "mtlName":"lightgrey", "txtFilename":"", "position":{"x":12.0,"y":0.0,"z":0.0}},
   {"objName":"flag", "mtlName":"red", "txtFilename":"", "position":{"x":14.0,"y":0.0,"z":0.0}},
   {"objName":"2x1_slope", "mtlName":"blue", "txtFilename":"", "position":{"x":16.0,"y":0.0,"z":0.0}}

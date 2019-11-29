@@ -31,11 +31,11 @@ TowerDefense::~TowerDefense() {
 
 void TowerDefense::update(float deltaTime) {
 	fixedTime += deltaTime;
-	updateCamera();
+	updateCamera(deltaTime);
 	
 }
 
-void TowerDefense::updateCamera() {
+void TowerDefense::updateCamera(float deltaTime) {
 	glm::vec3 fwdVec = lookat - camPos;
 	glm::normalize(fwdVec);
 	glm::vec3 leftVec = glm::cross(upVec, fwdVec);
@@ -64,6 +64,10 @@ void TowerDefense::updateCamera() {
 		lookat -= upVec * 0.05f;
 	}
 	camera.lookAt(camPos, lookat, upVec);
+
+	for (int i = 0; i < gameObjects.size(); i++) {
+		gameObjects[i]->update(deltaTime);
+	}
 }
 
 void TowerDefense::render() {
@@ -92,6 +96,14 @@ void TowerDefense::render() {
 void TowerDefense::init() {
 	lights = sre::WorldLights();
 
+	// Create Spawner
+	std::shared_ptr<GameObject> spawnObj = GameObject::createGameObject();
+	spawner = spawnObj->addComponent<SpawnController>();
+	spawner->setGameObjects(&gameObjects);
+	// TODO: replace with actual path when Grid is ready
+	spawner->startSpawningCycle({glm::vec2(5.0f,5.0f), glm::vec2(10.0f,10.0f) });
+	gameObjects.push_back(spawnObj);
+
 	std::shared_ptr<GameObject> obj = createGameObject();
 	TowerLoader::loadTower(obj, &gameObjects, "sample");
 
@@ -99,6 +111,7 @@ void TowerDefense::init() {
 
 	/*std::shared_ptr<GameObject> towerObj = createGameObject();
 	std::shared_ptr<TowerController> towerController = towerObj->addComponent<TowerController>();
+
 	float x = 0.0f;
 	float z = 0.0f;
 	for (int i = 0; i < 25; i++) {
