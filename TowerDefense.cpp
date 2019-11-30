@@ -212,7 +212,7 @@ void TowerDefense::drawLevel(sre::RenderPass& rp) {
 	std::unique_ptr<LevelLoader> level = std::make_unique<LevelLoader>();
 	const std::string mapPath = "../data/maps/";
 	grid->loadMap(mapPath + "level0.json");
-	level->generateLevel(grid->getTileValues(), rp);
+	level->generateLevel(grid->getTileValues(), grid->getTileSize(), rp);
 }
 
 std::shared_ptr<GameObject> TowerDefense::createGameObject() {
