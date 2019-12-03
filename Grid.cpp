@@ -7,6 +7,13 @@
 
 using namespace std;
 
+Grid::Grid() {
+	tileSize = glm::vec2(32, 32);
+}
+
+Grid::~Grid() {
+}
+
 void Grid::loadMap(std::string filename) {
 	using namespace rapidjson;
 	ifstream fis(filename);
@@ -27,16 +34,20 @@ int Grid::getTile(int x, int y) {
 	return tileValues.at(y).at(x);
 }
 
+glm::vec2 Grid::getTileSize() {
+	return tileSize;
+}
+
 std::vector<std::vector<int>> Grid::getTileValues() { 
 	return tileValues;
 }
 
 int Grid::getWidth() {
-	return tileValues[0].size();
+	return tileValues[0].size() * tileSize.x;
 }
 
 int Grid::getHeight() {
-	return tileValues[0].size();
+	return tileValues[0].size() * tileSize.y;
 }
 
 glm::vec2 Grid::getStartingPosition() {

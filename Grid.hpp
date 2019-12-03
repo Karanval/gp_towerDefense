@@ -5,8 +5,11 @@
 
 class Grid {
 public:
+	Grid();
+	~Grid();
 	void loadMap(std::string filename);
 	int getTile(int x, int y);
+	glm::vec2 getTileSize();
 	int getWidth();
 	int getHeight();
 	std::vector<std::vector<int>> getTileValues();
@@ -22,6 +25,7 @@ public:
 	
 private:
 	std::vector<std::vector<int>> tileValues;
+	glm::vec2 tileSize;
 	glm::vec2 startingPosition;
 	glm::vec2 basePosition;
 };
