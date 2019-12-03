@@ -110,8 +110,6 @@ void TowerDefense::render() {
 			    go->getComponent<MaterialComponent>()->getMaterial());
 		std::vector<glm::vec3> verts = std::vector<glm::vec3>();
 	}
-	//TODO uncomment
-	drawLevel(rp);
 
 	if (doDebugDraw) {
 		world->DrawDebugData();
@@ -173,6 +171,7 @@ void TowerDefense::init() {
 	setupCamera();
 	setupGUI();
 	setupLevel();
+	drawLevel();
 }
 
 void TowerDefense::initPhysics() {
@@ -286,9 +285,11 @@ void TowerDefense::setupLevel() {
 	const std::string mapPath = "../data/maps/";
 	grid->loadMap(mapPath + "level0.json");
 }
-void TowerDefense::drawLevel(sre::RenderPass& rp) {
+void TowerDefense::drawLevel() {
 	std::unique_ptr<LevelLoader> level = std::make_unique<LevelLoader>();
-	level->generateLevel(grid->getTileValues(), grid->getTileSize(), rp);
+	auto tileValues = grid->getTileValues();
+	auto tileSize = grid->getTileSize();
+	level->generateLevel(grid->getTileValues(), tileSize, &gameObjects);
 }
 
 std::shared_ptr<GameObject> TowerDefense::createGameObject() {

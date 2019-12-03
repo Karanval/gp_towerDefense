@@ -34,7 +34,7 @@ private:
 	void render();
 	void keyInput(SDL_Event& event);
 	void mouseInput(SDL_Event& event);
-	void drawLevel(sre::RenderPass& rp);
+	void drawLevel();
 	void setupCamera();
 	void setupGUI();
 	void setupLevel();
