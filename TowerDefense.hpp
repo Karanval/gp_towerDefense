@@ -33,16 +33,18 @@ private:
 	void render();
 	void keyInput(SDL_Event& event);
 	void mouseInput(SDL_Event& event);
+	void mouseClick(SDL_Event& event);
 	void drawLevel(sre::RenderPass& rp);
 	void setupCamera();
 	void setupGUI();
 	std::shared_ptr<GameObject> createGameObject();
 	void deregisterPhysicsComponent(PhysicsComponent* r);
 	void registerPhysicsComponent(PhysicsComponent* r);
-	void TowerDefense::drawResourceOverview();
-	void TowerDefense::drawBuildingOverview();
-	void TowerDefense::drawUpgradeOverview();
+	void drawResourceOverview();
+	void drawBuildingOverview();
+	void drawUpgradeOverview();
 	void drawGUI();
+	bool rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec3, 2>& box);
 
 	b2World* world = nullptr;
 	Box2DDebugDraw debugDraw;

@@ -8,9 +8,13 @@ class TowerController : public Component {
 public:
 	explicit TowerController(GameObject* gameObject);
 	
+	void update(float deltaTime) override;
 	void init(bool isStatic);
 	void setPosition(glm::vec3 position);
 	glm::vec3 getPosition();
+	void onMouse(SDL_Event& event);
+	void markDirty();
+	bool isDirty();
 
 private:
 	glm::vec3 position = glm::vec3();
@@ -18,5 +22,6 @@ private:
 	float radius;
 	int cost;
 	std::shared_ptr<ProjectileController> bullet;
+	bool dirty = false;
 };
 

@@ -33,6 +33,8 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 		const Value& brickPos = brick["position"];
 		brickC->setLocalPosition(glm::vec3(brickPos["x"].GetFloat(), brickPos["y"].GetFloat(), brickPos["z"].GetFloat()));
 		brickC->setTowerController(towerC);
+		brickObj->addComponent<ClickableComponent>();
+		brickObj->name = objName;
 	}
 
 }

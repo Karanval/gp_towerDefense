@@ -9,6 +9,7 @@
 #include "MeshComponent.hpp"
 #include "MaterialComponent.hpp"
 #include "ModelLoader.hpp"
+#include "ClickableComponent.hpp"
 namespace TowerLoader
 {
 	const std::string towerPath = "../data/towers/";
