@@ -24,10 +24,41 @@ void EnemyController::onCollisionEnd(PhysicsComponent* comp) {
 
 }
 void EnemyController::update(float deltaTime) {
+	// todo: translate from x,y to x,z 
+	// TODO change 5.0 to constant
 
-	totalTime += deltaTime;
-	//TODO: intepolashion
-	moveTo( glm::vec2(10,0));
+	pos = glm::vec2(gameObject->getPosition().x, gameObject->getPosition().z);
+	if (path.empty()) {
+		direction = glm::vec2(0, 0);
+		phys->setLinearVelocity(speed * direction);	
+		//TODO: start atacking
+	}
+	else {
+		glm::vec2 nextPosition = tileSize * tilePosition;
+		glm::vec2 heading = nextPosition - pos;
+		glm::vec2 currentDirection = glm::normalize(heading) ;
+		//printf("nextPos %f %f #### Pos %f %f \n", nextPosition.x, nextPosition.y, pos.x, pos.y);
+		//printf("heading %f %f \n", heading.x, heading.y);
+
+		// Opposite directions -> Change direction
+		if ((direction.x == 0 || direction.x == -currentDirection.x) 
+			&& (direction.y == 0 || direction.y == -currentDirection.y)) {
+			printf("changing direction");
+			tilePosition = path[0];
+			path.erase(path.begin());
+			nextPosition = tileSize * tilePosition;
+			heading = nextPosition - pos;
+			currentDirection = glm::normalize(heading) ;
+		}
+		else {
+			//printf("Dirx %f, %f, currentD: %f, %f \n", direction.x, direction.y, currentDirection.x, currentDirection.y);
+		}
+		if (direction.x != currentDirection.x || direction.y != currentDirection.y) {
+			direction = currentDirection;
+
+			phys->setLinearVelocity(speed * direction);
+		}
+	}
 }
 
 

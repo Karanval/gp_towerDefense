@@ -27,17 +27,18 @@ public:
 private:
 	glm::vec2 tilePosition;
 	glm::vec2 windowPosition;
-	glm::vec2 direction;
+	glm::vec2 direction ; 
+	glm::vec2 pos;
 	std::shared_ptr<PhysicsComponent> phys;
 	std::vector<glm::vec2> path;
 	int initialHealth;
 	int currentHealth;
-	float damage;
 	int coinDrop;
-	float totalTime;
-	float tileSize = 32;
-	glm::vec2 pos;
 	int width;
+	float damage;
+	float totalTime;
+	float tileSize = 32.0f;
+	float speed = 0.05f;
 
 	void moveTo(glm::vec2 tilePos);
 };

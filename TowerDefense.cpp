@@ -133,7 +133,7 @@ void TowerDefense::init() {
 	spawner = spawnObj->addComponent<SpawnController>();
 	spawner->setGameObjects(&gameObjects);
 	// TODO: replace with actual path when Grid is ready
-	spawner->startSpawningCycle({glm::vec2(5.0f,0.0f), glm::vec2(7.0f,0.0f) });
+	spawner->startSpawningCycle({glm::vec2(2.0f,0.0f), glm::vec2(2.0f, 1.0f) });
 	gameObjects.push_back(spawnObj);
 
 	std::shared_ptr<GameObject> obj = createGameObject();
