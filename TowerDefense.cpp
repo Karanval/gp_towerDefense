@@ -173,6 +173,7 @@ void TowerDefense::init() {
 
 	setupCamera();
 	setupGUI();
+	setupLevel();
 }
 
 void TowerDefense::initPhysics() {
@@ -321,13 +322,19 @@ void TowerDefense::mouseInput(SDL_Event& event) {
 	case SDL_MOUSEMOTION:
 		break;
 	}
+	/*int mousePosX, mousePosY;
+	SDL_GetMouseState(&mousePosX, &mousePosY);
+	float isoMousePosX, isoMousePosy;
+	int tile = grid->getTile(mousePosX, mousePosY);*/
 }
 
-void TowerDefense::drawLevel(sre::RenderPass& rp) {
-	std::unique_ptr<Grid> grid = std::make_unique<Grid>();
-	std::unique_ptr<LevelLoader> level = std::make_unique<LevelLoader>();
+void TowerDefense::setupLevel() {
+	grid = std::make_unique<Grid>();
 	const std::string mapPath = "../data/maps/";
 	grid->loadMap(mapPath + "level0.json");
+}
+void TowerDefense::drawLevel(sre::RenderPass& rp) {
+	std::unique_ptr<LevelLoader> level = std::make_unique<LevelLoader>();
 	level->generateLevel(grid->getTileValues(), grid->getTileSize(), rp);
 }
 
