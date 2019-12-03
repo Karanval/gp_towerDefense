@@ -3,21 +3,19 @@
 #include <iostream>
 #include <glm\gtc\matrix_transform.hpp>
 
-void LevelLoader::generateLevel(std::vector<std::vector<int>> tileValues, sre::RenderPass& rp) {
-	tileSize = glm::vec2(32,32);
+void LevelLoader::generateLevel(std::vector<std::vector<int>> tileValues, glm::vec2& tileSize, sre::RenderPass& rp) {
 	int x, z, tileType;
-
 	for (int i = 0; i < tileValues.size(); i++) {
 		for (int j = 0; j < tileValues[i].size(); j++) {
 			x = j * tileSize.x;
 			z = i * tileSize.y;
 			tileType = tileValues[i][j];
-			placeTile(tileType, x, z, rp);
+			placeTile(tileType, tileSize, x, z, rp);
 		}
 	}
 }
 
-void LevelLoader::placeTile(int tileType, int x, int z, sre::RenderPass& rp) {
+void LevelLoader::placeTile(int tileType, glm::vec2 tileSize, int x, int z, sre::RenderPass& rp) {
 	std::vector<glm::vec3>vertexPositions = {
 		glm::vec3(x,0,z), glm::vec3(x,0,z + tileSize.x), glm::vec3(x + tileSize.x,0,z),
 		glm::vec3(x + tileSize.x,0,z + tileSize.x), glm::vec3(x + tileSize.x,0,z), glm::vec3(x,0,z + tileSize.x)
