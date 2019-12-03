@@ -10,6 +10,7 @@
 #include "BrickController.hpp"
 #include "TowerLoader.hpp"
 #include "Box2DDebugDraw.hpp"
+#include "Grid.hpp"
 
 class TowerDefense : public b2ContactListener
 {
@@ -36,6 +37,7 @@ private:
 	void drawLevel(sre::RenderPass& rp);
 	void setupCamera();
 	void setupGUI();
+	void setupLevel();
 	std::shared_ptr<GameObject> createGameObject();
 	void deregisterPhysicsComponent(PhysicsComponent* r);
 	void registerPhysicsComponent(PhysicsComponent* r);
@@ -58,6 +60,7 @@ private:
 	glm::vec3 lookat;
 	glm::vec3 upVec;
 	ImFont* aceRecordsFont;
+	std::unique_ptr<Grid> grid = nullptr;
 	
 	bool fwd = false;
 	bool bwd = false;
