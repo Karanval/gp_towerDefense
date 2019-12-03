@@ -27,6 +27,9 @@ private:
 	void setupCamera();
 	void setupGUI();
 	std::shared_ptr<GameObject> createGameObject();
+	void TowerDefense::drawResourceOverview();
+	void TowerDefense::drawBuildingOverview();
+	void TowerDefense::drawUpgradeOverview();
 	void drawGUI();
 	
 
@@ -48,9 +51,13 @@ private:
 	bool down = false;
 	
 	float fixedTime = 0.0f;
+	int gold = 0;
+	int lives = 0;
 
 	// GUI
+	int resourceMenuHeight = 50;
 	int bottomMenuHeight = 150;
+	int menu = 0; // 0: build, 1: upgrade
 	float slideVal = 1.0f;
 	bool checkVal = true;
 	std::shared_ptr<sre::Texture> gateImg;
