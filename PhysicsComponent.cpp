@@ -47,6 +47,11 @@ void PhysicsComponent::setLinearVelocity(glm::vec2 velocity) {
 	body->SetLinearVelocity(v);
 }
 
+void PhysicsComponent::setPosition(glm::vec2 newPos) {
+	b2Vec2 posi = b2Vec2(newPos.x, newPos.y);
+	body->SetTransform(posi, 0);
+}
+
 void PhysicsComponent::initCircle(b2BodyType type, float radius, glm::vec2 center, float density) {
 	assert(body == nullptr);
 	// do init

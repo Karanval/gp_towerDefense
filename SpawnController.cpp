@@ -14,7 +14,8 @@ bool once = true;
 
 void SpawnController::update(float deltaTime) {
 	time += deltaTime;
-	if (time >= waitTimeAmount/*once*/) {
+	if (time >= waitTimeAmount) {
+	//if (once) {
 		time = 0;
 		createMonster();
 		once = false;
@@ -31,15 +32,18 @@ std::shared_ptr<EnemyController> SpawnController::createMonster() {
 	std::shared_ptr<GameObject> obj = GameObject::createGameObject();
 
 	ModelLoader::loadModel(obj, "sphere", "sphere");
-	//TODO change to starting position
-	obj->setPosition(glm::vec3(0.0f, 10.0f, 0.0f));
+	glm::vec2 initialPosition = 32.0f*monsterPath[0];
+
+	glm::vec3 objPos = glm::vec3(initialPosition.x, 0.0f, initialPosition.y);
+
+	obj->setPosition(objPos);
 
 	auto phys = obj->addComponent<PhysicsComponent>();
 	phys->initCircle(b2_dynamicBody, 10 / 100, { 
-		obj->getPosition().x / 100, obj->getPosition().y / 100 }, 1);
+		obj->getPosition().x / 100, obj->getPosition().z / 100 }, 1);
 
 	auto enemyController = obj->addComponent<EnemyController>();
-	enemyController->init(100, 20.0f, 5, monsterPath);
+	enemyController->init(100, 20.0f, 5, &monsterPath);
 
 	gameObjects->push_back(obj);
 

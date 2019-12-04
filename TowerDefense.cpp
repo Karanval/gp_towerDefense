@@ -86,8 +86,8 @@ void TowerDefense::updatePhysics() {
 		auto position = phys.second->body->GetPosition();
 		float angle = phys.second->body->GetAngle();
 		auto gameObject = phys.second->getGameObject();
-		//TODO add actual z
-		gameObject->setPosition(glm::vec3((position.x * physicsScale), position.y * physicsScale, 5));
+		// TODO constant Y
+		gameObject->setPosition(glm::vec3((position.x * physicsScale),0.0f, position.y * physicsScale));
 		gameObject->setRotation(angle);
 	}
 }
@@ -110,7 +110,6 @@ void TowerDefense::render() {
 			    go->getComponent<MaterialComponent>()->getMaterial());
 		std::vector<glm::vec3> verts = std::vector<glm::vec3>();
 	}
-	//TODO uncomment
 	drawLevel(rp);
 
 	if (doDebugDraw) {
@@ -133,7 +132,7 @@ void TowerDefense::init() {
 	spawner = spawnObj->addComponent<SpawnController>();
 	spawner->setGameObjects(&gameObjects);
 	// TODO: replace with actual path when Grid is ready
-	spawner->startSpawningCycle({glm::vec2(2.0f,0.0f), glm::vec2(2.0f, 1.0f) });
+	spawner->startSpawningCycle({glm::vec2(2.0f,0.0f), glm::vec2(2.0f, 1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 2.0f) });
 	gameObjects.push_back(spawnObj);
 
 	std::shared_ptr<GameObject> obj = createGameObject();
@@ -179,7 +178,7 @@ void TowerDefense::initPhysics() {
 	delete world;
 	world = new b2World(b2Vec2(0, gravity));
 	world->SetContactListener(this);
-
+	
 	if (doDebugDraw) {
 		world->SetDebugDraw(&debugDraw);
 	}
