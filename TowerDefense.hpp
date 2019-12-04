@@ -70,6 +70,7 @@ private:
 	bool right = false;
 	bool up = false;
 	bool down = false;
+	bool zoom = false;
 	
 	float fixedTime = 0.0f;
 	int gold = 0;

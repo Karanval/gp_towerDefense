@@ -43,9 +43,11 @@ void TowerDefense::update(float deltaTime) {
 }
 
 void TowerDefense::updateCamera(float deltaTime) {
-	glm::vec3 fwdVec = lookat - camPos;
+	glm::vec3 fwdVec = glm::vec3(10.0, 0, 10.0f);
 	glm::normalize(fwdVec);
 	glm::vec3 leftVec = glm::cross(upVec, fwdVec);
+	glm::vec3 zoomDist = zoom ? (lookat - camPos) * 0.80f : glm::vec3();
+	
 	if (fwd) {
 		camPos += fwdVec * 0.05f;
 		lookat += fwdVec * 0.05f;
@@ -55,11 +57,11 @@ void TowerDefense::updateCamera(float deltaTime) {
 		lookat -= fwdVec * 0.05f;
 	}
 	if (left) {
-		//camPos -= leftVec * 0.05f; 
+		camPos -= leftVec * 0.05f; 
 		lookat += leftVec * 0.05f;
 	}
 	else if (right) {
-		//camPos += leftVec * 0.05f; 
+		camPos += leftVec * 0.05f; 
 		lookat -= leftVec * 0.05f;
 	}
 	if (up) {
@@ -70,7 +72,7 @@ void TowerDefense::updateCamera(float deltaTime) {
 		camPos -= upVec * 0.05f;
 		lookat -= upVec * 0.05f;
 	}
-	camera.lookAt(camPos, lookat, upVec);
+	camera.lookAt(camPos + zoomDist, lookat, upVec);
 
 	for (int i = 0; i < gameObjects.size(); i++) {
 		gameObjects[i]->update(deltaTime);
@@ -226,6 +228,9 @@ void TowerDefense::keyInput(SDL_Event& event) {
 			break;
 		case SDLK_LCTRL:
 			down = true;
+			break;
+		case SDLK_z:
+			zoom = !zoom;
 			break;
 		/* DEBUGGING */
 		case SDLK_1:
