@@ -6,6 +6,8 @@
 #include "Grid.hpp"
 #include "LevelLoader.hpp"
 #include "PhysicsComponent.hpp"
+#include "ClickableComponent.hpp"
+#include <limits>
 
 TowerDefense* TowerDefense::instance = nullptr;
 
@@ -103,10 +105,10 @@ void TowerDefense::render() {
 	for (int i = 0; i < gameObjects.size(); i++) {
 		std::shared_ptr<GameObject> go = gameObjects[i];
 		if (!go->getComponent<MeshComponent>()) continue;
-		std::shared_ptr<BrickController> bc = gameObjects[i]->getComponent<BrickController>();
-		glm::vec3 pos = bc ? bc->getPosition() : go->getPosition();
+		//std::shared_ptr<BrickController> bc = gameObjects[i]->getComponent<BrickController>();
+		//glm::vec3 pos = bc ? bc->getPosition() : go->getPosition();
 		rp.draw(go->getComponent<MeshComponent>()->getMesh(), 
-				glm::translate(pos), 
+				glm::translate(go->getPosition()),
 			    go->getComponent<MaterialComponent>()->getMaterial());
 		std::vector<glm::vec3> verts = std::vector<glm::vec3>();
 	}
@@ -137,7 +139,6 @@ void TowerDefense::init() {
 
 	std::shared_ptr<GameObject> obj = createGameObject();
 	TowerLoader::loadTower(obj, &gameObjects, "sample");
-
 	
 
 	/*std::shared_ptr<GameObject> towerObj = createGameObject();
@@ -171,6 +172,7 @@ void TowerDefense::init() {
 
 	setupCamera();
 	setupGUI();
+	setupLevel();
 }
 
 void TowerDefense::initPhysics() {
@@ -272,15 +274,66 @@ void TowerDefense::keyInput(SDL_Event& event) {
 	}
 }
 
-void TowerDefense::mouseInput(SDL_Event& event) {
+// http://psgraphics.blogspot.com/2016/02/new-simple-ray-box-test-from-andrew.html		
+bool TowerDefense::rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec3, 2>& box) {
+	float tmin = FLT_MIN, tmax = FLT_MAX;
+	for (int i = 0; i < 3; i++) {
+		float invDir = 1.0f / ray[1][i];
+		float t0 = (box[0][i] - ray[0][i]) * invDir;
+		float t1 = (box[1][i] - ray[0][i]) * invDir;
+		if (invDir < 0.0f) std::swap(t0, t1);
+		tmin = t0 > tmin ? t0 : tmin;
+		tmax = t1 < tmax ? t1 : tmax;
+		if (tmax <= tmin) return false;
+	}
+	return true;
+}
+
+// TODO: make gameObject and component contain functionality for markDirty and bounds, and then override instead
+//		 same way as with the update-function
+void TowerDefense::mouseClick(SDL_Event& event) {
+	float y = sre::Renderer::instance->getWindowSize().y - event.button.y; // invert y-axis
+	std::array<glm::vec3, 2> ray = camera.screenPointToRay(glm::vec2(event.button.x, y));
+	for (int i = 0; i < gameObjects.size(); i++) {
+		std::shared_ptr<MeshComponent> mesh = gameObjects[i]->getComponent<MeshComponent>();
+		std::shared_ptr<ClickableComponent> clickable = gameObjects[i]->getComponent<ClickableComponent>();
+		/* TODO: make all clickables clickable when getBounds in BrickController is "cohesioned" away */
+		std::shared_ptr<BrickController> brickC = gameObjects[i]->getComponent<BrickController>();
+		if (mesh && clickable && /*TODO: remove*/ brickC) {
+			std::array<glm::vec3, 2> boundary = brickC->getBounds(); /* TODO: update */
+			if (rayBoxTest(ray, boundary)) clickable->click();
+		}
+	}
 
 }
 
-void TowerDefense::drawLevel(sre::RenderPass& rp) {
-	std::unique_ptr<Grid> grid = std::make_unique<Grid>();
-	std::unique_ptr<LevelLoader> level = std::make_unique<LevelLoader>();
+void TowerDefense::mouseInput(SDL_Event& event) {
+	for (int i = 0; i < gameObjects.size(); i++) {
+		std::shared_ptr<TowerController> towerC = gameObjects[i]->getComponent<TowerController>();
+		if (towerC) towerC->onMouse(event);
+	}
+	switch (event.type) {
+	case SDL_MOUSEBUTTONDOWN:
+		mouseClick(event);
+		break;
+	case SDL_MOUSEBUTTONUP:
+		break;
+	case SDL_MOUSEMOTION:
+		break;
+	}
+	/*int mousePosX, mousePosY;
+	SDL_GetMouseState(&mousePosX, &mousePosY);
+	float isoMousePosX, isoMousePosy;
+	int tile = grid->getTile(mousePosX, mousePosY);*/
+}
+
+void TowerDefense::setupLevel() {
+	grid = std::make_unique<Grid>();
 	const std::string mapPath = "../data/maps/";
 	grid->loadMap(mapPath + "level0.json");
+}
+void TowerDefense::drawLevel(sre::RenderPass& rp) {
+	std::unique_ptr<LevelLoader> level = std::make_unique<LevelLoader>();
 	level->generateLevel(grid->getTileValues(), grid->getTileSize(), rp);
 }
 
@@ -294,7 +347,7 @@ void TowerDefense::setupCamera() {
 	camPos = glm::vec3(-300.0f, 300.0f, -300.0f);
 	lookat = glm::vec3(0.0f, 0.0f, 0.0f);
 	upVec = glm::vec3(0.0f, 1.0f, 0.0f);
-
+	
 	camera.setPerspectiveProjection(800.0f, 0.1f, 1000.0f);
 }
 

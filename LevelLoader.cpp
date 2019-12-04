@@ -1,5 +1,6 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "LevelLoader.hpp"
+#include "Grid.hpp"
 #include <iostream>
 #include <glm\gtc\matrix_transform.hpp>
 
