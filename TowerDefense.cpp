@@ -211,6 +211,7 @@ void TowerDefense::keyInput(SDL_Event& event) {
 				world->SetDebugDraw(&debugDraw);
 			else
 				world->SetDebugDraw(nullptr);
+			break;
 		case SDLK_w:
 			fwd = true;
 			break;
