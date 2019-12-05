@@ -141,11 +141,8 @@ void TowerDefense::init() {
 	spawner->startSpawningCycle({glm::vec2(2.0f,0.0f), glm::vec2(2.0f, 1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 2.0f) });
 	gameObjects.push_back(spawnObj);
 
-	for (int i = 0; i < 30; i++) {
-		std::shared_ptr<GameObject> obj = createGameObject();
-		TowerLoader::loadTower(obj, &gameObjects, "sample");
-		obj->setPosition(obj->getPosition() + glm::vec3(i * 2, 0, 0));
-	}
+	std::shared_ptr<GameObject> obj = createGameObject();
+	TowerLoader::loadTower(obj, &gameObjects, "sample");
 	
 
 	/*std::shared_ptr<GameObject> towerObj = createGameObject();
