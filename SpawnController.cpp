@@ -17,22 +17,26 @@ void SpawnController::update(float deltaTime) {
 	if (time >= waitTimeAmount) {
 	//if (once) {
 		time = 0;
-		createMonster();
+		spawnEnemy();
 		once = false;
 	} 
 }
 
 void SpawnController::startSpawningCycle(std::vector<glm::vec2> path) {
-	monsterPath = path;
+	enemyPath = path;
 }
 
 void SpawnController::setWaitTime(float time) { waitTimeAmount = time; }
 
-std::shared_ptr<EnemyController> SpawnController::createMonster() {
+void SpawnController::spawnWave() {
+
+}
+
+std::shared_ptr<EnemyController> SpawnController::spawnEnemy() {
 	std::shared_ptr<GameObject> obj = GameObject::createGameObject();
 
 	ModelLoader::loadModel(obj, "sphere", "sphere");
-	glm::vec2 initialPosition = 32.0f*monsterPath[0];
+	glm::vec2 initialPosition = 32.0f*enemyPath[0];
 
 	glm::vec3 objPos = glm::vec3(initialPosition.x, 0.0f, initialPosition.y);
 
@@ -43,7 +47,7 @@ std::shared_ptr<EnemyController> SpawnController::createMonster() {
 		obj->getPosition().x / 100, obj->getPosition().z / 100 }, 1);
 
 	auto enemyController = obj->addComponent<EnemyController>();
-	enemyController->init(100, 20.0f, 5, &monsterPath);
+	enemyController->init(100, 20.0f, 5, &enemyPath);
 
 	gameObjects->push_back(obj);
 
