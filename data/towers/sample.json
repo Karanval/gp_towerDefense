@@ -1,4 +1,6 @@
-{"bricks":[
+{
+"name":"Sample",
+"bricks":[
   {"objName":"1x1", "mtlName":"red", "txtFilename":"", "position":{"x":-16.0,"y":0.0,"z":0.0}},
   {"objName":"1x1_flat_slope", "mtlName":"blue", "txtFilename":"", "position":{"x":-14.0,"y":0.0,"z":0.0}},
   {"objName":"1x1_pole", "mtlName":"lightblue", "txtFilename":"", "position":{"x":-12.0,"y":0.0,"z":0.0}},
@@ -15,7 +17,6 @@
   {"objName":"2x2_slope", "mtlName":"grey", "txtFilename":"", "position":{"x":10.0,"y":0.0,"z":0.0}},
   {"objName":"4x4_thin", "mtlName":"lightgrey", "txtFilename":"", "position":{"x":12.0,"y":0.0,"z":0.0}},
   {"objName":"flag", "mtlName":"red", "txtFilename":"", "position":{"x":14.0,"y":0.0,"z":0.0}},
-  {"objName":"2x1_slope", "mtlName":"blue", "txtFilename":"", "position":{"x":16.0,"y":0.0,"z":0.0}}
-  ],
+  {"objName":"2x1_slope", "mtlName":"blue", "txtFilename":"", "position":{"x":16.0,"y":0.0,"z":0.0}}],
 "position":{"x":0.0,"y":0.0,"z":0.0}
 }

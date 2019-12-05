@@ -16,6 +16,7 @@ class TowerDefense : public b2ContactListener
 {
 public:
 	TowerDefense();
+	std::shared_ptr<ModelLoader> getModelLoader();
 	std::string miscPath = "../data/misc/";
 
 	static TowerDefense* instance;
@@ -63,6 +64,7 @@ private:
 	glm::vec3 upVec;
 	ImFont* aceRecordsFont;
 	std::unique_ptr<Grid> grid = nullptr;
+	std::shared_ptr<ModelLoader> modelLoader = nullptr;
 	
 	bool fwd = false;
 	bool bwd = false;

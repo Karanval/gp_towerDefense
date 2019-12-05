@@ -1,6 +1,6 @@
 #include "SpawnController.hpp"
 #include "EnemyController.hpp"
-#include "ModelLoader.hpp"
+#include "TowerDefense.hpp"
 
 SpawnController::SpawnController(GameObject* gameObj) :
 	Component(gameObj) {
@@ -31,7 +31,7 @@ void SpawnController::setWaitTime(float time) { waitTimeAmount = time; }
 std::shared_ptr<EnemyController> SpawnController::createMonster() {
 	std::shared_ptr<GameObject> obj = GameObject::createGameObject();
 
-	ModelLoader::loadModel(obj, "sphere", "sphere");
+	TowerDefense::instance->getModelLoader()->loadModel(obj, "sphere", "sphere");
 	glm::vec2 initialPosition = 32.0f*monsterPath[0];
 
 	glm::vec3 objPos = glm::vec3(initialPosition.x, 0.0f, initialPosition.y);

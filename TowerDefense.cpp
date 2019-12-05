@@ -131,6 +131,8 @@ void TowerDefense::init() {
 	initPhysics();
 	lights = sre::WorldLights();
 
+	modelLoader = std::make_shared<ModelLoader>();
+
 	// Create Spawner
 	std::shared_ptr<GameObject> spawnObj = GameObject::createGameObject();
 	spawner = spawnObj->addComponent<SpawnController>();
@@ -139,8 +141,11 @@ void TowerDefense::init() {
 	spawner->startSpawningCycle({glm::vec2(2.0f,0.0f), glm::vec2(2.0f, 1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 2.0f) });
 	gameObjects.push_back(spawnObj);
 
-	std::shared_ptr<GameObject> obj = createGameObject();
-	TowerLoader::loadTower(obj, &gameObjects, "sample");
+	for (int i = 0; i < 30; i++) {
+		std::shared_ptr<GameObject> obj = createGameObject();
+		TowerLoader::loadTower(obj, &gameObjects, "sample");
+		obj->setPosition(obj->getPosition() + glm::vec3(i * 2, 0, 0));
+	}
 	
 
 	/*std::shared_ptr<GameObject> towerObj = createGameObject();
@@ -295,22 +300,16 @@ bool TowerDefense::rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec
 	return true;
 }
 
-// TODO: make gameObject and component contain functionality for markDirty and bounds, and then override instead
-//		 same way as with the update-function
 void TowerDefense::mouseClick(SDL_Event& event) {
 	float y = sre::Renderer::instance->getWindowSize().y - event.button.y; // invert y-axis
 	std::array<glm::vec3, 2> ray = camera.screenPointToRay(glm::vec2(event.button.x, y));
 	for (int i = 0; i < gameObjects.size(); i++) {
-		std::shared_ptr<MeshComponent> mesh = gameObjects[i]->getComponent<MeshComponent>();
 		std::shared_ptr<ClickableComponent> clickable = gameObjects[i]->getComponent<ClickableComponent>();
-		/* TODO: make all clickables clickable when getBounds in BrickController is "cohesioned" away */
-		std::shared_ptr<BrickController> brickC = gameObjects[i]->getComponent<BrickController>();
-		if (mesh && clickable && /*TODO: remove*/ brickC) {
-			std::array<glm::vec3, 2> boundary = brickC->getBounds(); /* TODO: update */
+		if (clickable) {
+			std::array<glm::vec3, 2> boundary = clickable->getBounds();
 			if (rayBoxTest(ray, boundary)) clickable->click();
 		}
 	}
-
 }
 
 void TowerDefense::mouseInput(SDL_Event& event) {
@@ -377,7 +376,7 @@ void TowerDefense::setupGUI() {
 	aceRecordsFont = fonts->AddFontFromFileTTF(fontName.c_str(), fontSize);
 	
 	// Images
-	gateImg = sre::Texture::create().withFile(ModelLoader::texturePath + "gate_view.png")
+	gateImg = sre::Texture::create().withFile(modelLoader->texturePath + "gate_view.png")
 									.withFilterSampling(false).build();
 }
 
@@ -471,6 +470,10 @@ void TowerDefense::drawGUI() {
 	case 0: drawBuildingOverview(); break;
 	case 1: drawUpgradeOverview(); break;
 	}
+}
+
+std::shared_ptr<ModelLoader> TowerDefense::getModelLoader() {
+	return modelLoader;
 }
 
 int main() {
