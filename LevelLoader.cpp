@@ -29,10 +29,10 @@ void LevelLoader::placeTile(int tileType, glm::vec2 tileSize, int x, int z, sre:
 	sre::Color color;
 	switch (tileType) {
 		case 0:
-			color = sre::Color(0, 1, 0, 1);
+			color = sre::Color(.486, .702, .396, 1);
 			break;
 		case 1:
-			color = sre::Color(1, 0, 0, 1);
+			color = sre::Color(.604, .743, .502, 1);
 			break;
 		default:
 			color = sre::Color(0, 0, 1, 1);
