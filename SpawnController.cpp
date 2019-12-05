@@ -4,22 +4,30 @@
 
 SpawnController::SpawnController(GameObject* gameObj) :
 	Component(gameObj) {
-	waitTimeAmount = 5;
+	waitTimeAmount = 0.5;
+	waveTime = 10;
+	waveAmount = 4;
 }
 
 void SpawnController::setGameObjects(std::vector<std::shared_ptr<GameObject>>* gameObjects) {
 	this->gameObjects = gameObjects;
 }
-bool once = true;
 
 void SpawnController::update(float deltaTime) {
-	time += deltaTime;
-	if (time >= waitTimeAmount) {
-	//if (once) {
-		time = 0;
-		spawnEnemy();
-		once = false;
-	} 
+	waveCurrentWait += deltaTime;
+	enemyCurrentWait += deltaTime;
+	spawning = enemiesSpawn < waveAmount;
+	if (waveCurrentWait >= waveTime && enemiesSpawn < waveAmount) {
+		if (enemyCurrentWait >= waitTimeAmount) {
+			spawnEnemy();
+			enemiesSpawn++;
+			enemyCurrentWait = 0;
+		}
+	}
+	else if (enemiesSpawn >= waveAmount) {
+		waveCurrentWait = 0;
+		enemiesSpawn = 0;
+	}
 }
 
 void SpawnController::startSpawningCycle(std::vector<glm::vec2> path) {
@@ -28,9 +36,10 @@ void SpawnController::startSpawningCycle(std::vector<glm::vec2> path) {
 
 void SpawnController::setWaitTime(float time) { waitTimeAmount = time; }
 
-void SpawnController::spawnWave() {
+void SpawnController::setWaveAmount(int waveAmount) { this->waveAmount = waveAmount; }
 
-}
+void SpawnController::setWaveTime(float waveTime) { this->waveTime = waveTime; }
+
 
 std::shared_ptr<EnemyController> SpawnController::spawnEnemy() {
 	std::shared_ptr<GameObject> obj = GameObject::createGameObject();

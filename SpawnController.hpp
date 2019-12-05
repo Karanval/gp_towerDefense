@@ -16,19 +16,21 @@ public:
 
 	void setWaveAmount(int waveAmount);
 
-	void setWAveTime(float waveTime);
-
-	void spawnWave();
+	void setWaveTime(float waveTime);
 
 	std::shared_ptr<EnemyController> spawnEnemy();
+
 private:
-	float time = 0;
+	float waveCurrentWait = 0;
+	float enemyCurrentWait = 0;
 	/* How much time between each enemy spawn*/
 	float waitTimeAmount;
 	/* Hos much time is between waves*/
 	float waveTime;
 	/* How many enemies are spawned per wave*/
 	int waveAmount;
+	int enemiesSpawn = 0;
+	bool spawning = false;
 
 
 	std::vector<std::shared_ptr<GameObject>>* gameObjects;
