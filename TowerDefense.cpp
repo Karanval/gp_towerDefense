@@ -6,6 +6,8 @@
 #include "Grid.hpp"
 #include "LevelLoader.hpp"
 #include "PhysicsComponent.hpp"
+#include "ClickableComponent.hpp"
+#include <limits>
 
 TowerDefense* TowerDefense::instance = nullptr;
 
@@ -41,9 +43,11 @@ void TowerDefense::update(float deltaTime) {
 }
 
 void TowerDefense::updateCamera(float deltaTime) {
-	glm::vec3 fwdVec = lookat - camPos;
+	glm::vec3 fwdVec = glm::vec3(10.0, 0, 10.0f);
 	glm::normalize(fwdVec);
 	glm::vec3 leftVec = glm::cross(upVec, fwdVec);
+	glm::vec3 zoomDist = zoom ? (lookat - camPos) * 0.80f : glm::vec3();
+	
 	if (fwd) {
 		camPos += fwdVec * 0.05f;
 		lookat += fwdVec * 0.05f;
@@ -53,11 +57,11 @@ void TowerDefense::updateCamera(float deltaTime) {
 		lookat -= fwdVec * 0.05f;
 	}
 	if (left) {
-		//camPos -= leftVec * 0.05f; 
+		camPos -= leftVec * 0.05f; 
 		lookat += leftVec * 0.05f;
 	}
 	else if (right) {
-		//camPos += leftVec * 0.05f; 
+		camPos += leftVec * 0.05f; 
 		lookat -= leftVec * 0.05f;
 	}
 	if (up) {
@@ -68,7 +72,7 @@ void TowerDefense::updateCamera(float deltaTime) {
 		camPos -= upVec * 0.05f;
 		lookat -= upVec * 0.05f;
 	}
-	camera.lookAt(camPos, lookat, upVec);
+	camera.lookAt(camPos + zoomDist, lookat, upVec);
 
 	for (int i = 0; i < gameObjects.size(); i++) {
 		gameObjects[i]->update(deltaTime);
@@ -86,8 +90,8 @@ void TowerDefense::updatePhysics() {
 		auto position = phys.second->body->GetPosition();
 		float angle = phys.second->body->GetAngle();
 		auto gameObject = phys.second->getGameObject();
-		//TODO add actual z
-		gameObject->setPosition(glm::vec3((position.x * physicsScale), position.y * physicsScale, 5));
+		// TODO constant Y
+		gameObject->setPosition(glm::vec3((position.x * physicsScale),0.0f, position.y * physicsScale));
 		gameObject->setRotation(angle);
 	}
 }
@@ -103,10 +107,10 @@ void TowerDefense::render() {
 	for (int i = 0; i < gameObjects.size(); i++) {
 		std::shared_ptr<GameObject> go = gameObjects[i];
 		if (!go->getComponent<MeshComponent>()) continue;
-		std::shared_ptr<BrickController> bc = gameObjects[i]->getComponent<BrickController>();
-		glm::vec3 pos = bc ? bc->getPosition() : go->getPosition();
+		//std::shared_ptr<BrickController> bc = gameObjects[i]->getComponent<BrickController>();
+		//glm::vec3 pos = bc ? bc->getPosition() : go->getPosition();
 		rp.draw(go->getComponent<MeshComponent>()->getMesh(), 
-				glm::translate(pos), 
+				glm::translate(go->getPosition()),
 			    go->getComponent<MaterialComponent>()->getMaterial());
 		std::vector<glm::vec3> verts = std::vector<glm::vec3>();
 	}
@@ -126,39 +130,18 @@ void TowerDefense::init() {
 	initPhysics();
 	lights = sre::WorldLights();
 
+	modelLoader = std::make_shared<ModelLoader>();
+
 	// Create Spawner
 	std::shared_ptr<GameObject> spawnObj = GameObject::createGameObject();
 	spawner = spawnObj->addComponent<SpawnController>();
 	spawner->setGameObjects(&gameObjects);
 	// TODO: replace with actual path when Grid is ready
-	spawner->startSpawningCycle({glm::vec2(5.0f,0.0f), glm::vec2(7.0f,0.0f) });
+	spawner->startSpawningCycle({glm::vec2(2.0f,0.0f), glm::vec2(2.0f, 1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 2.0f) });
 	gameObjects.push_back(spawnObj);
 
 	std::shared_ptr<GameObject> obj = createGameObject();
 	TowerLoader::loadTower(obj, &gameObjects, "sample");
-
-	
-
-	/*std::shared_ptr<GameObject> towerObj = createGameObject();
-	std::shared_ptr<TowerController> towerController = towerObj->addComponent<TowerController>();
-
-	float x = 0.0f;
-	float z = 0.0f;
-	for (int i = 0; i < 25; i++) {
-		z += 10.0f;
-		if (i % 5 == 0) {
-			x += 5.0f;
-			z = 0.0f;
-		}
-		std::shared_ptr<GameObject> obj = createGameObject();
-		ModelLoader::loadModel(obj, "lego_brick1", "lego_brick1");
-		obj->setPosition(glm::vec3(x, 0.0f, z));
-		if (i > 10) {
-			obj->addComponent<BrickController>()->setTowerController(towerController);
-			obj->getComponent<BrickController>()->setLocalPosition(glm::vec3(x, 0.0f, z));
-		}
-
-	}*/
 
 	lights.setAmbientLight(glm::vec3(0.1f,0.1f,0.1f));
 	sre::Light light = sre::Light();
@@ -171,7 +154,6 @@ void TowerDefense::init() {
 	setupCamera();
 	setupGUI();
 	setupLevel();
-	drawLevel();
 }
 
 void TowerDefense::initPhysics() {
@@ -179,7 +161,7 @@ void TowerDefense::initPhysics() {
 	delete world;
 	world = new b2World(b2Vec2(0, gravity));
 	world->SetContactListener(this);
-
+	
 	if (doDebugDraw) {
 		world->SetDebugDraw(&debugDraw);
 	}
@@ -208,6 +190,7 @@ void TowerDefense::keyInput(SDL_Event& event) {
 				world->SetDebugDraw(&debugDraw);
 			else
 				world->SetDebugDraw(nullptr);
+			break;
 		case SDLK_w:
 			fwd = true;
 			break;
@@ -225,6 +208,9 @@ void TowerDefense::keyInput(SDL_Event& event) {
 			break;
 		case SDLK_LCTRL:
 			down = true;
+			break;
+		case SDLK_z:
+			zoom = !zoom;
 			break;
 		/* DEBUGGING */
 		case SDLK_1:
@@ -273,19 +259,74 @@ void TowerDefense::keyInput(SDL_Event& event) {
 	}
 }
 
+// http://psgraphics.blogspot.com/2016/02/new-simple-ray-box-test-from-andrew.html		
+bool TowerDefense::rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec3, 2>& box) {
+	float tmin = FLT_MIN, tmax = FLT_MAX;
+	for (int i = 0; i < 3; i++) {
+		float invDir = 1.0f / ray[1][i];
+		float t0 = (box[0][i] - ray[0][i]) * invDir;
+		float t1 = (box[1][i] - ray[0][i]) * invDir;
+		if (invDir < 0.0f) std::swap(t0, t1);
+		tmin = t0 > tmin ? t0 : tmin;
+		tmax = t1 < tmax ? t1 : tmax;
+		if (tmax <= tmin) return false;
+	}
+	return true;
+}
+
+std::shared_ptr<ClickableComponent> TowerDefense::screenToClickableObject(glm::vec2 screenCoord) {
+	std::array<glm::vec3, 2> ray = camera.screenPointToRay(screenCoord);
+	std::shared_ptr<ClickableComponent> closestClickable = nullptr;
+	float closestDist = FLT_MAX;
+	for (int i = 0; i < gameObjects.size(); i++) {
+		std::shared_ptr<ClickableComponent> clickable = gameObjects[i]->getComponent<ClickableComponent>();
+		if (clickable && clickable->isActive() && rayBoxTest(ray, clickable->getBounds())) {
+			const glm::length_t distToClickable = (clickable->getGameObject()->getPosition() - camera.getPosition()).length();
+			if (distToClickable < closestDist) {
+				closestDist = distToClickable;
+				closestClickable = clickable;
+			}
+		}
+	}
+	return closestClickable;
+}
+
+std::shared_ptr<ClickableComponent> TowerDefense::mouseToClickableObject() {
+	float y = sre::Renderer::instance->getWindowSize().y - mousePos.y; // invert y-axis
+	return screenToClickableObject(glm::vec2(mousePos.x, y));
+}
+
+void TowerDefense::mouseClick(SDL_Event& event) {
+	float y = sre::Renderer::instance->getWindowSize().y - event.button.y; // invert y-axis
+	std::shared_ptr<ClickableComponent> clickable = screenToClickableObject(glm::vec2(event.button.x, y));
+	if (clickable) clickable->click();
+}
+
 void TowerDefense::mouseInput(SDL_Event& event) {
-	int mousePosX, mousePosY;
-	SDL_GetMouseState(&mousePosX, &mousePosY);
-	float isoMousePosX, isoMousePosy;
-	//int tile = grid->getTile(mousePosX, mousePosY);
+	for (int i = 0; i < gameObjects.size(); i++) {
+		std::shared_ptr<TowerController> towerC = gameObjects[i]->getComponent<TowerController>();
+		if (towerC) towerC->onMouse(event);
+	}
+	switch (event.type) {
+	case SDL_MOUSEBUTTONDOWN:
+		mouseClick(event);
+		break;
+	case SDL_MOUSEBUTTONUP:
+		break;
+	case SDL_MOUSEMOTION:
+		mousePos.x = event.motion.x;
+		mousePos.y = event.motion.y;
+		break;
+	}
 }
 
 void TowerDefense::setupLevel() {
 	grid = std::make_unique<Grid>();
 	const std::string mapPath = "../data/maps/";
 	grid->loadMap(mapPath + "level0.json");
+	genLevel();
 }
-void TowerDefense::drawLevel() {
+void TowerDefense::genLevel() {
 	std::unique_ptr<LevelLoader> level = std::make_unique<LevelLoader>();
 	auto tileValues = grid->getTileValues();
 	auto tileSize = grid->getTileSize();
@@ -302,7 +343,7 @@ void TowerDefense::setupCamera() {
 	camPos = glm::vec3(-300.0f, 300.0f, -300.0f);
 	lookat = glm::vec3(0.0f, 0.0f, 0.0f);
 	upVec = glm::vec3(0.0f, 1.0f, 0.0f);
-
+	
 	camera.setPerspectiveProjection(800.0f, 0.1f, 1000.0f);
 }
 
@@ -326,7 +367,7 @@ void TowerDefense::setupGUI() {
 	aceRecordsFont = fonts->AddFontFromFileTTF(fontName.c_str(), fontSize);
 	
 	// Images
-	gateImg = sre::Texture::create().withFile(ModelLoader::texturePath + "gate_view.png")
+	gateImg = sre::Texture::create().withFile(modelLoader->texturePath + "gate_view.png")
 									.withFilterSampling(false).build();
 }
 
@@ -420,6 +461,10 @@ void TowerDefense::drawGUI() {
 	case 0: drawBuildingOverview(); break;
 	case 1: drawUpgradeOverview(); break;
 	}
+}
+
+std::shared_ptr<ModelLoader> TowerDefense::getModelLoader() {
+	return modelLoader;
 }
 
 int main() {

@@ -15,8 +15,11 @@
 class TowerDefense : public b2ContactListener
 {
 public:
-	TowerDefense();
 	std::string miscPath = "../data/misc/";
+	TowerDefense();
+	std::shared_ptr<ModelLoader> getModelLoader();
+	std::shared_ptr<ClickableComponent> TowerDefense::screenToClickableObject(glm::vec2 screenCoord);
+	std::shared_ptr<ClickableComponent> TowerDefense::mouseToClickableObject();
 
 	static TowerDefense* instance;
 	static constexpr float32 timeStep = 1.0f / 60.0f;
@@ -34,17 +37,19 @@ private:
 	void render();
 	void keyInput(SDL_Event& event);
 	void mouseInput(SDL_Event& event);
-	void drawLevel();
+	void mouseClick(SDL_Event& event);
+	void genLevel();
 	void setupCamera();
 	void setupGUI();
 	void setupLevel();
 	std::shared_ptr<GameObject> createGameObject();
 	void deregisterPhysicsComponent(PhysicsComponent* r);
 	void registerPhysicsComponent(PhysicsComponent* r);
-	void TowerDefense::drawResourceOverview();
-	void TowerDefense::drawBuildingOverview();
-	void TowerDefense::drawUpgradeOverview();
+	void drawResourceOverview();
+	void drawBuildingOverview();
+	void drawUpgradeOverview();
 	void drawGUI();
+	bool rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec3, 2>& box);
 
 	b2World* world = nullptr;
 	Box2DDebugDraw debugDraw;
@@ -61,6 +66,8 @@ private:
 	glm::vec3 upVec;
 	ImFont* aceRecordsFont;
 	std::unique_ptr<Grid> grid = nullptr;
+	std::shared_ptr<ModelLoader> modelLoader = nullptr;
+	glm::vec2 mousePos;
 	
 	bool fwd = false;
 	bool bwd = false;
@@ -68,6 +75,7 @@ private:
 	bool right = false;
 	bool up = false;
 	bool down = false;
+	bool zoom = false;
 	
 	float fixedTime = 0.0f;
 	int gold = 0;

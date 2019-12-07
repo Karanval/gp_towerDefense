@@ -7,6 +7,8 @@
 #include "rapidjson/istreamwrapper.h"
 #include <fstream>
 #include <iostream>
+#include <limits>
+#include "TowerDefense.hpp"
 
 using namespace rapidjson;
 
@@ -17,9 +19,12 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 	Document d;
 	d.ParseStream(sw);
 	std::shared_ptr<TowerController> towerC = towerObj->addComponent<TowerController>();
+	const Value& name = d["name"];
+	towerObj->name = name.GetString();
 	const Value& towerPos = d["position"];
 	towerC->setPosition(glm::vec3(towerPos["x"].GetFloat(), towerPos["y"].GetFloat(), towerPos["z"].GetFloat()));
 	const Value& bricks = d["bricks"];
+	std::array<glm::vec3, 2> boundary = { glm::vec3(FLT_MAX), glm::vec3(FLT_MIN) };
 	for (SizeType i = 0; i < bricks.Size(); i++) {
 		const Value& brick = bricks[i];
 		std::shared_ptr<GameObject> brickObj = GameObject::createGameObject();
@@ -28,12 +33,24 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 		std::string objName = brick["objName"].GetString();
 		std::string mtlName = brick["mtlName"].GetString();
 		const Value& textureFileName = brick["txtFilename"];
-		if (textureFileName.IsNull()) ModelLoader::loadModel(brickObj, objName, mtlName);
-		else ModelLoader::loadModel(brickObj, objName, mtlName, textureFileName.GetString());
+		if (textureFileName.IsNull()) TowerDefense::instance->getModelLoader()->loadModel(brickObj, objName, mtlName);
+		else TowerDefense::instance->getModelLoader()->loadModel(brickObj, objName, mtlName, textureFileName.GetString());
 		const Value& brickPos = brick["position"];
 		brickC->setLocalPosition(glm::vec3(brickPos["x"].GetFloat(), brickPos["y"].GetFloat(), brickPos["z"].GetFloat()));
 		brickC->setTowerController(towerC);
+		brickObj->name = objName;
+		std::array<glm::vec3, 2> box = brickObj->getComponent<MeshComponent>()->getMesh()->getBoundsMinMax();
+		box[0] += brickC->getLocalPosition();
+		box[1] += brickC->getLocalPosition();
+		for (int i = 0; i < 3; i++) {
+			if (box[0][i] < boundary[0][i]) boundary[0][i] = box[0][i]; // min XYZ
+			if (box[1][i] > boundary[1][i]) boundary[1][i] = box[1][i]; // max XYZ
+		}
 	}
+	/* add clickable component to the tower, construct boundary based on bricks */
+	std::shared_ptr<ClickableComponent> clickable = towerObj->addComponent<ClickableComponent>();
+	clickable->setBounds(boundary);
+	clickable->setActive(false);
 
 }
 

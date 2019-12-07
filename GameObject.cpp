@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "Component.hpp"
 
-GameObject::~GameObject(){
+GameObject::~GameObject() {
     // remove reference to this in components
     for (auto& c : components){
         c->gameObject = nullptr;
