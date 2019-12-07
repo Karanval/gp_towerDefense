@@ -15,6 +15,8 @@ public:
 	void onMouse(SDL_Event& event);
 	void markDirty();
 	bool isDirty();
+	void snapToGrid();
+	void build();
 
 private:
 	glm::vec3 position = glm::vec3();
@@ -23,5 +25,6 @@ private:
 	int cost;
 	std::shared_ptr<ProjectileController> bullet;
 	bool dirty = false;
+	bool built = false;
 };
 

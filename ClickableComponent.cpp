@@ -11,6 +11,7 @@ void ClickableComponent::click() {
 }
 
 std::array<glm::vec3, 2> ClickableComponent::getBounds() {
+	std::array<glm::vec3, 2> bounds = ClickableComponent::bounds;
 	bounds[0] += gameObject->getPosition();
 	bounds[1] += gameObject->getPosition();
 	return bounds;
@@ -18,5 +19,13 @@ std::array<glm::vec3, 2> ClickableComponent::getBounds() {
 
 void ClickableComponent::setBounds(std::array<glm::vec3, 2> bounds) {
 	ClickableComponent::bounds = bounds;
+}
+
+bool ClickableComponent::isActive() {
+	return active;
+}
+
+void ClickableComponent::setActive(bool state) {
+	active = state;
 }
 

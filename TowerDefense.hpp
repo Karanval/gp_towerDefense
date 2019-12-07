@@ -15,9 +15,11 @@
 class TowerDefense : public b2ContactListener
 {
 public:
+	std::string miscPath = "../data/misc/";
 	TowerDefense();
 	std::shared_ptr<ModelLoader> getModelLoader();
-	std::string miscPath = "../data/misc/";
+	std::shared_ptr<ClickableComponent> TowerDefense::screenToClickableObject(glm::vec2 screenCoord);
+	std::shared_ptr<ClickableComponent> TowerDefense::mouseToClickableObject();
 
 	static TowerDefense* instance;
 	static constexpr float32 timeStep = 1.0f / 60.0f;
@@ -65,6 +67,7 @@ private:
 	ImFont* aceRecordsFont;
 	std::unique_ptr<Grid> grid = nullptr;
 	std::shared_ptr<ModelLoader> modelLoader = nullptr;
+	glm::vec2 mousePos;
 	
 	bool fwd = false;
 	bool bwd = false;

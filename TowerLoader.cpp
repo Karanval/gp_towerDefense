@@ -48,7 +48,9 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 		}
 	}
 	/* add clickable component to the tower, construct boundary based on bricks */
-	towerObj->addComponent<ClickableComponent>()->setBounds(boundary);
+	std::shared_ptr<ClickableComponent> clickable = towerObj->addComponent<ClickableComponent>();
+	clickable->setBounds(boundary);
+	clickable->setActive(false);
 
 }
 

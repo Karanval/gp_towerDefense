@@ -143,28 +143,6 @@ void TowerDefense::init() {
 
 	std::shared_ptr<GameObject> obj = createGameObject();
 	TowerLoader::loadTower(obj, &gameObjects, "sample");
-	
-
-	/*std::shared_ptr<GameObject> towerObj = createGameObject();
-	std::shared_ptr<TowerController> towerController = towerObj->addComponent<TowerController>();
-
-	float x = 0.0f;
-	float z = 0.0f;
-	for (int i = 0; i < 25; i++) {
-		z += 10.0f;
-		if (i % 5 == 0) {
-			x += 5.0f;
-			z = 0.0f;
-		}
-		std::shared_ptr<GameObject> obj = createGameObject();
-		ModelLoader::loadModel(obj, "lego_brick1", "lego_brick1");
-		obj->setPosition(glm::vec3(x, 0.0f, z));
-		if (i > 10) {
-			obj->addComponent<BrickController>()->setTowerController(towerController);
-			obj->getComponent<BrickController>()->setLocalPosition(glm::vec3(x, 0.0f, z));
-		}
-
-	}*/
 
 	lights.setAmbientLight(glm::vec3(0.1f,0.1f,0.1f));
 	sre::Light light = sre::Light();
@@ -297,16 +275,32 @@ bool TowerDefense::rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec
 	return true;
 }
 
-void TowerDefense::mouseClick(SDL_Event& event) {
-	float y = sre::Renderer::instance->getWindowSize().y - event.button.y; // invert y-axis
-	std::array<glm::vec3, 2> ray = camera.screenPointToRay(glm::vec2(event.button.x, y));
+std::shared_ptr<ClickableComponent> TowerDefense::screenToClickableObject(glm::vec2 screenCoord) {
+	std::array<glm::vec3, 2> ray = camera.screenPointToRay(screenCoord);
+	std::shared_ptr<ClickableComponent> closestClickable = nullptr;
+	float closestDist = FLT_MAX;
 	for (int i = 0; i < gameObjects.size(); i++) {
 		std::shared_ptr<ClickableComponent> clickable = gameObjects[i]->getComponent<ClickableComponent>();
-		if (clickable) {
-			std::array<glm::vec3, 2> boundary = clickable->getBounds();
-			if (rayBoxTest(ray, boundary)) clickable->click();
+		if (clickable && clickable->isActive() && rayBoxTest(ray, clickable->getBounds())) {
+			float distToClickable = (clickable->getGameObject()->getPosition() - camera.getPosition()).length();
+			if (distToClickable < closestDist) {
+				closestDist = distToClickable;
+				closestClickable = clickable;
+			}
 		}
 	}
+	return closestClickable;
+}
+
+std::shared_ptr<ClickableComponent> TowerDefense::mouseToClickableObject() {
+	float y = sre::Renderer::instance->getWindowSize().y - mousePos.y; // invert y-axis
+	return screenToClickableObject(glm::vec2(mousePos.x, y));
+}
+
+void TowerDefense::mouseClick(SDL_Event& event) {
+	float y = sre::Renderer::instance->getWindowSize().y - event.button.y; // invert y-axis
+	std::shared_ptr<ClickableComponent> clickable = screenToClickableObject(glm::vec2(event.button.x, y));
+	if (clickable) clickable->click();
 }
 
 void TowerDefense::mouseInput(SDL_Event& event) {
@@ -321,6 +315,8 @@ void TowerDefense::mouseInput(SDL_Event& event) {
 	case SDL_MOUSEBUTTONUP:
 		break;
 	case SDL_MOUSEMOTION:
+		mousePos.x = event.motion.x;
+		mousePos.y = event.motion.y;
 		break;
 	}
 	/*int mousePosX, mousePosY;
