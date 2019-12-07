@@ -1,6 +1,8 @@
 #include "BrickController.hpp"
 
 BrickController::BrickController(GameObject* gameObject) : Component(gameObject) {
+	BrickController::unbuildableMaterial = sre::Shader::getUnlit()->createMaterial();
+	unbuildableMaterial->setColor(sre::Color(1, 0, 0));
 }
 
 void BrickController::update(float deltaTime) {
@@ -9,8 +11,9 @@ void BrickController::update(float deltaTime) {
 		markDirty();
 	}
 	if (isDirty()) {
-		// wash the dirty brick
-		
+		if (towerController->isUnbuildable() && unbuildableMaterial) gameObject->getComponent<MaterialComponent>()->setMaterial(unbuildableMaterial);
+		else if (defaultMaterial) gameObject->getComponent<MaterialComponent>()->setMaterial(defaultMaterial);
+		else defaultMaterial = gameObject->getComponent<MaterialComponent>()->getMaterial();
 		dirty = false;
 	}
 }

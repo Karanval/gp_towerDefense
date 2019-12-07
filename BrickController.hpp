@@ -2,6 +2,7 @@
 #include "Component.hpp"
 #include "GameObject.hpp"
 #include "TowerController.hpp"
+#include <sre/RenderPass.hpp>
 
 class BrickController : public Component {
 public:
@@ -22,5 +23,7 @@ private:
 	glm::vec3 position = glm::vec3();
 	std::shared_ptr<TowerController> towerController;
 	bool dirty = false;
+	std::shared_ptr<sre::Material> defaultMaterial;
+	std::shared_ptr<sre::Material> unbuildableMaterial;
 };
 

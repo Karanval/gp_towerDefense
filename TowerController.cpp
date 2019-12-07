@@ -2,7 +2,7 @@
 #include "BrickController.hpp"
 #include "TowerDefense.hpp"
 #include "ClickableComponent.hpp"
-#include "FieldController.hpp"
+#include "Grid.hpp"
 
 TowerController::TowerController(GameObject* gameObject) : Component(gameObject) {
 }
@@ -21,7 +21,16 @@ void TowerController::setPosition(glm::vec3 position) {
 }
 
 void TowerController::onMouse(SDL_Event& event) {
-
+	switch (event.type) {
+	case SDL_MOUSEBUTTONDOWN:
+		if (!built && snapping) {
+			glm::ivec2 gridPos = field->getGridPos();
+			if (TowerDefense::instance->getGrid()->allowsTowers(gridPos.x, gridPos.y)) {
+				build();
+			}
+		}
+		break;
+	}
 }
 
 void TowerController::markDirty() {
@@ -35,12 +44,24 @@ bool TowerController::isDirty() {
 void TowerController::snapToGrid() {
 	std::shared_ptr<ClickableComponent> clickable = TowerDefense::instance->mouseToClickableObject();
 	if (clickable) {
-		std::shared_ptr<FieldController> field = clickable->getGameObject()->getComponent<FieldController>();
-		setPosition(field->getGameObject()->getPosition());
+		field = clickable->getGameObject()->getComponent<FieldController>();
+		if (field) {
+			setPosition(field->getGameObject()->getPosition());
+			glm::ivec2 gridPos = field->getGridPos();
+			unbuildable = !TowerDefense::instance->getGrid()->allowsTowers(gridPos.x, gridPos.y);
+			snapping = true;
+		}
+		else snapping = false;
 	}
 }
 
 void TowerController::build() {
-	std::shared_ptr<ClickableComponent> clickable = TowerDefense::instance->mouseToClickableObject();
+	std::shared_ptr<ClickableComponent> clickable = gameObject->getComponent<ClickableComponent>();
 	if (clickable) clickable->setActive(true);
+	built = true;
+	snapping = false;
+}
+
+bool TowerController::isUnbuildable() {
+	return unbuildable;
 }

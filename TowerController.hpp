@@ -1,6 +1,8 @@
 #pragma once
 #include "Component.hpp"
 #include "ProjectileController.hpp"
+#include "FieldController.hpp"
+#include "MaterialComponent.hpp"
 
 enum TowerState {building, active};
 
@@ -17,6 +19,8 @@ public:
 	bool isDirty();
 	void snapToGrid();
 	void build();
+	bool isUnbuildable();
+
 
 private:
 	glm::vec3 position = glm::vec3();
@@ -24,7 +28,10 @@ private:
 	float radius;
 	int cost;
 	std::shared_ptr<ProjectileController> bullet;
+	std::shared_ptr<FieldController> field;
 	bool dirty = false;
 	bool built = false;
+	bool snapping = false;
+	bool unbuildable = false;
 };
 

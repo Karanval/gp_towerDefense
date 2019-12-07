@@ -140,9 +140,6 @@ void TowerDefense::init() {
 	spawner->startSpawningCycle({glm::vec2(2.0f,0.0f), glm::vec2(2.0f, 1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 2.0f) });
 	gameObjects.push_back(spawnObj);
 
-	std::shared_ptr<GameObject> obj = createGameObject();
-	TowerLoader::loadTower(obj, &gameObjects, "sample");
-
 	lights.setAmbientLight(glm::vec3(0.1f,0.1f,0.1f));
 	sre::Light light = sre::Light();
 	light.color = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -281,7 +278,7 @@ std::shared_ptr<ClickableComponent> TowerDefense::screenToClickableObject(glm::v
 	for (int i = 0; i < gameObjects.size(); i++) {
 		std::shared_ptr<ClickableComponent> clickable = gameObjects[i]->getComponent<ClickableComponent>();
 		if (clickable && clickable->isActive() && rayBoxTest(ray, clickable->getBounds())) {
-			const glm::length_t distToClickable = (clickable->getGameObject()->getPosition() - camera.getPosition()).length();
+			glm::length_t distToClickable = (clickable->getGameObject()->getPosition() - camera.getPosition()).length();
 			if (distToClickable < closestDist) {
 				closestDist = distToClickable;
 				closestClickable = clickable;
@@ -416,7 +413,10 @@ void TowerDefense::drawBuildingOverview() {
 	ImGui::SetCursorPosX(winSize.x - 128 + imgMargin.x);
 	ImGui::SetCursorPosY(winSize.y - bottomMenuHeight + imgMargin.y);
 	ImTextureID textureID = gateImg->getNativeTexturePtr();
-	if (ImGui::ImageButton(textureID, ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) menu = 1;
+	if (ImGui::ImageButton(textureID, ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) {
+		std::shared_ptr<GameObject> obj = createGameObject();
+		TowerLoader::loadTower(obj, &gameObjects, "sample");
+	}
 	ImGui::End();
 	ImGui::PopFont();
 	if (showBorder) ImGui::PopStyleColor();
@@ -465,6 +465,10 @@ void TowerDefense::drawGUI() {
 
 std::shared_ptr<ModelLoader> TowerDefense::getModelLoader() {
 	return modelLoader;
+}
+
+std::shared_ptr<Grid> TowerDefense::getGrid() {
+	return grid;
 }
 
 int main() {
