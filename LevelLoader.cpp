@@ -35,12 +35,4 @@ void LevelLoader::placeTile(int tileType, glm::vec2 tileSize, int x, int z, std:
 	std::shared_ptr<sre::Material> material = sre::Shader::getUnlit()->createMaterial();
 	sre::Color color;
 	static auto tile = sre::Mesh::create().withPositions(vertexPositions).build();*/
-	switch (tileType) {
-		case 0:
-			std::cout << "0" << "\n";
-			break;
-		case 1:
-			std::cout << "1" << "\n";
-			break;
-	}	
 }
