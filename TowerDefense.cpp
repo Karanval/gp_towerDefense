@@ -296,7 +296,11 @@ std::shared_ptr<ClickableComponent> TowerDefense::mouseToClickableObject() {
 void TowerDefense::mouseClick(SDL_Event& event) {
 	float y = sre::Renderer::instance->getWindowSize().y - event.button.y; // invert y-axis
 	std::shared_ptr<ClickableComponent> clickable = screenToClickableObject(glm::vec2(event.button.x, y));
-	if (clickable) clickable->click();
+	if (clickable) {
+		clickable->click();
+		selectedClickable = clickable;
+	}
+	else selectedClickable = nullptr;
 }
 
 void TowerDefense::mouseInput(SDL_Event& event) {
@@ -365,8 +369,10 @@ void TowerDefense::setupGUI() {
 	aceRecordsFont = fonts->AddFontFromFileTTF(fontName.c_str(), fontSize);
 	
 	// Images
-	gateImg = sre::Texture::create().withFile(modelLoader->texturePath + "gate_view.png")
-									.withFilterSampling(false).build();
+	basicImg = sre::Texture::create().withFile(modelLoader->texturePath + "basic_tower.png")
+									 .withFilterSampling(false).build();
+	backImg = sre::Texture::create().withFile(modelLoader->texturePath + "back_arrow.png")
+		.withFilterSampling(false).build();
 }
 
 void TowerDefense::drawResourceOverview() {
@@ -402,66 +408,67 @@ void TowerDefense::drawBuildingOverview() {
 	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);
 	ImVec4 transparent = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
 	ImVec2 imgMargin = ImVec2(/*right*/5, /*top*/5);
-	bool showBorder = checkVal;
 	ImGui::SetNextWindowPos(winPos, ImGuiSetCond_Always);
 	ImGui::SetNextWindowSize(winSize, ImGuiSetCond_Always);
 	ImGui::PushFont(aceRecordsFont);
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, background);
 	ImGui::PushStyleColor(ImGuiCol_Button, transparent);
-	if (showBorder) ImGui::PushStyleColor(ImGuiCol_Border, borderCol);
+	ImGui::PushStyleColor(ImGuiCol_Border, borderCol);
 	ImGui::Begin("buildings", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
 	ImGui::Text("Build");
 	ImGui::SetCursorPosX(winSize.x - 128 + imgMargin.x);
 	ImGui::SetCursorPosY(winSize.y - bottomMenuHeight + imgMargin.y);
-	ImTextureID textureID = gateImg->getNativeTexturePtr();
-	if (ImGui::ImageButton(textureID, ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) {
+	if (ImGui::ImageButton(basicImg->getNativeTexturePtr(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) {
 		std::shared_ptr<GameObject> obj = createGameObject();
-		TowerLoader::loadTower(obj, &gameObjects, "sample");
+		TowerLoader::loadTower(obj, &gameObjects, "basic");
 	}
 	ImGui::End();
 	ImGui::PopFont();
-	if (showBorder) ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 }
 
 void TowerDefense::drawUpgradeOverview() {
+	std::shared_ptr<TowerController> tower = selectedClickable->getGameObject()->getComponent<TowerController>();
 	ImVec2 winPos = ImVec2(0, sre::Renderer::instance->getWindowSize().y - bottomMenuHeight);
 	ImVec2 winSize = ImVec2(sre::Renderer::instance->getWindowSize().x, bottomMenuHeight);
-	ImVec4 background = ImVec4(0.0f, 0.0f, 0.5f, slideVal);
-	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);
-	ImVec4 transparent = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
-	ImVec2 imgMargin = ImVec2(/*right*/5, /*top*/5);
-	bool showBorder = checkVal;
 	ImGui::SetNextWindowPos(winPos, ImGuiSetCond_Always);
 	ImGui::SetNextWindowSize(winSize, ImGuiSetCond_Always);
 	ImGui::PushFont(aceRecordsFont);
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, background);
 	ImGui::PushStyleColor(ImGuiCol_Button, transparent);
-	if (showBorder) ImGui::PushStyleColor(ImGuiCol_Border, borderCol);
+	ImGui::PushStyleColor(ImGuiCol_Border, borderCol);
 	ImGui::Begin("upgrades", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
-	ImGui::BeginGroup();
+	//ImGui::BeginGroup();
 	ImGui::Text("Upgrade");
 	ImGui::SliderFloat("background", &slideVal, 0.0f, 1.0f);
-	ImGui::Checkbox("border", &checkVal);
-	ImGui::EndGroup();
-	ImGui::SetCursorPosX(winSize.x - 128 + imgMargin.x);
+	//ImGui::EndGroup();
 	ImGui::SetCursorPosY(winSize.y - bottomMenuHeight + imgMargin.y);
-	ImTextureID textureID = gateImg->getNativeTexturePtr();
-	if (ImGui::ImageButton(textureID, ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) menu = 0;
+	std::vector<std::string> *upgrades = tower->getUpgrades();
+	for (int i = 0; i < upgrades->size(); i++) {
+		std::string tex = upgrades->at(i);
+		if (loadedTextures.find(tex) == loadedTextures.end()) {
+			loadedTextures.insert(std::pair<std::string, std::shared_ptr<sre::Texture>>
+							(tex, sre::Texture::create().withFile(modelLoader->texturePath + tex).withFilterSampling(false).build()));
+		}
+		if (ImGui::ImageButton(loadedTextures.at(tex)->getNativeTexturePtr(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) {
+			std::cout << "UPGRADE: " << tex << "\n";
+		}
+	}
+	ImGui::SetCursorPosX(winSize.x - 128 + imgMargin.x);
+	if (ImGui::ImageButton(backImg->getNativeTexturePtr(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) selectedClickable = nullptr;
 	ImGui::End();
 	ImGui::PopFont();
-	if (showBorder) ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 }
 
 void TowerDefense::drawGUI() {
 	drawResourceOverview();
-	switch (menu) {
-	case 0: drawBuildingOverview(); break;
-	case 1: drawUpgradeOverview(); break;
-	}
+	if (selectedClickable && selectedClickable->getGameObject()->getComponent<TowerController>()) drawUpgradeOverview();
+	else drawBuildingOverview();
 }
 
 std::shared_ptr<ModelLoader> TowerDefense::getModelLoader() {

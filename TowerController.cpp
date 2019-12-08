@@ -46,7 +46,9 @@ void TowerController::snapToGrid() {
 	if (clickable) {
 		field = clickable->getGameObject()->getComponent<FieldController>();
 		if (field) {
-			setPosition(field->getGameObject()->getPosition());
+			glm::vec3 pos = field->getGameObject()->getPosition();
+			pos.y += clickable->getBounds()[1].y;
+			setPosition(pos);
 			glm::ivec2 gridPos = field->getGridPos();
 			unbuildable = !TowerDefense::instance->getGrid()->allowsTowers(gridPos.x, gridPos.y);
 			snapping = true;
@@ -64,4 +66,31 @@ void TowerController::build() {
 
 bool TowerController::isUnbuildable() {
 	return unbuildable;
+}
+
+void TowerController::addUpgrade(std::string upgrade) {
+	upgrades.push_back(upgrade);
+}
+
+std::vector<std::string>* TowerController::getUpgrades() {
+	return &upgrades;
+}
+
+void TowerController::setCost(int cost) {
+	TowerController::cost = cost;
+}
+int TowerController::getCost() {
+	return cost;
+}
+void TowerController::setFirerate(float firerate) {
+	TowerController::firerate = firerate;
+}
+float TowerController::getFirerate() {
+	return firerate;
+}
+void TowerController::setRadius(float radius) {
+	TowerController::radius = radius;
+}
+float TowerController::getRadius() {
+	return radius;
 }

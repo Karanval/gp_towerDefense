@@ -19,8 +19,11 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 	Document d;
 	d.ParseStream(sw);
 	std::shared_ptr<TowerController> towerC = towerObj->addComponent<TowerController>();
-	const Value& name = d["name"];
-	towerObj->name = name.GetString();
+	towerObj->name = d["name"].GetString();
+	towerC->setCost(d["cost"].GetInt());
+	// = d["damage"].GetString(); DAMAGE
+	towerC->setFirerate(d["firerate"].GetFloat());
+	towerC->setRadius(d["radius"].GetFloat());
 	const Value& towerPos = d["position"];
 	towerC->setPosition(glm::vec3(towerPos["x"].GetFloat(), towerPos["y"].GetFloat(), towerPos["z"].GetFloat()));
 	const Value& bricks = d["bricks"];
@@ -53,4 +56,3 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 	clickable->setActive(false);
 
 }
-

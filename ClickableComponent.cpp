@@ -7,7 +7,6 @@
 ClickableComponent::ClickableComponent(GameObject* gameObject) : Component(gameObject) {}
 
 void ClickableComponent::click() {
-	std::cout << gameObject->name << "\n";
 }
 
 std::array<glm::vec3, 2> ClickableComponent::getBounds() {

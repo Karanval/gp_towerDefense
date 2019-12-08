@@ -7,6 +7,7 @@ public:
 	void setBounds(std::array<glm::vec3, 2> bounds);
 	bool isActive();
 	void setActive(bool state);
+	void setOnClick(void (*e)());
 
 	void click();
 private:

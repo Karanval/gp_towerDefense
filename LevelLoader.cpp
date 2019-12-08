@@ -41,7 +41,8 @@ void LevelLoader::placeTile(int tileType, glm::vec3 tileSize, glm::vec2 offset, 
 	std::shared_ptr<FieldController> field = obj->addComponent<FieldController>();
 	std::shared_ptr<ClickableComponent> clickable = obj->addComponent<ClickableComponent>();
 	glm::vec3 half = tileSize * 0.5f;
-	std::array<glm::vec3, 2> boundary = { glm::vec3(-half.x, -half.y, -half.z), glm::vec3(half.x, half.y, half.z) };
+	float maxY = obj->getComponent<MeshComponent>()->getMesh()->getBoundsMinMax()[1].y;
+	std::array<glm::vec3, 2> boundary = { glm::vec3(-half.x, 0, -half.z), glm::vec3(half.x, maxY, half.z) };
 	clickable->setBounds(boundary);
 	field->setGridPos(glm::ivec2(x, z));
 	std::stringstream nameStream;

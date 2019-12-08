@@ -69,6 +69,7 @@ private:
 	std::shared_ptr<Grid> grid = nullptr;
 	std::shared_ptr<ModelLoader> modelLoader = nullptr;
 	glm::vec2 mousePos;
+	std::shared_ptr<ClickableComponent> selectedClickable = nullptr;
 	
 	bool fwd = false;
 	bool bwd = false;
@@ -85,10 +86,14 @@ private:
 	// GUI
 	int resourceMenuHeight = 50;
 	int bottomMenuHeight = 150;
-	int menu = 0; // 0: build, 1: upgrade
 	float slideVal = 1.0f;
-	bool checkVal = true;
-	std::shared_ptr<sre::Texture> gateImg;
+	ImVec4 background = ImVec4(0.0f, 0.0f, 0.5f, slideVal);
+	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);
+	ImVec4 transparent = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+	ImVec2 imgMargin = ImVec2(/*right*/5, /*top*/5);
+	std::shared_ptr<sre::Texture> basicImg;
+	std::shared_ptr<sre::Texture> backImg;
+	std::map<std::string, std::shared_ptr<sre::Texture>> loadedTextures;
 
 	friend class PhysicsComponent;
 };

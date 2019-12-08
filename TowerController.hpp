@@ -20,18 +20,28 @@ public:
 	void snapToGrid();
 	void build();
 	bool isUnbuildable();
+	void addUpgrade(std::string upgrade);
+	std::vector<std::string>* getUpgrades();
+	void setCost(int cost);
+	int getCost();
+	void setFirerate(float firerate);
+	float getFirerate();
+	void setRadius(float radius);
+	float getRadius();
 
 
 private:
 	glm::vec3 position = glm::vec3();
-	float fireSpeed;
-	float radius;
+	std::shared_ptr<sre::Texture> icon;
 	int cost;
+	float firerate;
+	float radius;
 	std::shared_ptr<ProjectileController> bullet;
 	std::shared_ptr<FieldController> field;
 	bool dirty = false;
 	bool built = false;
 	bool snapping = false;
 	bool unbuildable = false;
+	std::vector<std::string> upgrades;
 };
 
