@@ -18,6 +18,7 @@ public:
 
 	glm::vec2 getStartingPosition();
 	glm::vec2 getBasePosition();
+	glm::vec2 getOffset();
 
 	void setStartingPosition(glm::vec2 newStartingPosition);
 	void setBasePosition(glm::vec2 newBasePosition);
@@ -30,4 +31,5 @@ private:
 	glm::vec3 tileSize;
 	glm::vec2 startingPosition;
 	glm::vec2 basePosition;
+	glm::vec2 offset;
 };

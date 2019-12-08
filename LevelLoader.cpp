@@ -10,21 +10,34 @@
 #include "FieldController.hpp"
 
 
-void LevelLoader::generateLevel(std::vector<std::vector<int>> tileValues, glm::vec3& tileSize, std::vector<std::shared_ptr<GameObject>>* gObj) {
+void LevelLoader::generateLevel(std::vector<std::vector<int>> tileValues, glm::vec3& tileSize, glm::vec2& offset, 
+								std::vector<std::shared_ptr<GameObject>>* gObj) {
 	int x, z, tileType;
 	for (int i = 0; i < tileValues.size(); i++) {
 		std::vector<std::shared_ptr<GameObject>> row;
 		for (int j = 0; j < tileValues[0].size(); j++) {
 			tileType = tileValues[i][j];
-			placeTile(tileType, tileSize, i, j, gObj);
+			placeTile(tileType, tileSize, offset, i, j, gObj);
 		}
 	}
 }
 
-void LevelLoader::placeTile(int tileType, glm::vec3 tileSize, int x, int z, std::vector<std::shared_ptr<GameObject>>* gObj) {
+void LevelLoader::placeTile(int tileType, glm::vec3 tileSize, glm::vec2 offset, int x, int z, std::vector<std::shared_ptr<GameObject>>* gObj) {
 	std::shared_ptr<GameObject> obj = GameObject::createGameObject();
-	TowerDefense::instance->getModelLoader()->loadModel(obj, "sphere", "sphere");
-	obj->setPosition(glm::vec3(x * tileSize.x, 0, z * tileSize.y));
+	switch (tileType) {
+	case 0: TowerDefense::instance->getModelLoader()->loadModel(obj, "path", "path", "path.png"); break;
+	case 1: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain", "terrain", "terrain.png"); break;
+	case 2: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_north", "terrain", "terrain.png"); break;
+	case 3: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_northeast", "terrain", "terrain.png"); break;
+	case 4: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_east", "terrain", "terrain.png"); break;
+	case 5: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_southeast", "terrain", "terrain.png"); break;
+	case 6: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_south", "terrain", "terrain.png"); break;
+	case 7: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_southwest", "terrain", "terrain.png"); break;
+	case 8: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_west", "terrain", "terrain.png"); break;
+	case 9: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_northwest", "terrain", "terrain.png"); break;
+	default: TowerDefense::instance->getModelLoader()->loadModel(obj, "path", "path", "path.png"); break; // error
+	}
+	obj->setPosition(glm::vec3((offset.x + x) * tileSize.x, 0, (offset.y + z) * tileSize.y));
 	std::shared_ptr<FieldController> field = obj->addComponent<FieldController>();
 	std::shared_ptr<ClickableComponent> clickable = obj->addComponent<ClickableComponent>();
 	glm::vec3 half = tileSize * 0.5f;

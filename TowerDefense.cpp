@@ -143,7 +143,7 @@ void TowerDefense::init() {
 	lights.setAmbientLight(glm::vec3(0.1f,0.1f,0.1f));
 	sre::Light light = sre::Light();
 	light.color = glm::vec3(1.0f, 1.0f, 1.0f);
-	light.position = glm::vec3(5.0f, 2.0f, 5.0f);
+	light.position = glm::vec3(.0f, 20.0f, 5.0f);
 	light.lightType = sre::LightType::Point;
 	light.range = 100.0f;
 	lights.addLight(light);
@@ -327,7 +327,8 @@ void TowerDefense::genLevel() {
 	std::unique_ptr<LevelLoader> level = std::make_unique<LevelLoader>();
 	auto tileValues = grid->getTileValues();
 	auto tileSize = grid->getTileSize();
-	level->generateLevel(grid->getTileValues(), tileSize, &gameObjects);
+	auto offset = grid->getOffset();
+	level->generateLevel(grid->getTileValues(), tileSize, offset, &gameObjects);
 }
 
 std::shared_ptr<GameObject> TowerDefense::createGameObject() {
