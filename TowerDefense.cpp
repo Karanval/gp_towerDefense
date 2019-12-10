@@ -161,8 +161,8 @@ void TowerDefense::init() {
 	spawner->setGameObjects(&gameObjects);
 	// TODO: replace with actual path when Grid is ready
 
-	spawner->startSpawningCycle({glm::vec2(5-3,4-4)/*, glm::vec2(-3,-3)*/ });
-	//spawner->startSpawningCycle(enemyPath);
+	//spawner->startSpawningCycle({glm::vec2(5-3,-4)/*, glm::vec2(-3,-3)*/ });
+	spawner->startSpawningCycle(enemyPath);
 	gameObjects.push_back(spawnObj);
 }
 
