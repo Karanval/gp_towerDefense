@@ -18,7 +18,6 @@ void LevelLoader::generateLevel(std::vector<std::vector<int>> tileValues, glm::v
 		for (int j = 0; j < tileValues[0].size(); j++) {
 			tileType = tileValues[i][j];
 			placeTile(tileType, tileSize, offset, j, i, gObj);
-			printf("I: %i, J: %i - %i # ", i, j, tileValues[i][j]);
 		}
 	}
 }
