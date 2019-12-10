@@ -46,7 +46,6 @@ std::shared_ptr<EnemyController> SpawnController::spawnEnemy() {
 
 	ModelLoader::loadModel(obj, "sphere", "sphere");
 	glm::vec2 initialPosition = 32.0f*enemyPath[0];
-
 	glm::vec3 objPos = glm::vec3(initialPosition.x, 0.0f, initialPosition.y);
 
 	obj->setPosition(objPos);

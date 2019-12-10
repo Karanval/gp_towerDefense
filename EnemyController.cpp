@@ -17,7 +17,7 @@ void EnemyController::init(int health, float damage, int coinDrop, std::vector<g
 }
 
 void EnemyController::onCollisionStart(PhysicsComponent* comp) {
-
+	// TODO Check if it is a bullet, if so get hurt
 }
 
 void EnemyController::onCollisionEnd(PhysicsComponent* comp) {
@@ -65,3 +65,10 @@ int EnemyController::getMaxHealth() { return initialHealth;  }
 int EnemyController::getCoinDrop() { return coinDrop;  }
 
 int EnemyController::getDamage() { return damage; }
+
+void EnemyController::hurt(float hurtAmount) {
+	currentHealth -= hurtAmount;
+	if (currentHealth <= 0) {
+		//TODO die
+	}
+}

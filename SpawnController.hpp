@@ -32,7 +32,6 @@ private:
 	int enemiesSpawn = 0;
 	bool spawning = false;
 
-
 	std::vector<std::shared_ptr<GameObject>>* gameObjects;
 	std::vector<glm::vec2> enemyPath;
 
