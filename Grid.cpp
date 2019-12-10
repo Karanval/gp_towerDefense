@@ -8,7 +8,7 @@
 using namespace std;
 
 Grid::Grid() {
-	tileSize = glm::vec3(32, 32, 5);
+	tileSize = glm::vec3(32, 32, 32);
 }
 
 Grid::~Grid() {

@@ -25,5 +25,8 @@
   {"objName":"2x2_slope", "mtlName":"grey", "txtFilename":"", "position":{"x":10.0,"y":0.0,"z":0.0}},
   {"objName":"4x4_thin", "mtlName":"lightgrey", "txtFilename":"", "position":{"x":12.0,"y":0.0,"z":0.0}},
   {"objName":"flag", "mtlName":"red", "txtFilename":"", "position":{"x":14.0,"y":0.0,"z":0.0}},
-  {"objName":"2x1_slope", "mtlName":"blue", "txtFilename":"", "position":{"x":16.0,"y":0.0,"z":0.0}}]
+  {"objName":"2x1_slope", "mtlName":"blue", "txtFilename":"", "position":{"x":16.0,"y":0.0,"z":0.0}},
+  {"objName":"4x3_window", "mtlName":"blue", "txtFilename":"", "position":{"x":18.0,"y":0.0,"z":0.0}},
+  {"objName":"8x4_ledge", "mtlName":"blue", "txtFilename":"", "position":{"x":20.0,"y":0.0,"z":0.0}},
+  {"objName":"2x2_cornered_slope", "mtlName":"lightblue", "txtFilename":"", "position":{"x":22.0,"y":0.0,"z":0.0}}]
 }

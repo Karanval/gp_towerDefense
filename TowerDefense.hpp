@@ -43,6 +43,7 @@ private:
 	void setupCamera();
 	void setupGUI();
 	void setupLevel();
+	void setupLights();
 	std::shared_ptr<GameObject> createGameObject();
 	void deregisterPhysicsComponent(PhysicsComponent* r);
 	void registerPhysicsComponent(PhysicsComponent* r);

@@ -43,7 +43,7 @@ void TowerDefense::update(float deltaTime) {
 }
 
 void TowerDefense::updateCamera(float deltaTime) {
-	glm::vec3 fwdVec = glm::vec3(10.0, 0, 10.0f);
+	glm::vec3 fwdVec = glm::vec3(-10.0, 0, 10.0f);
 	glm::normalize(fwdVec);
 	glm::vec3 leftVec = glm::cross(upVec, fwdVec);
 	glm::vec3 zoomDist = zoom ? (lookat - camPos) * 0.80f : glm::vec3();
@@ -108,7 +108,7 @@ void TowerDefense::render() {
 		std::shared_ptr<GameObject> go = gameObjects[i];
 		if (go->getComponent<MeshComponent>()) {
 			rp.draw(go->getComponent<MeshComponent>()->getMesh(), 
-					glm::translate(go->getPosition()),
+					glm::translate(go->getPosition()) * glm::rotate(glm::radians(go->getRotation()), glm::vec3(0, 1, 0)),
 					go->getComponent<MaterialComponent>()->getMaterial());
 		}
 		if (doDebugDraw) {
@@ -156,18 +156,11 @@ void TowerDefense::init() {
 	// TODO: replace with actual path when Grid is ready
 	spawner->startSpawningCycle({glm::vec2(2.0f,0.0f), glm::vec2(2.0f, 1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 2.0f) });
 	gameObjects.push_back(spawnObj);
-
-	lights.setAmbientLight(glm::vec3(0.1f,0.1f,0.1f));
-	sre::Light light = sre::Light();
-	light.color = glm::vec3(1.0f, 1.0f, 1.0f);
-	light.position = glm::vec3(.0f, 20.0f, 5.0f);
-	light.lightType = sre::LightType::Point;
-	light.range = 100.0f;
-	lights.addLight(light);
-
+	
 	setupCamera();
 	setupGUI();
 	setupLevel();
+	setupLights();
 }
 
 void TowerDefense::initPhysics() {
@@ -353,7 +346,7 @@ std::shared_ptr<GameObject> TowerDefense::createGameObject() {
 }
 
 void TowerDefense::setupCamera() {
-	camPos = glm::vec3(-300.0f, 300.0f, -300.0f);
+	camPos = glm::vec3(300.0f, 300.0f, -300.0f);
 	lookat = glm::vec3(0.0f, 0.0f, 0.0f);
 	upVec = glm::vec3(0.0f, 1.0f, 0.0f);
 	
@@ -369,6 +362,23 @@ void TowerDefense::deregisterPhysicsComponent(PhysicsComponent* r) {
 
 void TowerDefense::registerPhysicsComponent(PhysicsComponent* r) {
 	physicsComponentLookup[r->fixture] = r;
+}
+
+void TowerDefense::setupLights() {
+	lights.setAmbientLight(glm::vec3(0.1f, 0.1f, 0.1f));
+	glm::vec2 offset = grid->getOffset();
+	glm::vec3 size = grid->getTileSize();
+
+	for (int i = 0; i < grid->getHeight(); i++) {
+		for (int j = 0; j < grid->getWidth(); j++) {
+			sre::Light light = sre::Light();
+			light.color = glm::vec3(1.0f, 1.0f, 1.0f);
+			light.position = glm::vec3((offset.x + i) * size.x, 2 * size.z, (offset.y + j) * size.y);
+			light.lightType = sre::LightType::Point;
+			light.range = 100.0f;
+			lights.addLight(light);
+		}
+	}
 }
 
 void TowerDefense::setupGUI() {
