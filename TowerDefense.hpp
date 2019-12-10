@@ -17,6 +17,7 @@ class TowerDefense : public b2ContactListener
 public:
 	std::string miscPath = "../data/misc/";
 	TowerDefense();
+	std::shared_ptr<GameObject> createGameObject();
 	std::shared_ptr<ModelLoader> getModelLoader();
 	std::shared_ptr<ClickableComponent> TowerDefense::screenToClickableObject(glm::vec2 screenCoord);
 	std::shared_ptr<ClickableComponent> TowerDefense::mouseToClickableObject();
@@ -44,7 +45,6 @@ private:
 	void setupGUI();
 	void setupLevel();
 	void setupLights();
-	std::shared_ptr<GameObject> createGameObject();
 	void deregisterPhysicsComponent(PhysicsComponent* r);
 	void registerPhysicsComponent(PhysicsComponent* r);
 	void drawResourceOverview();

@@ -9,6 +9,7 @@
 #include <iostream>
 #include <limits>
 #include "TowerDefense.hpp"
+#include "ProjectileController.hpp"
 
 using namespace rapidjson;
 
@@ -24,6 +25,8 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 	towerC->setDamage(d["damage"].GetInt());
 	towerC->setFirerate(d["firerate"].GetFloat());
 	towerC->setRadius(d["radius"].GetFloat());
+	towerC->setSpeed(d["speed"].GetFloat());
+	towerC->setProjectile(d["projectile"].GetString());
 	const Value& upgrades = d["upgrades"];
 	for (SizeType i = 0; i < upgrades.Size(); i++) towerC->addUpgrade(upgrades[i]["icon"].GetString());
 	const Value& bricks = d["bricks"];

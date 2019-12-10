@@ -221,6 +221,10 @@ void TowerDefense::keyInput(SDL_Event& event) {
 			break;
 		/* DEBUGGING */
 		case SDLK_1:
+			for (std::shared_ptr<GameObject> go : gameObjects) {
+				std::shared_ptr<TowerController> tc = go->getComponent<TowerController>();
+				if (tc) tc->shoot();
+			}
 			break;
 		case SDLK_2:
 			break;

@@ -104,3 +104,24 @@ void TowerController::setRadius(float radius) {
 float TowerController::getRadius() {
 	return radius;
 }
+void TowerController::setSpeed(float speed) {
+	TowerController::speed = speed;
+}
+float TowerController::getSpeed() {
+	return speed;
+}
+void TowerController::setProjectile(std::string projectile) {
+	TowerController::projectile = projectile;
+}
+std::string TowerController::getProjectile() {
+	return projectile;
+}
+
+void TowerController::shoot() {
+	std::shared_ptr<GameObject> projectileObj = TowerDefense::instance->createGameObject();
+	std::shared_ptr<ProjectileController> projectileC = projectileObj->addComponent<ProjectileController>();
+	TowerDefense::instance->getModelLoader()->loadModel(projectileObj, projectile, "lightgrey");
+	projectileC->setSpeed(speed);
+	projectileObj->setPosition(gameObject->getPosition() + glm::vec3(30.0f, 30.0f, 30.0f));
+
+}
