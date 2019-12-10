@@ -30,6 +30,11 @@ public:
 	float getFirerate();
 	void setRadius(float radius);
 	float getRadius();
+	void setSpeed(float speed);
+	float getSpeed();
+	void setProjectile(std::string projectile);
+	std::string getProjectile();
+	void shoot();
 
 
 private:
@@ -39,6 +44,7 @@ private:
 	int damage;
 	float firerate;
 	float radius;
+	float speed;
 	std::shared_ptr<ProjectileController> bullet;
 	std::shared_ptr<FieldController> field;
 	bool dirty = false;
@@ -46,5 +52,6 @@ private:
 	bool snapping = false;
 	bool unbuildable = false;
 	std::vector<std::string> upgrades;
+	std::string projectile;
 };
 

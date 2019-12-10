@@ -3,13 +3,14 @@
 
 class ProjectileController : public Component {
 public:
-	explicit ProjectileController(GameObject* gameObject, float speed, float damage);
+	explicit ProjectileController(GameObject* gameObject);
 
 	void onCollisionStart(PhysicsComponent* comp) override;
 
 	void onCollisionEnd(PhysicsComponent* comp) override;
 
-	float getDamage();
+	void setSpeed(float speed);
+	float getSpeed();
 private:
 	std::shared_ptr<PhysicsComponent> phys;
 	float speed;
