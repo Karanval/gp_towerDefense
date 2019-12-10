@@ -91,7 +91,7 @@ void TowerDefense::updatePhysics() {
 		float angle = phys.second->body->GetAngle();
 		auto gameObject = phys.second->getGameObject();
 		// TODO constant Y
-		gameObject->setPosition(glm::vec3((position.x * physicsScale),0.0f, position.y * physicsScale));
+		gameObject->setPosition(glm::vec3((position.x * physicsScale),gameObject->getPosition().y, position.y * physicsScale));
 		gameObject->setRotation(angle);
 	}
 }
@@ -149,18 +149,21 @@ void TowerDefense::init() {
 
 	modelLoader = std::make_shared<ModelLoader>();
 
-	// Create Spawner
-	std::shared_ptr<GameObject> spawnObj = GameObject::createGameObject();
-	spawner = spawnObj->addComponent<SpawnController>();
-	spawner->setGameObjects(&gameObjects);
-	// TODO: replace with actual path when Grid is ready
-	spawner->startSpawningCycle({glm::vec2(2.0f,0.0f), glm::vec2(2.0f, 1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 2.0f) });
-	gameObjects.push_back(spawnObj);
 	
 	setupCamera();
 	setupGUI();
 	setupLevel();
 	setupLights();
+
+	// Create Spawner
+	std::shared_ptr<GameObject> spawnObj = GameObject::createGameObject();
+	spawner = spawnObj->addComponent<SpawnController>();
+	spawner->setGameObjects(&gameObjects);
+	// TODO: replace with actual path when Grid is ready
+
+	spawner->startSpawningCycle({glm::vec2(5-3,4-4)/*, glm::vec2(-3,-3)*/ });
+	//spawner->startSpawningCycle(enemyPath);
+	gameObjects.push_back(spawnObj);
 }
 
 void TowerDefense::initPhysics() {
@@ -330,7 +333,9 @@ void TowerDefense::setupLevel() {
 	const std::string mapPath = "../data/maps/";
 	grid->loadMap(mapPath + "level0.json");
 	genLevel();
+	enemyPath = grid->getEnemyPath();
 }
+
 void TowerDefense::genLevel() {
 	std::unique_ptr<LevelLoader> level = std::make_unique<LevelLoader>();
 	auto tileValues = grid->getTileValues();

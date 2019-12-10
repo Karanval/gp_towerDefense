@@ -71,6 +71,7 @@ private:
 	std::shared_ptr<ModelLoader> modelLoader = nullptr;
 	glm::vec2 mousePos;
 	std::shared_ptr<ClickableComponent> selectedClickable = nullptr;
+	std::vector<glm::vec2> enemyPath;
 	
 	bool fwd = false;
 	bool bwd = false;

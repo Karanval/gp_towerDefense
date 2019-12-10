@@ -35,7 +35,7 @@ void EnemyController::update(float deltaTime) {
 			// Synchronize double values
 			// TODO think about adding the set position of the physics in gameobject?
 			phys->setPosition(0.01f * waypoint);
-			gameObject->setPosition(glm::vec3(waypoint.x, 0.0f, waypoint.y));
+			gameObject->setPosition(glm::vec3(waypoint.x, gameObject->getPosition().y, waypoint.y));
 			moveToNextWaypoint();
 		}
 	}
