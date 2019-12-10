@@ -1,6 +1,6 @@
 #include "SpawnController.hpp"
 #include "EnemyController.hpp"
-#include "ModelLoader.hpp"
+#include "TowerDefense.hpp"
 
 SpawnController::SpawnController(GameObject* gameObj) :
 	Component(gameObj) {
@@ -44,8 +44,11 @@ void SpawnController::setWaveTime(float waveTime) { this->waveTime = waveTime; }
 std::shared_ptr<EnemyController> SpawnController::spawnEnemy() {
 	std::shared_ptr<GameObject> obj = GameObject::createGameObject();
 
-	ModelLoader::loadModel(obj, "sphere", "sphere");
-	glm::vec2 initialPosition = 32.0f*enemyPath[0];
+	/*ModelLoader::loadModel(obj, "sphere", "sphere");
+	glm::vec2 initialPosition = 32.0f*enemyPath[0];*/
+	TowerDefense::instance->getModelLoader()->loadModel(obj, "sphere", "sphere");
+	glm::vec2 initialPosition = 32.0f* enemyPath[0];
+
 	glm::vec3 objPos = glm::vec3(initialPosition.x, 0.0f, initialPosition.y);
 
 	obj->setPosition(objPos);

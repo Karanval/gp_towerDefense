@@ -106,15 +106,31 @@ void TowerDefense::render() {
 	
 	for (int i = 0; i < gameObjects.size(); i++) {
 		std::shared_ptr<GameObject> go = gameObjects[i];
-		if (!go->getComponent<MeshComponent>()) continue;
-		//std::shared_ptr<BrickController> bc = gameObjects[i]->getComponent<BrickController>();
-		//glm::vec3 pos = bc ? bc->getPosition() : go->getPosition();
-		rp.draw(go->getComponent<MeshComponent>()->getMesh(), 
-				glm::translate(go->getPosition()),
-			    go->getComponent<MaterialComponent>()->getMaterial());
-		std::vector<glm::vec3> verts = std::vector<glm::vec3>();
+		if (go->getComponent<MeshComponent>()) {
+			rp.draw(go->getComponent<MeshComponent>()->getMesh(), 
+					glm::translate(go->getPosition()),
+					go->getComponent<MaterialComponent>()->getMaterial());
+		}
+		if (doDebugDraw) {
+			std::shared_ptr<ClickableComponent> cc = go->getComponent<ClickableComponent>();
+			if (cc) {
+				std::array<glm::vec3, 2> b = cc->getBounds();
+				rp.drawLines({glm::vec3(b[0].x, b[0].y, b[0].z), glm::vec3(b[1].x, b[0].y, b[0].z), // bottom
+							  glm::vec3(b[1].x, b[0].y, b[0].z), glm::vec3(b[1].x, b[0].y, b[1].z),
+							  glm::vec3(b[1].x, b[0].y, b[1].z), glm::vec3(b[0].x, b[0].y, b[1].z),
+							  glm::vec3(b[0].x, b[0].y, b[1].z), glm::vec3(b[0].x, b[0].y, b[0].z),
+							  glm::vec3(b[0].x, b[1].y, b[0].z), glm::vec3(b[1].x, b[1].y, b[0].z), // top
+							  glm::vec3(b[1].x, b[1].y, b[0].z), glm::vec3(b[1].x, b[1].y, b[1].z),
+							  glm::vec3(b[1].x, b[1].y, b[1].z), glm::vec3(b[0].x, b[1].y, b[1].z),
+							  glm::vec3(b[0].x, b[1].y, b[1].z), glm::vec3(b[0].x, b[1].y, b[0].z),
+							  glm::vec3(b[0].x, b[0].y, b[0].z), glm::vec3(b[0].x, b[1].y, b[0].z), // sides
+							  glm::vec3(b[1].x, b[0].y, b[0].z), glm::vec3(b[1].x, b[1].y, b[0].z),
+							  glm::vec3(b[1].x, b[0].y, b[1].z), glm::vec3(b[1].x, b[1].y, b[1].z),
+							  glm::vec3(b[0].x, b[0].y, b[1].z), glm::vec3(b[0].x, b[1].y, b[1].z)},
+					         cc == selectedClickable ? sre::Color(1, 1, 0) : (cc->isActive() ? sre::Color(0, 1, 0) : sre::Color(1, 0, 0)));
+			}
+		}
 	}
-	drawLevel(rp);
 
 	if (doDebugDraw) {
 		world->DrawDebugData();
@@ -131,6 +147,8 @@ void TowerDefense::init() {
 	initPhysics();
 	lights = sre::WorldLights();
 
+	modelLoader = std::make_shared<ModelLoader>();
+
 	// Create Spawner
 	std::shared_ptr<GameObject> spawnObj = GameObject::createGameObject();
 	spawner = spawnObj->addComponent<SpawnController>();
@@ -139,35 +157,10 @@ void TowerDefense::init() {
 	spawner->startSpawningCycle({glm::vec2(2.0f,0.0f), glm::vec2(2.0f, 1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 2.0f) });
 	gameObjects.push_back(spawnObj);
 
-	std::shared_ptr<GameObject> obj = createGameObject();
-	TowerLoader::loadTower(obj, &gameObjects, "sample");
-	
-
-	/*std::shared_ptr<GameObject> towerObj = createGameObject();
-	std::shared_ptr<TowerController> towerController = towerObj->addComponent<TowerController>();
-
-	float x = 0.0f;
-	float z = 0.0f;
-	for (int i = 0; i < 25; i++) {
-		z += 10.0f;
-		if (i % 5 == 0) {
-			x += 5.0f;
-			z = 0.0f;
-		}
-		std::shared_ptr<GameObject> obj = createGameObject();
-		ModelLoader::loadModel(obj, "lego_brick1", "lego_brick1");
-		obj->setPosition(glm::vec3(x, 0.0f, z));
-		if (i > 10) {
-			obj->addComponent<BrickController>()->setTowerController(towerController);
-			obj->getComponent<BrickController>()->setLocalPosition(glm::vec3(x, 0.0f, z));
-		}
-
-	}*/
-
 	lights.setAmbientLight(glm::vec3(0.1f,0.1f,0.1f));
 	sre::Light light = sre::Light();
 	light.color = glm::vec3(1.0f, 1.0f, 1.0f);
-	light.position = glm::vec3(5.0f, 2.0f, 5.0f);
+	light.position = glm::vec3(.0f, 20.0f, 5.0f);
 	light.lightType = sre::LightType::Point;
 	light.range = 100.0f;
 	lights.addLight(light);
@@ -235,16 +228,8 @@ void TowerDefense::keyInput(SDL_Event& event) {
 			break;
 		/* DEBUGGING */
 		case SDLK_1:
-			for (int i = 0; i < gameObjects.size(); i++) {
-				std::shared_ptr<TowerController> tc = gameObjects[i]->getComponent<TowerController>();
-				if (tc) tc->setPosition(tc->getPosition() - glm::vec3(1.0f, 0.0f, 0.0f));
-			}
 			break;
 		case SDLK_2:
-			for (int i = 0; i < gameObjects.size(); i++) {
-				std::shared_ptr<TowerController> tc = gameObjects[i]->getComponent<TowerController>();
-				if (tc) tc->setPosition(tc->getPosition() + glm::vec3(1.0f, 0.0f, 0.0f));
-			}
 			break;
 		case SDLK_3:
 			gold++;
@@ -295,22 +280,38 @@ bool TowerDefense::rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec
 	return true;
 }
 
-// TODO: make gameObject and component contain functionality for markDirty and bounds, and then override instead
-//		 same way as with the update-function
-void TowerDefense::mouseClick(SDL_Event& event) {
-	float y = sre::Renderer::instance->getWindowSize().y - event.button.y; // invert y-axis
-	std::array<glm::vec3, 2> ray = camera.screenPointToRay(glm::vec2(event.button.x, y));
+std::shared_ptr<ClickableComponent> TowerDefense::screenToClickableObject(glm::vec2 screenCoord) {
+	std::array<glm::vec3, 2> ray = camera.screenPointToRay(screenCoord);
+	std::shared_ptr<ClickableComponent> closestClickable = nullptr;
+	float closestDist = FLT_MAX;
 	for (int i = 0; i < gameObjects.size(); i++) {
-		std::shared_ptr<MeshComponent> mesh = gameObjects[i]->getComponent<MeshComponent>();
 		std::shared_ptr<ClickableComponent> clickable = gameObjects[i]->getComponent<ClickableComponent>();
-		/* TODO: make all clickables clickable when getBounds in BrickController is "cohesioned" away */
-		std::shared_ptr<BrickController> brickC = gameObjects[i]->getComponent<BrickController>();
-		if (mesh && clickable && /*TODO: remove*/ brickC) {
-			std::array<glm::vec3, 2> boundary = brickC->getBounds(); /* TODO: update */
-			if (rayBoxTest(ray, boundary)) clickable->click();
+		if (clickable && clickable->isActive() && rayBoxTest(ray, clickable->getBounds())) {
+			glm::length_t distToClickable = glm::distance(camera.getPosition(), clickable->getCenter());
+			if (distToClickable < closestDist) {
+				closestDist = distToClickable;
+				closestClickable = clickable;
+			}
 		}
 	}
+	return closestClickable;
+}
 
+std::shared_ptr<ClickableComponent> TowerDefense::mouseToClickableObject() {
+	float y = sre::Renderer::instance->getWindowSize().y - mousePos.y; // invert y-axis
+	return screenToClickableObject(glm::vec2(mousePos.x, y));
+}
+
+void TowerDefense::mouseClick(SDL_Event& event) {
+	float y = sre::Renderer::instance->getWindowSize().y - event.button.y; // invert y-axis
+	if (y > bottomMenuHeight) {
+		std::shared_ptr<ClickableComponent> clickable = screenToClickableObject(glm::vec2(event.button.x, y));
+		if (clickable) {
+			clickable->click();
+			selectedClickable = clickable;
+		}
+		else selectedClickable = nullptr;
+	}
 }
 
 void TowerDefense::mouseInput(SDL_Event& event) {
@@ -325,22 +326,24 @@ void TowerDefense::mouseInput(SDL_Event& event) {
 	case SDL_MOUSEBUTTONUP:
 		break;
 	case SDL_MOUSEMOTION:
+		mousePos.x = event.motion.x;
+		mousePos.y = event.motion.y;
 		break;
 	}
-	/*int mousePosX, mousePosY;
-	SDL_GetMouseState(&mousePosX, &mousePosY);
-	float isoMousePosX, isoMousePosy;
-	int tile = grid->getTile(mousePosX, mousePosY);*/
 }
 
 void TowerDefense::setupLevel() {
 	grid = std::make_unique<Grid>();
 	const std::string mapPath = "../data/maps/";
 	grid->loadMap(mapPath + "level0.json");
+	genLevel();
 }
-void TowerDefense::drawLevel(sre::RenderPass& rp) {
+void TowerDefense::genLevel() {
 	std::unique_ptr<LevelLoader> level = std::make_unique<LevelLoader>();
-	level->generateLevel(grid->getTileValues(), grid->getTileSize(), rp);
+	auto tileValues = grid->getTileValues();
+	auto tileSize = grid->getTileSize();
+	auto offset = grid->getOffset();
+	level->generateLevel(grid->getTileValues(), tileSize, offset, &gameObjects);
 }
 
 std::shared_ptr<GameObject> TowerDefense::createGameObject() {
@@ -372,13 +375,15 @@ void TowerDefense::setupGUI() {
 	// Font
 	ImFontAtlas* fonts = ImGui::GetIO().Fonts;
 	fonts->AddFontDefault();
-	std::string fontName = miscPath + "AceRecords.ttf";
+	std::string fontName = miscPath + "UIFont.ttf";
 	int fontSize = 26;
-	aceRecordsFont = fonts->AddFontFromFileTTF(fontName.c_str(), fontSize);
+	uiFont = fonts->AddFontFromFileTTF(fontName.c_str(), fontSize);
 	
 	// Images
-	gateImg = sre::Texture::create().withFile(ModelLoader::texturePath + "gate_view.png")
-									.withFilterSampling(false).build();
+	basicImg = sre::Texture::create().withFile(modelLoader->texturePath + "basic_tower.png")
+									 .withFilterSampling(false).build();
+	backImg = sre::Texture::create().withFile(modelLoader->texturePath + "back_arrow.png")
+		.withFilterSampling(false).build();
 }
 
 void TowerDefense::drawResourceOverview() {
@@ -390,7 +395,7 @@ void TowerDefense::drawResourceOverview() {
 	ImVec4 lifeTextCol = ImVec4(0.96f, 0.18f, 0.18f, 1.0f);
 	ImGui::SetNextWindowPos(winPos, ImGuiSetCond_Always);
 	ImGui::SetNextWindowSize(winSize, ImGuiSetCond_Always);
-	ImGui::PushFont(aceRecordsFont);
+	ImGui::PushFont(uiFont);
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, background);
 	ImGui::PushStyleColor(ImGuiCol_Border, background);
 	ImGui::Begin("resources", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
@@ -414,63 +419,80 @@ void TowerDefense::drawBuildingOverview() {
 	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);
 	ImVec4 transparent = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
 	ImVec2 imgMargin = ImVec2(/*right*/5, /*top*/5);
-	bool showBorder = checkVal;
 	ImGui::SetNextWindowPos(winPos, ImGuiSetCond_Always);
 	ImGui::SetNextWindowSize(winSize, ImGuiSetCond_Always);
-	ImGui::PushFont(aceRecordsFont);
+	ImGui::PushFont(uiFont);
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, background);
 	ImGui::PushStyleColor(ImGuiCol_Button, transparent);
-	if (showBorder) ImGui::PushStyleColor(ImGuiCol_Border, borderCol);
+	ImGui::PushStyleColor(ImGuiCol_Border, borderCol);
 	ImGui::Begin("buildings", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
 	ImGui::Text("Build");
 	ImGui::SetCursorPosX(winSize.x - 128 + imgMargin.x);
 	ImGui::SetCursorPosY(winSize.y - bottomMenuHeight + imgMargin.y);
-	ImTextureID textureID = gateImg->getNativeTexturePtr();
-	if (ImGui::ImageButton(textureID, ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) menu = 1;
+	if (ImGui::ImageButton(basicImg->getNativeTexturePtr(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) {
+		std::shared_ptr<GameObject> obj = createGameObject();
+		TowerLoader::loadTower(obj, &gameObjects, "basic");
+	}
 	ImGui::End();
 	ImGui::PopFont();
-	if (showBorder) ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 }
 
 void TowerDefense::drawUpgradeOverview() {
+	std::shared_ptr<TowerController> tower = selectedClickable->getGameObject()->getComponent<TowerController>();
 	ImVec2 winPos = ImVec2(0, sre::Renderer::instance->getWindowSize().y - bottomMenuHeight);
 	ImVec2 winSize = ImVec2(sre::Renderer::instance->getWindowSize().x, bottomMenuHeight);
-	ImVec4 background = ImVec4(0.0f, 0.0f, 0.5f, slideVal);
-	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);
-	ImVec4 transparent = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
-	ImVec2 imgMargin = ImVec2(/*right*/5, /*top*/5);
-	bool showBorder = checkVal;
 	ImGui::SetNextWindowPos(winPos, ImGuiSetCond_Always);
 	ImGui::SetNextWindowSize(winSize, ImGuiSetCond_Always);
-	ImGui::PushFont(aceRecordsFont);
+	ImGui::PushFont(uiFont);
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, background);
 	ImGui::PushStyleColor(ImGuiCol_Button, transparent);
-	if (showBorder) ImGui::PushStyleColor(ImGuiCol_Border, borderCol);
+	ImGui::PushStyleColor(ImGuiCol_Border, borderCol);
 	ImGui::Begin("upgrades", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
-	ImGui::BeginGroup();
-	ImGui::Text("Upgrade");
-	ImGui::SliderFloat("background", &slideVal, 0.0f, 1.0f);
-	ImGui::Checkbox("border", &checkVal);
-	ImGui::EndGroup();
-	ImGui::SetCursorPosX(winSize.x - 128 + imgMargin.x);
+	//ImGui::BeginGroup();
+	ImGui::Text(tower->getGameObject()->name.c_str());
+	ImGui::Text(("Cost: " + std::to_string(tower->getCost())).c_str());
+	ImGui::Text(("damage: " + std::to_string(tower->getDamage())).c_str());
+	ImGui::Text(("Speed: " + std::to_string(tower->getFirerate())).c_str());
+	ImGui::Text(("radius: " + std::to_string(tower->getRadius())).c_str());
+	//ImGui::EndGroup();
+	std::vector<std::string> *upgrades = tower->getUpgrades();
+	for (int i = 0; i < upgrades->size(); i++) {
+		ImGui::SetCursorPosY(winSize.y - bottomMenuHeight + imgMargin.y);
+		ImGui::SetCursorPosX(winSize.x - 56 - (56 + imgMargin.x) * (i + 1));
+		std::string tex = upgrades->at(i);
+		if (loadedTextures.find(tex) == loadedTextures.end()) {
+			loadedTextures.insert(std::pair<std::string, std::shared_ptr<sre::Texture>>
+							(tex, sre::Texture::create().withFile(modelLoader->texturePath + tex).withFilterSampling(false).build()));
+		}
+		if (ImGui::ImageButton(loadedTextures.at(tex)->getNativeTexturePtr(), ImVec2(56, 56), ImVec2(0, 1), ImVec2(1, 0))) {
+			std::cout << "UPGRADE: " << tex << "\n";
+		}
+	}
 	ImGui::SetCursorPosY(winSize.y - bottomMenuHeight + imgMargin.y);
-	ImTextureID textureID = gateImg->getNativeTexturePtr();
-	if (ImGui::ImageButton(textureID, ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) menu = 0;
+	ImGui::SetCursorPosX(winSize.x - 56 - imgMargin.x);
+	if (ImGui::ImageButton(backImg->getNativeTexturePtr(), ImVec2(56, 56), ImVec2(0, 1), ImVec2(1, 0))) selectedClickable = nullptr;
 	ImGui::End();
 	ImGui::PopFont();
-	if (showBorder) ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 }
 
 void TowerDefense::drawGUI() {
 	drawResourceOverview();
-	switch (menu) {
-	case 0: drawBuildingOverview(); break;
-	case 1: drawUpgradeOverview(); break;
-	}
+	if (selectedClickable && selectedClickable->getGameObject()->getComponent<TowerController>()) drawUpgradeOverview();
+	else drawBuildingOverview();
+}
+
+std::shared_ptr<ModelLoader> TowerDefense::getModelLoader() {
+	return modelLoader;
+}
+
+std::shared_ptr<Grid> TowerDefense::getGrid() {
+	return grid;
 }
 
 int main() {

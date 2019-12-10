@@ -11,13 +11,14 @@ public:
 	~Grid();
 	void loadMap(std::string filename);
 	int getTile(int x, int y);
-	glm::vec2 getTileSize();
+	glm::vec3 getTileSize();
 	int getWidth();
 	int getHeight();
 	std::vector<std::vector<int>> getTileValues();
 
 	glm::vec2 getStartingPosition();
 	glm::vec2 getBasePosition();
+	glm::vec2 getOffset();
 
 	void setStartingPosition(glm::vec2 newStartingPosition);
 	void setBasePosition(glm::vec2 newBasePosition);
@@ -27,7 +28,8 @@ public:
 	
 private:
 	std::vector<std::vector<int>> tileValues;
-	glm::vec2 tileSize;
+	glm::vec3 tileSize;
 	glm::vec2 startingPosition;
 	glm::vec2 basePosition;
+	glm::vec2 offset;
 };

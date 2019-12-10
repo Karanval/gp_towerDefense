@@ -8,7 +8,7 @@
 using namespace std;
 
 Grid::Grid() {
-	tileSize = glm::vec2(32, 32);
+	tileSize = glm::vec3(32, 32, 5);
 }
 
 Grid::~Grid() {
@@ -20,6 +20,8 @@ void Grid::loadMap(std::string filename) {
 	IStreamWrapper isw(fis);
 	Document d;
 	d.ParseStream(isw);
+	const Value& offset = d["offset"];
+	Grid::offset = glm::vec2(offset["x"].GetInt(), offset["y"].GetInt());
 	const Value& tileMap = d["tileMap"];
 	for (int i = 0; i < tileMap.Size(); i++) {
 		vector<int> row;
@@ -34,7 +36,7 @@ int Grid::getTile(int x, int y) {
 	return tileValues.at(y).at(x);
 }
 
-glm::vec2 Grid::getTileSize() {
+glm::vec3 Grid::getTileSize() {
 	return tileSize;
 }
 
@@ -67,8 +69,9 @@ void Grid::setBasePosition(glm::vec2 newBasePosition) {
 }
 
 bool Grid::allowsTowers(int x, int y) {
+	if (x < 0 || y < 0 || x >= tileValues[0].size() || y >= tileValues.size()) return false;
 	int tileValue = getTile(x, y);
-	if (tileValue == 1) return true; // example value
+	if (tileValue) return true; // not 0 (enemy path)
 	else return false;
 }
 
@@ -76,3 +79,6 @@ void Grid::changeTileType(int x, int y, int newTileType) {
 	tileValues.at(x).at(y) = newTileType;
 }
 
+glm::vec2 Grid::getOffset() {
+	return offset;
+}

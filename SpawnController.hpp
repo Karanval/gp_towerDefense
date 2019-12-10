@@ -1,6 +1,8 @@
 #pragma once
 #include "Component.hpp"
 #include "EnemyController.hpp"
+#include "ModelLoader.hpp"
+
 
 class SpawnController : public Component {
 public:

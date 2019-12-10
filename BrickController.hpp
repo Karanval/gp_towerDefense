@@ -2,6 +2,7 @@
 #include "Component.hpp"
 #include "GameObject.hpp"
 #include "TowerController.hpp"
+#include <sre/RenderPass.hpp>
 
 class BrickController : public Component {
 public:
@@ -11,7 +12,6 @@ public:
 	void init(bool isStatic);
 	glm::vec3 getPosition();
 	glm::vec3 getLocalPosition();
-	std::array<glm::vec3, 2> getBounds();
 	void setLocalPosition(glm::vec3 position);
 	std::shared_ptr<TowerController> getTowerController();
 	void setTowerController(std::shared_ptr<TowerController> towerController);
@@ -23,6 +23,7 @@ private:
 	glm::vec3 position = glm::vec3();
 	std::shared_ptr<TowerController> towerController;
 	bool dirty = false;
-	std::array<glm::vec3, 2> bounds;
+	std::shared_ptr<sre::Material> defaultMaterial;
+	std::shared_ptr<sre::Material> unbuildableMaterial;
 };
 

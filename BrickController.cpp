@@ -1,27 +1,21 @@
 #include "BrickController.hpp"
-#include "MeshComponent.hpp"
 
 BrickController::BrickController(GameObject* gameObject) : Component(gameObject) {
+	BrickController::unbuildableMaterial = sre::Shader::getUnlit()->createMaterial();
+	unbuildableMaterial->setColor(sre::Color(1, 0, 0));
 }
 
 void BrickController::update(float deltaTime) {
 	if (towerController->isDirty()) {
-		gameObject->setPosition(position + towerController->getPosition());
+		gameObject->setPosition(position + towerController->getGameObject()->getPosition());
 		markDirty();
 	}
 	if (isDirty()) {
-		std::shared_ptr<MeshComponent> mesh = gameObject->getComponent<MeshComponent>();
-		if (mesh) {
-			bounds = mesh->getMesh()->getBoundsMinMax();
-			bounds[0] += gameObject->getPosition();
-			bounds[1] += gameObject->getPosition();
-		}
+		if (towerController->isUnbuildable() && unbuildableMaterial) gameObject->getComponent<MaterialComponent>()->setMaterial(unbuildableMaterial);
+		else if (defaultMaterial) gameObject->getComponent<MaterialComponent>()->setMaterial(defaultMaterial);
+		else defaultMaterial = gameObject->getComponent<MaterialComponent>()->getMaterial();
 		dirty = false;
 	}
-}
-
-std::array<glm::vec3, 2> BrickController::getBounds() {
-	return bounds;
 }
 
 glm::vec3 BrickController::getPosition() {

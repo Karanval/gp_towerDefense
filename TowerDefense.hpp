@@ -15,8 +15,12 @@
 class TowerDefense : public b2ContactListener
 {
 public:
-	TowerDefense();
 	std::string miscPath = "../data/misc/";
+	TowerDefense();
+	std::shared_ptr<ModelLoader> getModelLoader();
+	std::shared_ptr<ClickableComponent> TowerDefense::screenToClickableObject(glm::vec2 screenCoord);
+	std::shared_ptr<ClickableComponent> TowerDefense::mouseToClickableObject();
+	std::shared_ptr<Grid> getGrid();
 
 	static TowerDefense* instance;
 	static constexpr float32 timeStep = 1.0f / 60.0f;
@@ -35,7 +39,7 @@ private:
 	void keyInput(SDL_Event& event);
 	void mouseInput(SDL_Event& event);
 	void mouseClick(SDL_Event& event);
-	void drawLevel(sre::RenderPass& rp);
+	void genLevel();
 	void setupCamera();
 	void setupGUI();
 	void setupLevel();
@@ -61,8 +65,11 @@ private:
 	glm::vec3 camPos;
 	glm::vec3 lookat;
 	glm::vec3 upVec;
-	ImFont* aceRecordsFont;
-	std::unique_ptr<Grid> grid = nullptr;
+	ImFont* uiFont;
+	std::shared_ptr<Grid> grid = nullptr;
+	std::shared_ptr<ModelLoader> modelLoader = nullptr;
+	glm::vec2 mousePos;
+	std::shared_ptr<ClickableComponent> selectedClickable = nullptr;
 	
 	bool fwd = false;
 	bool bwd = false;
@@ -78,11 +85,15 @@ private:
 
 	// GUI
 	int resourceMenuHeight = 50;
-	int bottomMenuHeight = 150;
-	int menu = 0; // 0: build, 1: upgrade
+	int bottomMenuHeight = 180;
 	float slideVal = 1.0f;
-	bool checkVal = true;
-	std::shared_ptr<sre::Texture> gateImg;
+	ImVec4 background = ImVec4(0.0f, 0.0f, 0.5f, slideVal);
+	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);
+	ImVec4 transparent = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+	ImVec2 imgMargin = ImVec2(/*right*/5, /*top*/5);
+	std::shared_ptr<sre::Texture> basicImg;
+	std::shared_ptr<sre::Texture> backImg;
+	std::map<std::string, std::shared_ptr<sre::Texture>> loadedTextures;
 
 	friend class PhysicsComponent;
 };
