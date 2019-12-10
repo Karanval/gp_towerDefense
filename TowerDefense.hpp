@@ -65,7 +65,7 @@ private:
 	glm::vec3 camPos;
 	glm::vec3 lookat;
 	glm::vec3 upVec;
-	ImFont* aceRecordsFont;
+	ImFont* uiFont;
 	std::shared_ptr<Grid> grid = nullptr;
 	std::shared_ptr<ModelLoader> modelLoader = nullptr;
 	glm::vec2 mousePos;
@@ -85,7 +85,7 @@ private:
 
 	// GUI
 	int resourceMenuHeight = 50;
-	int bottomMenuHeight = 150;
+	int bottomMenuHeight = 180;
 	float slideVal = 1.0f;
 	ImVec4 background = ImVec4(0.0f, 0.0f, 0.5f, slideVal);
 	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);

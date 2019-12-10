@@ -7,7 +7,7 @@ BrickController::BrickController(GameObject* gameObject) : Component(gameObject)
 
 void BrickController::update(float deltaTime) {
 	if (towerController->isDirty()) {
-		gameObject->setPosition(position + towerController->getPosition());
+		gameObject->setPosition(position + towerController->getGameObject()->getPosition());
 		markDirty();
 	}
 	if (isDirty()) {

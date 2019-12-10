@@ -7,12 +7,13 @@ public:
 	void setBounds(std::array<glm::vec3, 2> bounds);
 	bool isActive();
 	void setActive(bool state);
-	void setOnClick(void (*e)());
+	glm::vec3 getCenter();
 
 	void click();
 private:
 	bool selected = false;
 	std::array<glm::vec3, 2> bounds;
 	bool active = true;
+	glm::vec3 center;
 };
 

@@ -5,8 +5,8 @@
 "firerate":0.0,
 "radius":0.0,
 "upgrades":[
-  {"name":"arrow_tower"}, 
-  {"name":"bomb_tower"}],
+  {"icon":"arrow_tower.png"}, 
+  {"icon":"bomb_tower.png"}],
 "bricks":[
   {"objName":"4x4_thin", "mtlName":"grey", "txtFilename":"", "position":{"x":3.2,"y":0.0,"z":3.2}},
   {"objName":"4x4_thin", "mtlName":"grey", "txtFilename":"", "position":{"x":-3.2,"y":0.0,"z":-3.2}},
@@ -30,6 +30,5 @@
   {"objName":"4x1_bars", "mtlName":"lightgrey", "txtFilename":"", "position":{"x":-3.7,"y":5.8,"z":0.0}},
   {"objName":"2x1_window", "mtlName":"lightgrey", "txtFilename":"", "position":{"x":-3.7,"y":9.7,"z":0.0}},
   {"objName":"1x1", "mtlName":"lightgrey", "txtFilename":"", "position":{"x":-3.7,"y":0.0,"z":2.4}},
-  {"objName":"1x1", "mtlName":"lightgrey", "txtFilename":"", "position":{"x":-3.7,"y":0.0,"z":-2.4}}],
-"position":{"x":0.0,"y":0.0,"z":0.0}
+  {"objName":"1x1", "mtlName":"lightgrey", "txtFilename":"", "position":{"x":-3.7,"y":0.0,"z":-2.4}}]
 }

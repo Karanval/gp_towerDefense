@@ -21,11 +21,11 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 	std::shared_ptr<TowerController> towerC = towerObj->addComponent<TowerController>();
 	towerObj->name = d["name"].GetString();
 	towerC->setCost(d["cost"].GetInt());
-	// = d["damage"].GetString(); DAMAGE
+	towerC->setDamage(d["damage"].GetInt());
 	towerC->setFirerate(d["firerate"].GetFloat());
 	towerC->setRadius(d["radius"].GetFloat());
-	const Value& towerPos = d["position"];
-	towerC->setPosition(glm::vec3(towerPos["x"].GetFloat(), towerPos["y"].GetFloat(), towerPos["z"].GetFloat()));
+	const Value& upgrades = d["upgrades"];
+	for (SizeType i = 0; i < upgrades.Size(); i++) towerC->addUpgrade(upgrades[i]["icon"].GetString());
 	const Value& bricks = d["bricks"];
 	std::array<glm::vec3, 2> boundary = { glm::vec3(FLT_MAX), glm::vec3(FLT_MIN) };
 	for (SizeType i = 0; i < bricks.Size(); i++) {

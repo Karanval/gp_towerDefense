@@ -11,14 +11,15 @@ void TowerController::update(float deltaTime) {
 	if (!built) snapToGrid();
 }
 
-glm::vec3 TowerController::getPosition() {
+/*glm::vec3 TowerController::getPosition() {
 	return position;
-}
+}*/
 
-void TowerController::setPosition(glm::vec3 position) {
+/*void TowerController::setPosition(glm::vec3 position) {
 	TowerController::position = position;
+	gameObject->setPosition(position);
 	markDirty();
-}
+}*/
 
 void TowerController::onMouse(SDL_Event& event) {
 	switch (event.type) {
@@ -48,10 +49,12 @@ void TowerController::snapToGrid() {
 		if (field) {
 			glm::vec3 pos = field->getGameObject()->getPosition();
 			pos.y += clickable->getBounds()[1].y;
-			setPosition(pos);
+			gameObject->setPosition(pos);
+			//setPosition(pos);
 			glm::ivec2 gridPos = field->getGridPos();
 			unbuildable = !TowerDefense::instance->getGrid()->allowsTowers(gridPos.x, gridPos.y);
 			snapping = true;
+			markDirty();
 		}
 		else snapping = false;
 	}
@@ -62,6 +65,7 @@ void TowerController::build() {
 	if (clickable) clickable->setActive(true);
 	built = true;
 	snapping = false;
+	dirty = false;
 }
 
 bool TowerController::isUnbuildable() {
@@ -81,6 +85,12 @@ void TowerController::setCost(int cost) {
 }
 int TowerController::getCost() {
 	return cost;
+}
+void TowerController::setDamage(int damage) {
+	TowerController::damage = damage;
+}
+int TowerController::getDamage() {
+	return damage;
 }
 void TowerController::setFirerate(float firerate) {
 	TowerController::firerate = firerate;
