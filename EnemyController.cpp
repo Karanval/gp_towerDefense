@@ -1,4 +1,5 @@
 #include "EnemyController.hpp"
+#include "TowerDefense.hpp"
 
 EnemyController::EnemyController(GameObject* gameObject)
 	: Component(gameObject) {
@@ -55,6 +56,7 @@ void EnemyController::moveToNextWaypoint() {
 	else {
 		phys->setLinearVelocity(glm::vec2(0));
 		moving = false;
+		TowerDefense::instance->decrementHealthBy(1);
 	}
 }
 

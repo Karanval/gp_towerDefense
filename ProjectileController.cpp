@@ -31,7 +31,10 @@ void ProjectileController::update(float deltaTime) {
 		glm::vec3 pos = gameObject->getPosition();
 		gameObject->setPosition(glm::mix(startingPos, enemyPos, movementTime));
 		gameObject->setRotation(-glm::degrees(std::atan2(enemyPos.z - pos.z, enemyPos.x - pos.x)));
-		if (glm::distance(gameObject->getPosition(), enemyPos) > 0.1f) destinationReached = true;
+		if (glm::distance(gameObject->getPosition(), enemyPos) > 0.1f) {
+			destinationReached = true;
+			enemy->hurt(damage);
+		}
 		movementTime += deltaTime;
 	}
 }

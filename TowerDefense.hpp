@@ -23,6 +23,11 @@ public:
 	std::shared_ptr<ClickableComponent> TowerDefense::mouseToClickableObject();
 	std::shared_ptr<EnemyController> getClosestEnemy(glm::vec3 pos);
 	std::shared_ptr<Grid> getGrid();
+	void displayMessage(std::string message);
+	void TowerDefense::decrementHealthBy(int damage);
+	void TowerDefense::decrementGoldBy(int gold);
+	void TowerDefense::incrementHealthBy(int health);
+	void TowerDefense::incrementGoldBy(int gold);
 
 	static TowerDefense* instance;
 	static constexpr float32 timeStep = 1.0f / 60.0f;
@@ -52,6 +57,7 @@ private:
 	void drawBuildingOverview();
 	void drawUpgradeOverview();
 	void drawGUI();
+	void drawMessage();
 	bool rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec3, 2>& box);
 
 	b2World* world = nullptr;
@@ -85,6 +91,8 @@ private:
 	float fixedTime = 0.0f;
 	int gold = 0;
 	int lives = 0;
+	bool gameLost = false;
+	bool endMessageShown = false;
 
 	// GUI
 	int resourceMenuHeight = 50;
@@ -97,6 +105,14 @@ private:
 	std::shared_ptr<sre::Texture> basicImg;
 	std::shared_ptr<sre::Texture> backImg;
 	std::map<std::string, std::shared_ptr<sre::Texture>> loadedTextures;
+	std::string message;
+	bool showMessage = false;
+	float messageStart;
+	float messageFadeTime = 2.0f;
+	float messageStayTime = 3.0f;
+	ImVec4 messageCol = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+	ImVec2 messageWindowSize = ImVec2(180, 60);
+
 
 	friend class PhysicsComponent;
 };

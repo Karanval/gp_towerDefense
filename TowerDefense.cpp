@@ -36,6 +36,7 @@ TowerDefense::~TowerDefense() {
 }
 
 void TowerDefense::update(float deltaTime) {
+	if (endMessageShown) return;
 	fixedTime += deltaTime;
 	updateCamera(deltaTime);
 	updatePhysics();
@@ -44,6 +45,11 @@ void TowerDefense::update(float deltaTime) {
 		gameObjects[i]->update(deltaTime);
 		std::shared_ptr<ProjectileController> pc = gameObjects[i]->getComponent<ProjectileController>();
 		//if (pc && pc->isDestinationReached()) gameObjects[i].reset(); // <--------------------------------------------- FIX FIX FIX
+	}
+
+	if (lives <= 0 && !gameLost) {
+		displayMessage("You died!");
+		gameLost = true;
 	}
 }
 
@@ -412,7 +418,7 @@ void TowerDefense::setupGUI() {
 	ImFontAtlas* fonts = ImGui::GetIO().Fonts;
 	fonts->AddFontDefault();
 	std::string fontName = miscPath + "UIFont.ttf";
-	int fontSize = 26;
+	int fontSize = 36;
 	uiFont = fonts->AddFontFromFileTTF(fontName.c_str(), fontSize);
 	
 	// Images
@@ -451,10 +457,6 @@ void TowerDefense::drawResourceOverview() {
 void TowerDefense::drawBuildingOverview() {
 	ImVec2 winPos = ImVec2(0, sre::Renderer::instance->getWindowSize().y - bottomMenuHeight);
 	ImVec2 winSize = ImVec2(sre::Renderer::instance->getWindowSize().x, bottomMenuHeight);
-	ImVec4 background = ImVec4(0.0f, 0.0f, 0.5f, slideVal);
-	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);
-	ImVec4 transparent = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
-	ImVec2 imgMargin = ImVec2(/*right*/5, /*top*/5);
 	ImGui::SetNextWindowPos(winPos, ImGuiSetCond_Always);
 	ImGui::SetNextWindowSize(winSize, ImGuiSetCond_Always);
 	ImGui::PushFont(uiFont);
@@ -521,6 +523,7 @@ void TowerDefense::drawGUI() {
 	drawResourceOverview();
 	if (selectedClickable && selectedClickable->getGameObject()->getComponent<TowerController>()) drawUpgradeOverview();
 	else drawBuildingOverview();
+	if (showMessage) drawMessage();
 }
 
 std::shared_ptr<ModelLoader> TowerDefense::getModelLoader() {
@@ -546,6 +549,57 @@ std::shared_ptr<EnemyController> TowerDefense::getClosestEnemy(glm::vec3 pos) {
 	return closestEnemy;
 }
 
+void TowerDefense::decrementHealthBy(int damage) {
+	lives -= damage;
+}
+void TowerDefense::decrementGoldBy(int gold) {
+	TowerDefense::gold -= gold;
+}
+void TowerDefense::incrementHealthBy(int health) {
+	TowerDefense::lives += health;
+}
+void TowerDefense::incrementGoldBy(int gold) {
+	TowerDefense::gold += gold;
+}
+
+void TowerDefense::displayMessage(std::string message) {
+	TowerDefense::message = message;
+	showMessage = true;
+	messageStart = fixedTime;
+}
+
+void TowerDefense::drawMessage() {
+	float t = fixedTime - messageStart;
+	float a = 1.0f;
+	if (t < messageFadeTime) { // fade in
+		a = t / messageFadeTime;
+	}
+	else if (t < messageFadeTime + messageStayTime) { // stay
+		if (gameLost) endMessageShown = true;
+	}
+	else if (t < messageFadeTime + messageStayTime + messageFadeTime) { // fade out
+		a = 1.0f - (t - messageFadeTime - messageStayTime) / messageFadeTime;
+	}
+	else { // message end
+		showMessage = false;
+		return;
+	}
+	messageCol.w = a;
+	ImGui::SetNextWindowPos(ImVec2(sre::Renderer::instance->getWindowSize().x / 2 - messageWindowSize.x,
+								   sre::Renderer::instance->getWindowSize().y / 2 - messageWindowSize.y), ImGuiSetCond_Always);
+	ImGui::SetNextWindowSize(messageWindowSize, ImGuiSetCond_Always);
+	ImGui::PushFont(uiFont);
+	ImGui::PushStyleColor(ImGuiCol_Text, messageCol);
+	ImGui::PushStyleColor(ImGuiCol_Border, transparent);
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, transparent);
+	ImGui::Begin("MessageText", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+	ImGui::Text(message.c_str());
+	ImGui::End();
+	ImGui::PopFont();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+}
 
 int main() {
 	new TowerDefense();
