@@ -26,7 +26,9 @@ void TowerController::onMouse(SDL_Event& event) {
 	case SDL_MOUSEBUTTONDOWN:
 		if (!built && snapping) {
 			glm::ivec2 gridPos = field->getGridPos();
-			if (TowerDefense::instance->getGrid()->allowsTowers(gridPos.x, gridPos.y)) {
+			if (TowerDefense::instance->getGold() < cost) 
+				TowerDefense::instance->displayMessage("Not enough gold!", ImVec4(1.0f, 0.8f, 0.05f, 1.0f));
+			else if (TowerDefense::instance->getGrid()->allowsTowers(gridPos.x, gridPos.y)) {
 				build();
 			}
 		}
@@ -51,7 +53,7 @@ void TowerController::snapToGrid() {
 			pos.y += clickable->getBounds()[1].y;
 			gameObject->setPosition(pos);
 			glm::ivec2 gridPos = field->getGridPos();
-			unbuildable = !TowerDefense::instance->getGrid()->allowsTowers(gridPos.x, gridPos.y);
+			unbuildable = !TowerDefense::instance->getGrid()->allowsTowers(gridPos.x, gridPos.y) || TowerDefense::instance->getGold() < cost;
 			snapping = true;
 			markDirty();
 		}
@@ -61,6 +63,7 @@ void TowerController::snapToGrid() {
 
 void TowerController::build() {
 	std::shared_ptr<ClickableComponent> clickable = gameObject->getComponent<ClickableComponent>();
+	TowerDefense::instance->decrementGoldBy(cost);
 	if (clickable) clickable->setActive(true);
 	built = true;
 	snapping = false;

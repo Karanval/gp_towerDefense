@@ -418,8 +418,8 @@ void TowerDefense::setupGUI() {
 	ImFontAtlas* fonts = ImGui::GetIO().Fonts;
 	fonts->AddFontDefault();
 	std::string fontName = miscPath + "UIFont.ttf";
-	int fontSize = 36;
-	uiFont = fonts->AddFontFromFileTTF(fontName.c_str(), fontSize);
+	uiFont = fonts->AddFontFromFileTTF(fontName.c_str(), 26);
+	messageFont = fonts->AddFontFromFileTTF(fontName.c_str(), 46);
 	
 	// Images
 	basicImg = sre::Texture::create().withFile(modelLoader->texturePath + "basic_tower.png")
@@ -562,8 +562,9 @@ void TowerDefense::incrementGoldBy(int gold) {
 	TowerDefense::gold += gold;
 }
 
-void TowerDefense::displayMessage(std::string message) {
+void TowerDefense::displayMessage(std::string message, ImVec4 color) {
 	TowerDefense::message = message;
+	messageCol = color;
 	showMessage = true;
 	messageStart = fixedTime;
 }
@@ -588,7 +589,7 @@ void TowerDefense::drawMessage() {
 	ImGui::SetNextWindowPos(ImVec2(sre::Renderer::instance->getWindowSize().x / 2 - messageWindowSize.x,
 								   sre::Renderer::instance->getWindowSize().y / 2 - messageWindowSize.y), ImGuiSetCond_Always);
 	ImGui::SetNextWindowSize(messageWindowSize, ImGuiSetCond_Always);
-	ImGui::PushFont(uiFont);
+	ImGui::PushFont(messageFont);
 	ImGui::PushStyleColor(ImGuiCol_Text, messageCol);
 	ImGui::PushStyleColor(ImGuiCol_Border, transparent);
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, transparent);
@@ -599,6 +600,10 @@ void TowerDefense::drawMessage() {
 	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
+}
+
+int TowerDefense::getGold() {
+	return gold;
 }
 
 int main() {

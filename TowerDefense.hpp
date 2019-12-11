@@ -23,11 +23,12 @@ public:
 	std::shared_ptr<ClickableComponent> TowerDefense::mouseToClickableObject();
 	std::shared_ptr<EnemyController> getClosestEnemy(glm::vec3 pos);
 	std::shared_ptr<Grid> getGrid();
-	void displayMessage(std::string message);
+	void displayMessage(std::string message, ImVec4 color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
 	void TowerDefense::decrementHealthBy(int damage);
 	void TowerDefense::decrementGoldBy(int gold);
 	void TowerDefense::incrementHealthBy(int health);
 	void TowerDefense::incrementGoldBy(int gold);
+	int getGold();
 
 	static TowerDefense* instance;
 	static constexpr float32 timeStep = 1.0f / 60.0f;
@@ -73,7 +74,6 @@ private:
 	glm::vec3 camPos;
 	glm::vec3 lookat;
 	glm::vec3 upVec;
-	ImFont* uiFont;
 	std::shared_ptr<Grid> grid = nullptr;
 	std::shared_ptr<ModelLoader> modelLoader = nullptr;
 	glm::vec2 mousePos;
@@ -95,6 +95,8 @@ private:
 	bool endMessageShown = false;
 
 	// GUI
+	ImFont* uiFont;
+	ImFont* messageFont;
 	int resourceMenuHeight = 50;
 	int bottomMenuHeight = 180;
 	float slideVal = 1.0f;
@@ -109,9 +111,9 @@ private:
 	bool showMessage = false;
 	float messageStart;
 	float messageFadeTime = 2.0f;
-	float messageStayTime = 3.0f;
-	ImVec4 messageCol = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-	ImVec2 messageWindowSize = ImVec2(180, 60);
+	float messageStayTime = 0.5f;
+	ImVec4 messageCol;
+	ImVec2 messageWindowSize = ImVec2(280, 80);
 
 
 	friend class PhysicsComponent;
