@@ -9,17 +9,17 @@ TowerController::TowerController(GameObject* gameObject) : Component(gameObject)
 
 void TowerController::update(float deltaTime) {
 	if (!built) snapToGrid();
+	else {
+		if (firerate * (timeSinceBuilt - lastShotTime) > 1.0f) {
+			std::shared_ptr<EnemyController> target = TowerDefense::instance->getClosestEnemy(gameObject->getPosition());
+			if (target && glm::distance(target->getGameObject()->getPosition(), gameObject->getPosition()) <= radius) {
+				shoot(target);
+				lastShotTime = timeSinceBuilt;
+			}
+		}
+		timeSinceBuilt += deltaTime;
+	}
 }
-
-/*glm::vec3 TowerController::getPosition() {
-	return position;
-}*/
-
-/*void TowerController::setPosition(glm::vec3 position) {
-	TowerController::position = position;
-	gameObject->setPosition(position);
-	markDirty();
-}*/
 
 void TowerController::onMouse(SDL_Event& event) {
 	switch (event.type) {
@@ -50,7 +50,6 @@ void TowerController::snapToGrid() {
 			glm::vec3 pos = field->getGameObject()->getPosition();
 			pos.y += clickable->getBounds()[1].y;
 			gameObject->setPosition(pos);
-			//setPosition(pos);
 			glm::ivec2 gridPos = field->getGridPos();
 			unbuildable = !TowerDefense::instance->getGrid()->allowsTowers(gridPos.x, gridPos.y);
 			snapping = true;
@@ -117,11 +116,12 @@ std::string TowerController::getProjectile() {
 	return projectile;
 }
 
-void TowerController::shoot() {
+void TowerController::shoot(std::shared_ptr<EnemyController> target) {
 	std::shared_ptr<GameObject> projectileObj = TowerDefense::instance->createGameObject();
 	std::shared_ptr<ProjectileController> projectileC = projectileObj->addComponent<ProjectileController>();
 	TowerDefense::instance->getModelLoader()->loadModel(projectileObj, projectile, "lightgrey");
+	projectileC->setStartingPos(gameObject->getComponent<ClickableComponent>()->getCenter());
+	projectileC->setTarget(target);
 	projectileC->setSpeed(speed);
-	projectileObj->setPosition(gameObject->getPosition() + glm::vec3(30.0f, 30.0f, 30.0f));
 
 }

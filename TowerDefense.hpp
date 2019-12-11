@@ -21,6 +21,7 @@ public:
 	std::shared_ptr<ModelLoader> getModelLoader();
 	std::shared_ptr<ClickableComponent> TowerDefense::screenToClickableObject(glm::vec2 screenCoord);
 	std::shared_ptr<ClickableComponent> TowerDefense::mouseToClickableObject();
+	std::shared_ptr<EnemyController> getClosestEnemy(glm::vec3 pos);
 	std::shared_ptr<Grid> getGrid();
 
 	static TowerDefense* instance;

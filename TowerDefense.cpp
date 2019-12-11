@@ -39,7 +39,12 @@ void TowerDefense::update(float deltaTime) {
 	fixedTime += deltaTime;
 	updateCamera(deltaTime);
 	updatePhysics();
-	
+
+	for (int i = 0; i < gameObjects.size(); i++) {
+		gameObjects[i]->update(deltaTime);
+		std::shared_ptr<ProjectileController> pc = gameObjects[i]->getComponent<ProjectileController>();
+		//if (pc && pc->isDestinationReached()) gameObjects[i].reset(); // <--------------------------------------------- FIX FIX FIX
+	}
 }
 
 void TowerDefense::updateCamera(float deltaTime) {
@@ -73,10 +78,6 @@ void TowerDefense::updateCamera(float deltaTime) {
 		lookat -= upVec * 0.05f;
 	}
 	camera.lookAt(camPos + zoomDist, lookat, upVec);
-
-	for (int i = 0; i < gameObjects.size(); i++) {
-		gameObjects[i]->update(deltaTime);
-	}
 }
 
 void TowerDefense::updatePhysics() {
@@ -221,18 +222,34 @@ void TowerDefense::keyInput(SDL_Event& event) {
 			break;
 		/* DEBUGGING */
 		case SDLK_1:
-			for (std::shared_ptr<GameObject> go : gameObjects) {
-				std::shared_ptr<TowerController> tc = go->getComponent<TowerController>();
-				if (tc) tc->shoot();
-			}
+			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
+				gameObjects[i]->getComponent<TowerController>()->setRadius(gameObjects[i]->getComponent<TowerController>()->getRadius() + 1);
 			break;
 		case SDLK_2:
+			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
+				gameObjects[i]->getComponent<TowerController>()->setRadius(gameObjects[i]->getComponent<TowerController>()->getRadius() - 1);
 			break;
 		case SDLK_3:
 			gold++;
 			break;
 		case SDLK_4:
 			gold--;
+			break;
+		case SDLK_5:
+			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
+				gameObjects[i]->getComponent<TowerController>()->setFirerate(gameObjects[i]->getComponent<TowerController>()->getFirerate() + 1);
+			break;
+		case SDLK_6:
+			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
+				gameObjects[i]->getComponent<TowerController>()->setFirerate(gameObjects[i]->getComponent<TowerController>()->getFirerate() - 1);
+			break;
+		case SDLK_7:
+			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
+				gameObjects[i]->getComponent<TowerController>()->setSpeed(gameObjects[i]->getComponent<TowerController>()->getSpeed() + 1);
+			break;
+		case SDLK_8:
+			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
+				gameObjects[i]->getComponent<TowerController>()->setSpeed(gameObjects[i]->getComponent<TowerController>()->getSpeed() - 1);
 			break;
 		/* DEBUGGING END */
 		}
@@ -469,7 +486,7 @@ void TowerDefense::drawUpgradeOverview() {
 	ImGui::Text(tower->getGameObject()->name.c_str());
 	ImGui::Text(("Cost: " + std::to_string(tower->getCost())).c_str());
 	ImGui::Text(("damage: " + std::to_string(tower->getDamage())).c_str());
-	ImGui::Text(("Speed: " + std::to_string(tower->getFirerate())).c_str());
+	ImGui::Text(("Firerate: " + std::to_string(tower->getFirerate())).c_str());
 	ImGui::Text(("radius: " + std::to_string(tower->getRadius())).c_str());
 	//ImGui::EndGroup();
 	std::vector<std::string> *upgrades = tower->getUpgrades();
@@ -508,6 +525,22 @@ std::shared_ptr<ModelLoader> TowerDefense::getModelLoader() {
 std::shared_ptr<Grid> TowerDefense::getGrid() {
 	return grid;
 }
+
+std::shared_ptr<EnemyController> TowerDefense::getClosestEnemy(glm::vec3 pos) {
+	std::shared_ptr<EnemyController> closestEnemy = nullptr;
+	float closestDist = FLT_MAX;
+	for (int i = 0; i < gameObjects.size(); i++) {
+		std::shared_ptr<EnemyController> enemy = gameObjects[i]->getComponent<EnemyController>();
+		float dist = glm::distance(pos, gameObjects[i]->getPosition());
+		if (enemy && dist < closestDist) {
+			closestEnemy = enemy;
+			closestDist = dist;
+		}
+	}
+
+	return closestEnemy;
+}
+
 
 int main() {
 	new TowerDefense();
