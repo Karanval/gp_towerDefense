@@ -1,6 +1,4 @@
 #include "ProjectileController.hpp"
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/vector_angle.hpp>
 
 ProjectileController::ProjectileController(GameObject* gameObject) : Component(gameObject) {}
 
@@ -32,7 +30,7 @@ void ProjectileController::update(float deltaTime) {
 		glm::vec3 enemyPos = enemy->getGameObject()->getPosition();
 		glm::vec3 pos = gameObject->getPosition();
 		gameObject->setPosition(glm::mix(startingPos, enemyPos, movementTime));
-		gameObject->setRotation(glm::degrees(atan((enemyPos.y - pos.y) / (enemyPos.x - pos.x))));
+		gameObject->setRotation(-glm::degrees(std::atan2(enemyPos.z - pos.z, enemyPos.x - pos.x)));
 		if (glm::distance(gameObject->getPosition(), enemyPos) > 0.1f) destinationReached = true;
 		movementTime += deltaTime;
 	}
