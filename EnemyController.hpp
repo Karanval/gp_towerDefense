@@ -23,19 +23,19 @@ public:
 
 	int getCoinDrop();
 
+	void hurt(float hurtAmount);
+
 private:
-	glm::vec2 windowPosition;
 	glm::vec2 direction; 
 	glm::vec2 pos;
 	std::shared_ptr<PhysicsComponent> phys;
 	std::vector<glm::vec2>* path;
+	int waypointIndex;
 	int initialHealth;
 	int currentHealth;
 	int coinDrop;
 	int width;
-	int waypointIndex;
 	float damage;
-	float totalTime;
 	float tileSize = 32.0f;
 	float speed = 0.1f;
 	bool moving = true;

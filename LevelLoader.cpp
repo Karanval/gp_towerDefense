@@ -17,7 +17,7 @@ void LevelLoader::generateLevel(std::vector<std::vector<int>> tileValues, glm::v
 		std::vector<std::shared_ptr<GameObject>> row;
 		for (int j = 0; j < tileValues[0].size(); j++) {
 			tileType = tileValues[i][j];
-			placeTile(tileType, tileSize, offset, i, j, gObj);
+			placeTile(tileType, tileSize, offset, j, i, gObj);
 		}
 	}
 }

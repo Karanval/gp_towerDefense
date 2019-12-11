@@ -16,13 +16,26 @@ public:
 
 	void setWaitTime(float time);
 
-	std::shared_ptr<EnemyController> createMonster();
+	void setWaveAmount(int waveAmount);
+
+	void setWaveTime(float waveTime);
+
+	std::shared_ptr<EnemyController> spawnEnemy();
+
 private:
-	//Timer
-	float time = 0;
+	float waveCurrentWait = 0;
+	float enemyCurrentWait = 0;
+	/* How much time between each enemy spawn*/
 	float waitTimeAmount;
+	/* Hos much time is between waves*/
+	float waveTime;
+	/* How many enemies are spawned per wave*/
+	int waveAmount;
+	int enemiesSpawn = 0;
+	bool spawning = false;
+
 	std::vector<std::shared_ptr<GameObject>>* gameObjects;
-	std::vector<glm::vec2> monsterPath;
+	std::vector<glm::vec2> enemyPath;
 
 };
 

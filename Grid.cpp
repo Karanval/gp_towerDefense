@@ -30,6 +30,12 @@ void Grid::loadMap(std::string filename) {
 		}
 		tileValues.push_back(row);
 	}
+	const Value& path = d["path"];
+	for (int i = 0; i < path.Size(); i++) {
+		const Value& point = path[i];
+		enemyPath.push_back(glm::vec2(point["x"].GetInt() + Grid::offset.x, 
+			point["y"].GetInt() + Grid::offset.y));
+	}
 }
 
 int Grid::getTile(int x, int y) {
@@ -81,4 +87,8 @@ void Grid::changeTileType(int x, int y, int newTileType) {
 
 glm::vec2 Grid::getOffset() {
 	return offset;
+}
+
+std::vector<glm::vec2> Grid::getEnemyPath() {
+	return enemyPath;
 }
