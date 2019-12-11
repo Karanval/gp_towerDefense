@@ -42,3 +42,7 @@ void BrickController::markDirty() {
 bool BrickController::isDirty() {
 	return dirty;
 }
+
+void BrickController::setupDefaultMaterial() {
+	defaultMaterial = gameObject->getComponent<MaterialComponent>()->getMaterial();
+}
