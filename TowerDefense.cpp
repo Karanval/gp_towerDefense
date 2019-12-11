@@ -142,6 +142,9 @@ void TowerDefense::render() {
 	if (doDebugDraw) {
 		world->DrawDebugData();
 		rp.drawLines(debugDraw.getLines());
+		for (int l = 0; l < lights.lightCount(); l++) {
+			rp.draw(sre::Mesh::create().withCube(1.0f).build(), glm::translate(lights.getLight(l)->position), sre::Shader::getUnlit()->createMaterial());
+		}
 		debugDraw.clear();
 	}
 	drawGUI();
@@ -401,13 +404,13 @@ void TowerDefense::setupLights() {
 	glm::vec2 offset = grid->getOffset();
 	glm::vec3 size = grid->getTileSize();
 
-	for (int i = 0; i < grid->getHeight(); i++) {
-		for (int j = 0; j < grid->getWidth(); j++) {
+	for (int i = 0; i < grid->getHeight() / size.y; i++) {
+		for (int j = 0; j < grid->getWidth() / size.x; j++) {
 			sre::Light light = sre::Light();
 			light.color = glm::vec3(1.0f, 1.0f, 1.0f);
-			light.position = glm::vec3((offset.x + i) * size.x, 2 * size.z, (offset.y + j) * size.y);
+			light.position = glm::vec3((offset.x + i) * size.x, 2 * size.y, (offset.y + j) * size.z);
 			light.lightType = sre::LightType::Point;
-			light.range = 100.0f;
+			light.range = 1000.0f;
 			lights.addLight(light);
 		}
 	}
