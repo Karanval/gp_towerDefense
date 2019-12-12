@@ -4,6 +4,7 @@
 #include "MaterialComponent.hpp"
 #include "ModelLoader.hpp"
 #include "Grid.hpp"
+#include "AudioManager.hpp"
 #include "LevelLoader.hpp"
 #include "PhysicsComponent.hpp"
 #include "ClickableComponent.hpp"
@@ -49,6 +50,7 @@ void TowerDefense::update(float deltaTime) {
 
 	if (lives <= 0 && !gameLost) {
 		displayMessage("You died!");
+		audioManager->play(END_MUSIC);
 		gameLost = true;
 	}
 }
@@ -177,6 +179,11 @@ void TowerDefense::init() {
 	//spawner->startSpawningCycle({glm::vec2(5-3,-4)/*, glm::vec2(-3,-3)*/ });
 	spawner->startSpawningCycle(enemyPath);
 	gameObjects.push_back(spawnObj);
+
+	std::shared_ptr<GameObject> am = GameObject::createGameObject();
+	audioManager = am->addComponent<AudioManager>();
+	// Static variable comes from AudioManager
+	audioManager->play(MAIN_MUSIC);
 }
 
 void TowerDefense::initPhysics() {

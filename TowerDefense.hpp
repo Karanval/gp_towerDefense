@@ -11,6 +11,7 @@
 #include "TowerLoader.hpp"
 #include "Box2DDebugDraw.hpp"
 #include "Grid.hpp"
+#include "AudioManager.hpp"
 
 class TowerDefense : public b2ContactListener
 {
@@ -68,6 +69,7 @@ private:
 	const float  physicsScale = 100;
 	std::map<b2Fixture*, PhysicsComponent*> physicsComponentLookup;
 	std::shared_ptr<SpawnController> spawner;
+	std::shared_ptr<AudioManager> audioManager;
 	sre::SDLRenderer renderer;
 	sre::Camera camera;
 	std::vector<std::shared_ptr<GameObject>> gameObjects;
