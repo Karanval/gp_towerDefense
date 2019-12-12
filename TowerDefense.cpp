@@ -536,7 +536,6 @@ void TowerDefense::drawGUI() {
 	drawResourceOverview();
 	if (selectedClickable && selectedClickable->getGameObject()->getComponent<TowerController>()) drawUpgradeOverview();
 	else drawBuildingOverview();
-	drawEnemyHealth();
 	if (showMessage) drawMessage();
 }
 
@@ -546,6 +545,10 @@ std::shared_ptr<ModelLoader> TowerDefense::getModelLoader() {
 
 std::shared_ptr<Grid> TowerDefense::getGrid() {
 	return grid;
+}
+
+sre::Camera TowerDefense::getCamera() {
+	return camera;
 }
 
 std::shared_ptr<EnemyController> TowerDefense::getClosestEnemy(glm::vec3 pos) {
@@ -616,7 +619,7 @@ void TowerDefense::drawMessage() {
 	ImGui::PopStyleColor();
 }
 
-void TowerDefense::drawEnemyHealth() {
+/*void TowerDefense::drawEnemyHealth() {
 	std::shared_ptr<EnemyController> enemy;
 
 	for (int i = 0; i < gameObjects.size(); i++) {
@@ -627,7 +630,7 @@ void TowerDefense::drawEnemyHealth() {
 			float dist = glm::distance(camPos, lookat); // glm::distance(camera.getPosition(), pos);
 			//glm::mat4 inverseViewTransform = glm::inverse(camera.getViewTransform());
 			pos = camera.getViewTransform() * glm::vec4(pos.x, pos.y, pos.z, 1.0f); // transform to XY-view plane
-			pos = pos * 1000.0f / dist; // normalize
+			pos = pos * 1200.0f / dist; // normalize
 			ImVec2 screenCoord = ImVec2(winSize.x / 2 + pos.x - enemyHealthBarSize.x / 2,
 										winSize.y / 2 - bottomMenuHeight - pos.y);
 			ImGui::SetNextWindowPos(screenCoord, ImGuiSetCond_Always);
@@ -637,7 +640,7 @@ void TowerDefense::drawEnemyHealth() {
 			ImGui::End();
 		}
 	}
-}
+}*/
 
 int TowerDefense::getGold() {
 	return gold;

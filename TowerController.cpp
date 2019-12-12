@@ -126,5 +126,6 @@ void TowerController::shoot(std::shared_ptr<EnemyController> target) {
 	projectileC->setStartingPos(gameObject->getComponent<ClickableComponent>()->getCenter());
 	projectileC->setTarget(target);
 	projectileC->setSpeed(speed);
+	projectileC->setDamage(damage);
 
 }
