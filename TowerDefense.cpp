@@ -99,7 +99,7 @@ void TowerDefense::updatePhysics() {
 		auto gameObject = phys.second->getGameObject();
 		// TODO constant Y
 		gameObject->setPosition(glm::vec3((position.x * physicsScale),gameObject->getPosition().y, position.y * physicsScale));
-		gameObject->setRotation(angle);
+		gameObject->setRotation(gameObject->getRotation() + glm::vec3(0, 0, angle));
 	}
 }
 
@@ -115,7 +115,10 @@ void TowerDefense::render() {
 		std::shared_ptr<GameObject> go = gameObjects[i];
 		if (go->getComponent<MeshComponent>()) {
 			rp.draw(go->getComponent<MeshComponent>()->getMesh(), 
-					glm::translate(go->getPosition()) * glm::rotate(glm::radians(go->getRotation()), glm::vec3(0, 1, 0)),
+					glm::translate(go->getPosition()) * 
+					glm::rotate(glm::radians(go->getRotation().x), glm::vec3(1, 0, 0)) *
+					glm::rotate(glm::radians(go->getRotation().y), glm::vec3(0, 1, 0)) *
+					glm::rotate(glm::radians(go->getRotation().z), glm::vec3(0, 0, 1)),
 					go->getComponent<MaterialComponent>()->getMaterial());
 		}
 		if (doDebugDraw) {
@@ -526,6 +529,7 @@ void TowerDefense::drawGUI() {
 	drawResourceOverview();
 	if (selectedClickable && selectedClickable->getGameObject()->getComponent<TowerController>()) drawUpgradeOverview();
 	else drawBuildingOverview();
+	drawEnemyHealth();
 	if (showMessage) drawMessage();
 }
 
@@ -603,6 +607,29 @@ void TowerDefense::drawMessage() {
 	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
+}
+
+void TowerDefense::drawEnemyHealth() {
+	std::shared_ptr<EnemyController> enemy;
+
+	for (int i = 0; i < gameObjects.size(); i++) {
+		enemy = gameObjects[i]->getComponent<EnemyController>();
+		glm::vec2 winSize = sre::Renderer::instance->getWindowSize();
+		if (enemy) {
+			glm::vec3 pos = enemy->getGameObject()->getPosition();
+			float dist = glm::distance(camPos, lookat); // glm::distance(camera.getPosition(), pos);
+			//glm::mat4 inverseViewTransform = glm::inverse(camera.getViewTransform());
+			pos = camera.getViewTransform() * glm::vec4(pos.x, pos.y, pos.z, 1.0f); // transform to XY-view plane
+			pos = pos * 1000.0f / dist; // normalize
+			ImVec2 screenCoord = ImVec2(winSize.x / 2 + pos.x - enemyHealthBarSize.x / 2,
+										winSize.y / 2 - bottomMenuHeight - pos.y);
+			ImGui::SetNextWindowPos(screenCoord, ImGuiSetCond_Always);
+			ImGui::SetNextWindowSize(enemyHealthBarSize, ImGuiSetCond_Always);
+			ImGui::Begin("HealthBar" + i, nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+			ImGui::Dummy(enemyHealthBarSize);
+			ImGui::End();
+		}
+	}
 }
 
 int TowerDefense::getGold() {

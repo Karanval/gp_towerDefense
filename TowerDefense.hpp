@@ -59,6 +59,7 @@ private:
 	void drawUpgradeOverview();
 	void drawGUI();
 	void drawMessage();
+	void drawEnemyHealth();
 	bool rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec3, 2>& box);
 
 	b2World* world = nullptr;
@@ -114,6 +115,7 @@ private:
 	float messageStayTime = 0.5f;
 	ImVec4 messageCol;
 	ImVec2 messageWindowSize = ImVec2(280, 80);
+	ImVec2 enemyHealthBarSize = ImVec2(80, 30);
 
 
 	friend class PhysicsComponent;

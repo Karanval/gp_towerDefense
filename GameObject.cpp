@@ -26,11 +26,11 @@ void GameObject::setPosition(const glm::vec3 &position) {
     GameObject::position = position;
 }
 
-float GameObject::getRotation() const {
+const glm::vec3 GameObject::getRotation() const {
     return rotation;
 }
 
-void GameObject::setRotation(float rotation) {
+void GameObject::setRotation(const glm::vec3 &rotation) {
     GameObject::rotation = rotation;
 }
 

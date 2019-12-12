@@ -5,7 +5,7 @@
 SpawnController::SpawnController(GameObject* gameObj) :
 	Component(gameObj) {
 	waitTimeAmount = 0.5;
-	waveTime = 10;
+	waveTime = 1;
 	waveAmount = 4;
 }
 
