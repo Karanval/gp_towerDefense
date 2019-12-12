@@ -6,6 +6,7 @@ class EnemyController : public Component {
 public:
 	//explicit EnemyController(GameObject* gameObject);
 	explicit EnemyController(GameObject* gameObject);
+	~EnemyController();
 
 	void init(float health, float damage, int coinDrop, std::vector<glm::vec2>* path);
 
@@ -23,15 +24,17 @@ public:
 
 	int getCoinDrop();
 
-	void hurt(float hurtAmount);
-
-	bool isDead = false;
+	void hurt(int hurtAmount);
 
 private:
 	glm::vec2 direction; 
 	glm::vec2 pos;
 	std::shared_ptr<PhysicsComponent> phys;
 	std::vector<glm::vec2>* path;
+	std::vector<std::shared_ptr<GameObject>> healthPoints;
+	glm::vec3 hpSize;
+	sre::Color healthColor = sre::Color(0, 1, 0, 1);
+	sre::Color missingHealthColor = sre::Color(1, 0, 0, 1);
 	int waypointIndex;
 	int coinDrop;
 	int width;

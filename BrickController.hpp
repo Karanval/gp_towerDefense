@@ -27,4 +27,3 @@ private:
 	std::shared_ptr<sre::Material> defaultMaterial;
 	std::shared_ptr<sre::Material> unbuildableMaterial;
 };
-

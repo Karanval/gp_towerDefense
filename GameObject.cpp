@@ -35,11 +35,11 @@ void GameObject::setPosition(const glm::vec3 &position) {
     GameObject::position = position;
 }
 
-float GameObject::getRotation() const {
+const glm::vec3 GameObject::getRotation() const {
     return rotation;
 }
 
-void GameObject::setRotation(float rotation) {
+void GameObject::setRotation(const glm::vec3 &rotation) {
     GameObject::rotation = rotation;
 }
 
@@ -47,6 +47,14 @@ void GameObject::update(float deltaTime) {
     for (auto& comp : components){
         comp->update(deltaTime);
     }
+}
+
+bool GameObject::isMarkedForDeath() {
+	return markedForDeath;
+}
+
+void GameObject::die() {
+	markedForDeath = true;
 }
 
 const std::vector<std::shared_ptr<Component>> &GameObject::getComponents() {

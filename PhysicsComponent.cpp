@@ -126,3 +126,14 @@ void PhysicsComponent::moveTo(glm::vec2 pos) {
 glm::vec2 PhysicsComponent::getPosition() {
 	return glm::vec2(body->GetPosition().x, body->GetPosition().y);
 }
+
+void PhysicsComponent::applyBlastImpulse(b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower) {
+	b2Vec2 blastDir = applyPoint - blastCenter;
+	float distance = blastDir.Normalize();
+	//ignore bodies exactly at the blast point - blast direction is undefined
+	if (distance == 0)
+		return;
+	float invDistance = 1 / distance;
+	float impulseMag = blastPower * invDistance * invDistance;
+	body->ApplyLinearImpulse(impulseMag * blastDir, applyPoint, true);
+}

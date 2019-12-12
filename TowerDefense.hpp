@@ -20,19 +20,22 @@ public:
 	TowerDefense();
 	std::shared_ptr<GameObject> createGameObject();
 	std::shared_ptr<ModelLoader> getModelLoader();
-	std::shared_ptr<ClickableComponent> TowerDefense::screenToClickableObject(glm::vec2 screenCoord);
-	std::shared_ptr<ClickableComponent> TowerDefense::mouseToClickableObject();
+	std::shared_ptr<ClickableComponent> screenToClickableObject(glm::vec2 screenCoord);
+	std::shared_ptr<ClickableComponent> mouseToClickableObject();
 	std::shared_ptr<EnemyController> getClosestEnemy(glm::vec3 pos);
 	std::shared_ptr<Grid> getGrid();
 	void displayMessage(std::string message, ImVec4 color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
-	void TowerDefense::decrementHealthBy(int damage);
-	void TowerDefense::decrementGoldBy(int gold);
-	void TowerDefense::incrementHealthBy(int health);
-	void TowerDefense::incrementGoldBy(int gold);
+	void decrementHealthBy(int damage);
+	void decrementGoldBy(int gold);
+	void incrementHealthBy(int health);
+	void incrementGoldBy(int gold);
 	int getGold();
+	sre::Camera getCamera();
+	void removeGameObject(GameObject* go);
 
 	static TowerDefense* instance;
 	static constexpr float32 timeStep = 1.0f / 60.0f;
+	const float  physicsScale = 100;
 
 private:
 	~TowerDefense();
@@ -65,7 +68,6 @@ private:
 	b2World* world = nullptr;
 	Box2DDebugDraw debugDraw;
 	bool doDebugDraw = false;
-	const float  physicsScale = 100;
 	std::map<b2Fixture*, PhysicsComponent*> physicsComponentLookup;
 	std::shared_ptr<SpawnController> spawner;
 	std::shared_ptr<AudioManager> audioManager;
@@ -80,6 +82,7 @@ private:
 	std::shared_ptr<ModelLoader> modelLoader = nullptr;
 	glm::vec2 mousePos;
 	std::shared_ptr<ClickableComponent> selectedClickable = nullptr;
+	std::shared_ptr<TowerController> towerBeingBuilt = nullptr;
 	std::vector<glm::vec2> enemyPath;
 	
 	bool fwd = false;
@@ -116,6 +119,7 @@ private:
 	float messageStayTime = 0.5f;
 	ImVec4 messageCol;
 	ImVec2 messageWindowSize = ImVec2(280, 80);
+	ImVec2 enemyHealthBarSize = ImVec2(80, 30);
 
 
 	friend class PhysicsComponent;

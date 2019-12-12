@@ -5,7 +5,7 @@ SpriteComponent::SpriteComponent(GameObject* gameObject) : Component(gameObject)
 
 void SpriteComponent::renderSprite(sre::SpriteBatch::SpriteBatchBuilder& spriteBatchBuilder) {
 	sprite.setPosition(gameObject->getPosition());
-	sprite.setRotation(gameObject->getRotation());
+	sprite.setRotation(gameObject->getRotation().y);
 	spriteBatchBuilder.addSprite(sprite);
 }
 

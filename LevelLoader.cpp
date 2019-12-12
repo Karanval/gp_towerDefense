@@ -8,6 +8,7 @@
 #include "GameObject.hpp"
 #include "TowerDefense.hpp"
 #include "FieldController.hpp"
+#include "TowerController.hpp"
 
 
 void LevelLoader::generateLevel(std::vector<std::vector<int>> tileValues, glm::vec3& tileSize, glm::vec2& offset, 
@@ -35,6 +36,11 @@ void LevelLoader::placeTile(int tileType, glm::vec3 tileSize, glm::vec2 offset, 
 	case 7: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_southwest", "terrain", "terrain.png"); break;
 	case 8: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_west", "terrain", "terrain.png"); break;
 	case 9: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_northwest", "terrain", "terrain.png"); break;
+	case 10:
+		TowerDefense::instance->getModelLoader()->loadModel(obj, "gate", "gate", "gate.png");
+		obj->addComponent<TowerController>();
+		obj->getComponent<TowerController>()->build();
+		break;
 	default: TowerDefense::instance->getModelLoader()->loadModel(obj, "path", "path", "path.png"); break; // error
 	}
 	obj->setPosition(glm::vec3((offset.x + x) * tileSize.x, 0, (offset.y + z) * tileSize.y));
@@ -49,25 +55,4 @@ void LevelLoader::placeTile(int tileType, glm::vec3 tileSize, glm::vec2 offset, 
 	nameStream << "Tile " << x << ", " << z;
 	obj->name = nameStream.str();
 	gObj->push_back(obj);
-	/*'std::vector<glm::vec3>vertexPositions = {
-		glm::vec3(x,0,z), glm::vec3(x,0,z + tileSize.x), glm::vec3(x + tileSize.x,0,z),
-		glm::vec3(x + tileSize.x,0,z + tileSize.x), glm::vec3(x + tileSize.x,0,z), glm::vec3(x,0,z + tileSize.x)
-
-	};
-	glm::vec3 position(x, 0, z);
-	std::shared_ptr<sre::Material> material = sre::Shader::getUnlit()->createMaterial();
-	sre::Color color;
-	static auto tile = sre::Mesh::create().withPositions(vertexPositions).build();*/
-	/*switch (tileType) {
-		case 0:
-			color = sre::Color(.486, .702, .396, 1);
-			break;
-		case 1:
-			color = sre::Color(.604, .743, .502, 1);
-			break;
-		default:
-			color = sre::Color(0, 0, 1, 1);
-	}
-	material->setColor(color);
-	rp.draw(tile, glm::translate(glm::mat4(1.f), position), material);*/
 }

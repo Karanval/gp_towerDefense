@@ -45,23 +45,22 @@ void TowerDefense::update(float deltaTime) {
 
 	std::vector<int> toRemove;
 	for (int i = 0; i < gameObjects.size(); i++) {
-		gameObjects[i]->update(deltaTime);
-		std::shared_ptr<ProjectileController> pc = gameObjects[i]->getComponent<ProjectileController>();
-		//if (pc && pc->isDestinationReached()) gameObjects[i].reset(); // <--------------------------------------------- FIX FIX FIX
-
-		std::shared_ptr<EnemyController> ec = gameObjects[i]->getComponent<EnemyController>();
-		if (ec && ec->isDead) {
-			gold += ec->getCoinDrop();
+		if (gameObjects[i]->isMarkedForDeath()) /*gameObjects.erase(gameObjects.begin() + i)*/
 			toRemove.push_back(i);
-		}
+		else gameObjects[i]->update(deltaTime);
 	}
 
 	for (int i = 0; i < toRemove.size(); i++) {
 		int index = toRemove[i];
+		printf("REMOVED %s\n", gameObjects[index]->name);
+		auto ec = gameObjects[index]->getComponent<EnemyController>();
+		if (ec) gold += ec->getCoinDrop();
 
 		std::shared_ptr<PhysicsComponent> phys = gameObjects[index]->getComponent<PhysicsComponent>();
-		auto physB = physicsComponentLookup.find(phys->fixture);
-		deregisterPhysicsComponent(physB->second);
+		if (phys) {
+			auto physB = physicsComponentLookup.find(phys->fixture);
+			deregisterPhysicsComponent(physB->second);
+		}
 		
 		gameObjects[index]->cleanUp();
 		
@@ -70,6 +69,7 @@ void TowerDefense::update(float deltaTime) {
 	}
 
 	if (lives <= 0 && !gameLost) {
+		//TODO game restart option i.e. press 'space' to restart
 		displayMessage("You died!");
 		audioManager->play(END_MUSIC);
 		gameLost = true;
@@ -120,9 +120,10 @@ void TowerDefense::updatePhysics() {
 		auto position = phys.second->body->GetPosition();
 		float angle = phys.second->body->GetAngle();
 		auto gameObject = phys.second->getGameObject();
-		// TODO constant Y
+
+		if (!gameObject) continue;
 		gameObject->setPosition(glm::vec3((position.x * physicsScale),gameObject->getPosition().y, position.y * physicsScale));
-		gameObject->setRotation(angle);
+		gameObject->setRotation(gameObject->getRotation() + glm::vec3(0, 0, angle));
 	}
 }
 
@@ -138,7 +139,10 @@ void TowerDefense::render() {
 		std::shared_ptr<GameObject> go = gameObjects[i];
 		if (go->getComponent<MeshComponent>()) {
 			rp.draw(go->getComponent<MeshComponent>()->getMesh(), 
-					glm::translate(go->getPosition()) * glm::rotate(glm::radians(go->getRotation()), glm::vec3(0, 1, 0)),
+					glm::translate(go->getPosition()) * 
+					glm::rotate(glm::radians(go->getRotation().x), glm::vec3(1, 0, 0)) *
+					glm::rotate(glm::radians(go->getRotation().y), glm::vec3(0, 1, 0)) *
+					glm::rotate(glm::radians(go->getRotation().z), glm::vec3(0, 0, 1)),
 					go->getComponent<MaterialComponent>()->getMaterial());
 		}
 		if (doDebugDraw) {
@@ -192,7 +196,6 @@ void TowerDefense::init() {
 	std::shared_ptr<GameObject> spawnObj = GameObject::createGameObject();
 	spawner = spawnObj->addComponent<SpawnController>();
 	spawner->setGameObjects(&gameObjects);
-	// TODO: replace with actual path when Grid is ready
 
 	//spawner->startSpawningCycle({glm::vec2(5-3,-4)/*, glm::vec2(-3,-3)*/ });
 	spawner->startSpawningCycle(enemyPath);
@@ -524,8 +527,14 @@ void TowerDefense::drawBuildingOverview() {
 	ImGui::SetCursorPosX(winSize.x - 128 + imgMargin.x);
 	ImGui::SetCursorPosY(winSize.y - bottomMenuHeight + imgMargin.y);
 	if (ImGui::ImageButton(basicImg->getNativeTexturePtr(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) {
+		if (towerBeingBuilt) {
+			if (!towerBeingBuilt->isBuilt()) towerBeingBuilt->getGameObject()->die();
+			towerBeingBuilt.reset();
+		}
 		std::shared_ptr<GameObject> obj = createGameObject();
 		TowerLoader::loadTower(obj, &gameObjects, "basic");
+		towerBeingBuilt = obj->getComponent<TowerController>();
+
 	}
 	ImGui::End();
 	ImGui::PopFont();
@@ -590,6 +599,10 @@ std::shared_ptr<Grid> TowerDefense::getGrid() {
 	return grid;
 }
 
+sre::Camera TowerDefense::getCamera() {
+	return camera;
+}
+
 std::shared_ptr<EnemyController> TowerDefense::getClosestEnemy(glm::vec3 pos) {
 	std::shared_ptr<EnemyController> closestEnemy = nullptr;
 	float closestDist = FLT_MAX;
@@ -619,6 +632,7 @@ void TowerDefense::incrementGoldBy(int gold) {
 }
 
 void TowerDefense::displayMessage(std::string message, ImVec4 color) {
+	if (gameLost) return;
 	TowerDefense::message = message;
 	messageCol = color;
 	showMessage = true;

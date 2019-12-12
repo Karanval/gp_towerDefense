@@ -29,11 +29,15 @@ public:
 
     void setPosition(const glm::vec3 &position);
 
-    float getRotation() const;
+    const glm::vec3 getRotation() const;
 
-    void setRotation(float rotation);
+    void setRotation(const glm::vec3 &rotation);
 
     const std::vector<std::shared_ptr<Component>>& getComponents();
+
+	bool isMarkedForDeath();
+
+	void die();
 
 	static std::shared_ptr<GameObject> createGameObject() {
 		std::shared_ptr<GameObject> obj = std::shared_ptr<GameObject>(new GameObject());
@@ -46,9 +50,8 @@ private:
     std::vector<std::shared_ptr<Component>> components;
 
     glm::vec3 position;
-    float rotation;
-
-    friend class BirdGame;
+    glm::vec3 rotation;
+	bool markedForDeath = false;
 };
 
 // definition of the template member function addComponent

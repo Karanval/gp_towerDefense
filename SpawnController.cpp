@@ -5,7 +5,7 @@
 SpawnController::SpawnController(GameObject* gameObj) :
 	Component(gameObj) {
 	waitTimeAmount = 1;
-	waveTime = 10;
+	waveTime = 5;
 	waveAmount = 4;
 }
 
@@ -43,6 +43,7 @@ void SpawnController::setWaveTime(float waveTime) { this->waveTime = waveTime; }
 
 std::shared_ptr<EnemyController> SpawnController::spawnEnemy() {
 	std::shared_ptr<GameObject> obj = GameObject::createGameObject();
+	obj->name = "Enemy";
 
 	/*ModelLoader::loadModel(obj, "sphere", "sphere");
 	glm::vec2 initialPosition = 32.0f*enemyPath[0];*/
