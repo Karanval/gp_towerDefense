@@ -24,7 +24,7 @@ void TowerController::update(float deltaTime) {
 void TowerController::onMouse(SDL_Event& event) {
 	switch (event.type) {
 	case SDL_MOUSEBUTTONDOWN:
-		if (!built && snapping) {
+		if (event.button.which == 0 && !built && snapping) {
 			glm::ivec2 gridPos = field->getGridPos();
 			if (TowerDefense::instance->getGold() < cost) 
 				TowerDefense::instance->displayMessage("Not enough gold!", ImVec4(1.0f, 0.8f, 0.05f, 1.0f));
@@ -68,6 +68,10 @@ void TowerController::build() {
 	built = true;
 	snapping = false;
 	dirty = false;
+}
+
+bool TowerController::isBuilt() {
+	return built;
 }
 
 bool TowerController::isUnbuildable() {

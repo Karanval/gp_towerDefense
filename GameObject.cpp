@@ -40,6 +40,14 @@ void GameObject::update(float deltaTime) {
     }
 }
 
+bool GameObject::isMarkedForDeath() {
+	return markedForDeath;
+}
+
+void GameObject::die() {
+	markedForDeath = true;
+}
+
 const std::vector<std::shared_ptr<Component>> &GameObject::getComponents() {
     return components;
 }

@@ -30,7 +30,8 @@ void ProjectileController::setDamage(int damage) {
 }
 
 void ProjectileController::update(float deltaTime) {
-	if (enemy && !destinationReached) {
+	if (!enemy || !enemy->getGameObject()) destinationReached = true;
+	if (!destinationReached) {
 		glm::vec3 enemyPos = enemy->getGameObject()->getPosition();
 		glm::vec3 pos = gameObject->getPosition();
 
@@ -47,6 +48,7 @@ void ProjectileController::update(float deltaTime) {
 		}
 		movementTime += deltaTime;
 	}
+	else gameObject->die();
 }
 
 bool ProjectileController::isDestinationReached() {

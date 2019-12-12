@@ -17,6 +17,7 @@ public:
 	bool isDirty();
 	void snapToGrid();
 	void build();
+	bool isBuilt();
 	bool isUnbuildable();
 	void addUpgrade(std::string upgrade);
 	std::vector<std::string>* getUpgrades();

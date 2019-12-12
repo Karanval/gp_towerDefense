@@ -43,9 +43,8 @@ void TowerDefense::update(float deltaTime) {
 	updatePhysics();
 
 	for (int i = 0; i < gameObjects.size(); i++) {
-		gameObjects[i]->update(deltaTime);
-		std::shared_ptr<ProjectileController> pc = gameObjects[i]->getComponent<ProjectileController>();
-		//if (pc && pc->isDestinationReached()) gameObjects[i].reset(); // <--------------------------------------------- FIX FIX FIX
+		if (gameObjects[i]->isMarkedForDeath()) gameObjects.erase(gameObjects.begin() + i);
+		else gameObjects[i]->update(deltaTime);
 	}
 
 	if (lives <= 0 && !gameLost) {
@@ -100,6 +99,7 @@ void TowerDefense::updatePhysics() {
 		float angle = phys.second->body->GetAngle();
 		auto gameObject = phys.second->getGameObject();
 		// TODO constant Y
+		if (!gameObject) continue;
 		gameObject->setPosition(glm::vec3((position.x * physicsScale),gameObject->getPosition().y, position.y * physicsScale));
 		gameObject->setRotation(gameObject->getRotation() + glm::vec3(0, 0, angle));
 	}
@@ -481,8 +481,14 @@ void TowerDefense::drawBuildingOverview() {
 	ImGui::SetCursorPosX(winSize.x - 128 + imgMargin.x);
 	ImGui::SetCursorPosY(winSize.y - bottomMenuHeight + imgMargin.y);
 	if (ImGui::ImageButton(basicImg->getNativeTexturePtr(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) {
+		if (towerBeingBuilt) {
+			if (!towerBeingBuilt->isBuilt()) towerBeingBuilt->getGameObject()->die();
+			towerBeingBuilt.reset();
+		}
 		std::shared_ptr<GameObject> obj = createGameObject();
 		TowerLoader::loadTower(obj, &gameObjects, "basic");
+		towerBeingBuilt = obj->getComponent<TowerController>();
+
 	}
 	ImGui::End();
 	ImGui::PopFont();
@@ -580,6 +586,7 @@ void TowerDefense::incrementGoldBy(int gold) {
 }
 
 void TowerDefense::displayMessage(std::string message, ImVec4 color) {
+	if (gameLost) return;
 	TowerDefense::message = message;
 	messageCol = color;
 	showMessage = true;
@@ -618,29 +625,6 @@ void TowerDefense::drawMessage() {
 	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 }
-
-/*void TowerDefense::drawEnemyHealth() {
-	std::shared_ptr<EnemyController> enemy;
-
-	for (int i = 0; i < gameObjects.size(); i++) {
-		enemy = gameObjects[i]->getComponent<EnemyController>();
-		glm::vec2 winSize = sre::Renderer::instance->getWindowSize();
-		if (enemy) {
-			glm::vec3 pos = enemy->getGameObject()->getPosition();
-			float dist = glm::distance(camPos, lookat); // glm::distance(camera.getPosition(), pos);
-			//glm::mat4 inverseViewTransform = glm::inverse(camera.getViewTransform());
-			pos = camera.getViewTransform() * glm::vec4(pos.x, pos.y, pos.z, 1.0f); // transform to XY-view plane
-			pos = pos * 1200.0f / dist; // normalize
-			ImVec2 screenCoord = ImVec2(winSize.x / 2 + pos.x - enemyHealthBarSize.x / 2,
-										winSize.y / 2 - bottomMenuHeight - pos.y);
-			ImGui::SetNextWindowPos(screenCoord, ImGuiSetCond_Always);
-			ImGui::SetNextWindowSize(enemyHealthBarSize, ImGuiSetCond_Always);
-			ImGui::Begin("HealthBar" + i, nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
-			ImGui::Dummy(enemyHealthBarSize);
-			ImGui::End();
-		}
-	}
-}*/
 
 int TowerDefense::getGold() {
 	return gold;

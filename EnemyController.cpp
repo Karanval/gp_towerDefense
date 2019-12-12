@@ -6,7 +6,8 @@ EnemyController::EnemyController(GameObject* gameObject)
 }
 
 EnemyController::~EnemyController() {
-	for (int i = 0; i < healthPoints.size(); i++) healthPoints[i].reset();
+	for (int i = 0; i < healthPoints.size(); i++) healthPoints[i]->die();
+	//TowerDefense::instance->removeGameObject(healthPoints[i].get());
 }
 
 void EnemyController::init(int health, float damage, int coinDrop, std::vector<glm::vec2>* path) {
@@ -97,6 +98,7 @@ int EnemyController::getDamage() { return damage; }
 void EnemyController::hurt(int hurtAmount) {
 	currentHealth -= hurtAmount;
 	if (currentHealth <= 0) {
-		//TODO die
+		//TowerDefense::instance->removeGameObject(gameObject);
+		gameObject->die();
 	}
 }

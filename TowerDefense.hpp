@@ -31,6 +31,7 @@ public:
 	void incrementGoldBy(int gold);
 	int getGold();
 	sre::Camera getCamera();
+	void removeGameObject(GameObject* go);
 
 	static TowerDefense* instance;
 	static constexpr float32 timeStep = 1.0f / 60.0f;
@@ -81,6 +82,7 @@ private:
 	std::shared_ptr<ModelLoader> modelLoader = nullptr;
 	glm::vec2 mousePos;
 	std::shared_ptr<ClickableComponent> selectedClickable = nullptr;
+	std::shared_ptr<TowerController> towerBeingBuilt = nullptr;
 	std::vector<glm::vec2> enemyPath;
 	
 	bool fwd = false;
