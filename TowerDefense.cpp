@@ -4,6 +4,7 @@
 #include "MaterialComponent.hpp"
 #include "ModelLoader.hpp"
 #include "Grid.hpp"
+#include "AudioManager.hpp"
 #include "LevelLoader.hpp"
 #include "PhysicsComponent.hpp"
 #include "ClickableComponent.hpp"
@@ -36,10 +37,22 @@ TowerDefense::~TowerDefense() {
 }
 
 void TowerDefense::update(float deltaTime) {
+	if (endMessageShown) return;
 	fixedTime += deltaTime;
 	updateCamera(deltaTime);
 	updatePhysics();
-	
+
+	for (int i = 0; i < gameObjects.size(); i++) {
+		gameObjects[i]->update(deltaTime);
+		std::shared_ptr<ProjectileController> pc = gameObjects[i]->getComponent<ProjectileController>();
+		//if (pc && pc->isDestinationReached()) gameObjects[i].reset(); // <--------------------------------------------- FIX FIX FIX
+	}
+
+	if (lives <= 0 && !gameLost) {
+		displayMessage("You died!");
+		audioManager->play(END_MUSIC);
+		gameLost = true;
+	}
 }
 
 void TowerDefense::updateCamera(float deltaTime) {
@@ -73,10 +86,6 @@ void TowerDefense::updateCamera(float deltaTime) {
 		lookat -= upVec * 0.05f;
 	}
 	camera.lookAt(camPos + zoomDist, lookat, upVec);
-
-	for (int i = 0; i < gameObjects.size(); i++) {
-		gameObjects[i]->update(deltaTime);
-	}
 }
 
 void TowerDefense::updatePhysics() {
@@ -135,6 +144,9 @@ void TowerDefense::render() {
 	if (doDebugDraw) {
 		world->DrawDebugData();
 		rp.drawLines(debugDraw.getLines());
+		for (int l = 0; l < lights.lightCount(); l++) {
+			rp.draw(sre::Mesh::create().withCube(1.0f).build(), glm::translate(lights.getLight(l)->position), sre::Shader::getUnlit()->createMaterial());
+		}
 		debugDraw.clear();
 	}
 	drawGUI();
@@ -164,6 +176,11 @@ void TowerDefense::init() {
 	//spawner->startSpawningCycle({glm::vec2(5-3,-4)/*, glm::vec2(-3,-3)*/ });
 	spawner->startSpawningCycle(enemyPath);
 	gameObjects.push_back(spawnObj);
+
+	std::shared_ptr<GameObject> am = GameObject::createGameObject();
+	audioManager = am->addComponent<AudioManager>();
+	// Static variable comes from AudioManager
+	audioManager->play(MAIN_MUSIC);
 }
 
 void TowerDefense::initPhysics() {
@@ -224,18 +241,34 @@ void TowerDefense::keyInput(SDL_Event& event) {
 			break;
 		/* DEBUGGING */
 		case SDLK_1:
-			for (std::shared_ptr<GameObject> go : gameObjects) {
-				std::shared_ptr<TowerController> tc = go->getComponent<TowerController>();
-				if (tc) tc->shoot();
-			}
+			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
+				gameObjects[i]->getComponent<TowerController>()->setRadius(gameObjects[i]->getComponent<TowerController>()->getRadius() + 1);
 			break;
 		case SDLK_2:
+			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
+				gameObjects[i]->getComponent<TowerController>()->setRadius(gameObjects[i]->getComponent<TowerController>()->getRadius() - 1);
 			break;
 		case SDLK_3:
 			gold++;
 			break;
 		case SDLK_4:
 			gold--;
+			break;
+		case SDLK_5:
+			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
+				gameObjects[i]->getComponent<TowerController>()->setFirerate(gameObjects[i]->getComponent<TowerController>()->getFirerate() + 1);
+			break;
+		case SDLK_6:
+			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
+				gameObjects[i]->getComponent<TowerController>()->setFirerate(gameObjects[i]->getComponent<TowerController>()->getFirerate() - 1);
+			break;
+		case SDLK_7:
+			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
+				gameObjects[i]->getComponent<TowerController>()->setSpeed(gameObjects[i]->getComponent<TowerController>()->getSpeed() + 1);
+			break;
+		case SDLK_8:
+			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
+				gameObjects[i]->getComponent<TowerController>()->setSpeed(gameObjects[i]->getComponent<TowerController>()->getSpeed() - 1);
 			break;
 		/* DEBUGGING END */
 		}
@@ -378,13 +411,13 @@ void TowerDefense::setupLights() {
 	glm::vec2 offset = grid->getOffset();
 	glm::vec3 size = grid->getTileSize();
 
-	for (int i = 0; i < grid->getHeight(); i++) {
-		for (int j = 0; j < grid->getWidth(); j++) {
+	for (int i = 0; i < grid->getHeight() / size.y; i++) {
+		for (int j = 0; j < grid->getWidth() / size.x; j++) {
 			sre::Light light = sre::Light();
 			light.color = glm::vec3(1.0f, 1.0f, 1.0f);
-			light.position = glm::vec3((offset.x + i) * size.x, 2 * size.z, (offset.y + j) * size.y);
+			light.position = glm::vec3((offset.x + i) * size.x, 2 * size.y, (offset.y + j) * size.z);
 			light.lightType = sre::LightType::Point;
-			light.range = 100.0f;
+			light.range = 1000.0f;
 			lights.addLight(light);
 		}
 	}
@@ -395,8 +428,8 @@ void TowerDefense::setupGUI() {
 	ImFontAtlas* fonts = ImGui::GetIO().Fonts;
 	fonts->AddFontDefault();
 	std::string fontName = miscPath + "UIFont.ttf";
-	int fontSize = 26;
-	uiFont = fonts->AddFontFromFileTTF(fontName.c_str(), fontSize);
+	uiFont = fonts->AddFontFromFileTTF(fontName.c_str(), 26);
+	messageFont = fonts->AddFontFromFileTTF(fontName.c_str(), 46);
 	
 	// Images
 	basicImg = sre::Texture::create().withFile(modelLoader->texturePath + "basic_tower.png")
@@ -434,10 +467,6 @@ void TowerDefense::drawResourceOverview() {
 void TowerDefense::drawBuildingOverview() {
 	ImVec2 winPos = ImVec2(0, sre::Renderer::instance->getWindowSize().y - bottomMenuHeight);
 	ImVec2 winSize = ImVec2(sre::Renderer::instance->getWindowSize().x, bottomMenuHeight);
-	ImVec4 background = ImVec4(0.0f, 0.0f, 0.5f, slideVal);
-	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);
-	ImVec4 transparent = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
-	ImVec2 imgMargin = ImVec2(/*right*/5, /*top*/5);
 	ImGui::SetNextWindowPos(winPos, ImGuiSetCond_Always);
 	ImGui::SetNextWindowSize(winSize, ImGuiSetCond_Always);
 	ImGui::PushFont(uiFont);
@@ -474,7 +503,7 @@ void TowerDefense::drawUpgradeOverview() {
 	ImGui::Text(tower->getGameObject()->name.c_str());
 	ImGui::Text(("Cost: " + std::to_string(tower->getCost())).c_str());
 	ImGui::Text(("damage: " + std::to_string(tower->getDamage())).c_str());
-	ImGui::Text(("Speed: " + std::to_string(tower->getFirerate())).c_str());
+	ImGui::Text(("Firerate: " + std::to_string(tower->getFirerate())).c_str());
 	ImGui::Text(("radius: " + std::to_string(tower->getRadius())).c_str());
 	//ImGui::EndGroup();
 	std::vector<std::string> *upgrades = tower->getUpgrades();
@@ -504,6 +533,7 @@ void TowerDefense::drawGUI() {
 	drawResourceOverview();
 	if (selectedClickable && selectedClickable->getGameObject()->getComponent<TowerController>()) drawUpgradeOverview();
 	else drawBuildingOverview();
+	if (showMessage) drawMessage();
 }
 
 std::shared_ptr<ModelLoader> TowerDefense::getModelLoader() {
@@ -512,6 +542,78 @@ std::shared_ptr<ModelLoader> TowerDefense::getModelLoader() {
 
 std::shared_ptr<Grid> TowerDefense::getGrid() {
 	return grid;
+}
+
+std::shared_ptr<EnemyController> TowerDefense::getClosestEnemy(glm::vec3 pos) {
+	std::shared_ptr<EnemyController> closestEnemy = nullptr;
+	float closestDist = FLT_MAX;
+	for (int i = 0; i < gameObjects.size(); i++) {
+		std::shared_ptr<EnemyController> enemy = gameObjects[i]->getComponent<EnemyController>();
+		float dist = glm::distance(pos, gameObjects[i]->getPosition());
+		if (enemy && dist < closestDist) {
+			closestEnemy = enemy;
+			closestDist = dist;
+		}
+	}
+
+	return closestEnemy;
+}
+
+void TowerDefense::decrementHealthBy(int damage) {
+	lives -= damage;
+}
+void TowerDefense::decrementGoldBy(int gold) {
+	TowerDefense::gold -= gold;
+}
+void TowerDefense::incrementHealthBy(int health) {
+	TowerDefense::lives += health;
+}
+void TowerDefense::incrementGoldBy(int gold) {
+	TowerDefense::gold += gold;
+}
+
+void TowerDefense::displayMessage(std::string message, ImVec4 color) {
+	TowerDefense::message = message;
+	messageCol = color;
+	showMessage = true;
+	messageStart = fixedTime;
+}
+
+void TowerDefense::drawMessage() {
+	float t = fixedTime - messageStart;
+	float a = 1.0f;
+	if (t < messageFadeTime) { // fade in
+		a = t / messageFadeTime;
+	}
+	else if (t < messageFadeTime + messageStayTime) { // stay
+		if (gameLost) endMessageShown = true;
+	}
+	else if (t < messageFadeTime + messageStayTime + messageFadeTime) { // fade out
+		a = 1.0f - (t - messageFadeTime - messageStayTime) / messageFadeTime;
+	}
+	else { // message end
+		showMessage = false;
+		return;
+	}
+	messageCol.w = a;
+	ImGui::SetNextWindowPos(ImVec2(sre::Renderer::instance->getWindowSize().x / 2 - messageWindowSize.x,
+								   sre::Renderer::instance->getWindowSize().y / 2 - messageWindowSize.y), ImGuiSetCond_Always);
+	ImGui::SetNextWindowSize(messageWindowSize, ImGuiSetCond_Always);
+	ImGui::PushFont(messageFont);
+	ImGui::PushStyleColor(ImGuiCol_Text, messageCol);
+	ImGui::PushStyleColor(ImGuiCol_Border, transparent);
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, transparent);
+	ImGui::Begin("MessageText", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+	ImGui::Text(message.c_str());
+	ImGui::End();
+	ImGui::PopFont();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+}
+
+int TowerDefense::getGold() {
+	return gold;
 }
 
 int main() {

@@ -5,10 +5,10 @@
   "cost":5,
   
   "damage":0,
+
+  "firerate":2.0,
   
-  "firerate":0.0,
-  
-  "radius":0.0,
+  "radius":150.0,
 
   "projectile":"arrow",
 

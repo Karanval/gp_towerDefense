@@ -17,6 +17,7 @@ public:
 	void setTowerController(std::shared_ptr<TowerController> towerController);
 	void markDirty();
 	bool isDirty();
+	void setupDefaultMaterial();
 	
 
 private:

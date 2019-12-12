@@ -12,8 +12,6 @@ public:
 	
 	void update(float deltaTime) override;
 	void init(bool isStatic);
-	//void setPosition(glm::vec3 position);
-	//glm::vec3 getPosition();
 	void onMouse(SDL_Event& event);
 	void markDirty();
 	bool isDirty();
@@ -34,17 +32,18 @@ public:
 	float getSpeed();
 	void setProjectile(std::string projectile);
 	std::string getProjectile();
-	void shoot();
+	void shoot(std::shared_ptr<EnemyController> target);
 
 
 private:
-	//glm::vec3 position = glm::vec3();
 	std::shared_ptr<sre::Texture> icon;
 	int cost;
 	int damage;
 	float firerate;
 	float radius;
 	float speed;
+	float timeSinceBuilt = 0.0f;
+	float lastShotTime = 0.0f;
 	std::shared_ptr<ProjectileController> bullet;
 	std::shared_ptr<FieldController> field;
 	bool dirty = false;

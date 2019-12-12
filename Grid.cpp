@@ -4,6 +4,7 @@
 #include "rapidjson/istreamwrapper.h"
 #include <fstream>
 #include <iostream>
+#include "TowerDefense.hpp"
 
 using namespace std;
 
@@ -20,6 +21,8 @@ void Grid::loadMap(std::string filename) {
 	IStreamWrapper isw(fis);
 	Document d;
 	d.ParseStream(isw);
+	TowerDefense::instance->incrementHealthBy(d["lives"].GetInt());
+	TowerDefense::instance->incrementGoldBy(d["startingGold"].GetInt());
 	const Value& offset = d["offset"];
 	Grid::offset = glm::vec2(offset["x"].GetInt(), offset["y"].GetInt());
 	const Value& tileMap = d["tileMap"];

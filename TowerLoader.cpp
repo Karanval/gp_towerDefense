@@ -41,6 +41,7 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 		const Value& textureFileName = brick["txtFilename"];
 		if (textureFileName.IsNull()) TowerDefense::instance->getModelLoader()->loadModel(brickObj, objName, mtlName);
 		else TowerDefense::instance->getModelLoader()->loadModel(brickObj, objName, mtlName, textureFileName.GetString());
+		brickC->setupDefaultMaterial();
 		const Value& brickPos = brick["position"];
 		brickC->setLocalPosition(glm::vec3(brickPos["x"].GetFloat(), brickPos["y"].GetFloat(), brickPos["z"].GetFloat()));
 		brickObj->setRotation(brick["rotation"].GetFloat());
