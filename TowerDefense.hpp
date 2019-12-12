@@ -11,6 +11,7 @@
 #include "TowerLoader.hpp"
 #include "Box2DDebugDraw.hpp"
 #include "Grid.hpp"
+#include "AudioManager.hpp"
 
 class TowerDefense : public b2ContactListener
 {
@@ -19,16 +20,17 @@ public:
 	TowerDefense();
 	std::shared_ptr<GameObject> createGameObject();
 	std::shared_ptr<ModelLoader> getModelLoader();
-	std::shared_ptr<ClickableComponent> TowerDefense::screenToClickableObject(glm::vec2 screenCoord);
-	std::shared_ptr<ClickableComponent> TowerDefense::mouseToClickableObject();
+	std::shared_ptr<ClickableComponent> screenToClickableObject(glm::vec2 screenCoord);
+	std::shared_ptr<ClickableComponent> mouseToClickableObject();
 	std::shared_ptr<EnemyController> getClosestEnemy(glm::vec3 pos);
 	std::shared_ptr<Grid> getGrid();
 	void displayMessage(std::string message, ImVec4 color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
-	void TowerDefense::decrementHealthBy(int damage);
-	void TowerDefense::decrementGoldBy(int gold);
-	void TowerDefense::incrementHealthBy(int health);
-	void TowerDefense::incrementGoldBy(int gold);
+	void decrementHealthBy(int damage);
+	void decrementGoldBy(int gold);
+	void incrementHealthBy(int health);
+	void incrementGoldBy(int gold);
 	int getGold();
+	sre::Camera getCamera();
 
 	static TowerDefense* instance;
 	static constexpr float32 timeStep = 1.0f / 60.0f;
@@ -67,6 +69,7 @@ private:
 	bool doDebugDraw = false;
 	std::map<b2Fixture*, PhysicsComponent*> physicsComponentLookup;
 	std::shared_ptr<SpawnController> spawner;
+	std::shared_ptr<AudioManager> audioManager;
 	sre::SDLRenderer renderer;
 	sre::Camera camera;
 	std::vector<std::shared_ptr<GameObject>> gameObjects;
@@ -114,6 +117,7 @@ private:
 	float messageStayTime = 0.5f;
 	ImVec4 messageCol;
 	ImVec2 messageWindowSize = ImVec2(280, 80);
+	ImVec2 enemyHealthBarSize = ImVec2(80, 30);
 
 
 	friend class PhysicsComponent;

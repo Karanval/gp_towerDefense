@@ -27,9 +27,9 @@ public:
 
     void setPosition(const glm::vec3 &position);
 
-    float getRotation() const;
+    const glm::vec3 getRotation() const;
 
-    void setRotation(float rotation);
+    void setRotation(const glm::vec3 &rotation);
 
     const std::vector<std::shared_ptr<Component>>& getComponents();
 
@@ -44,7 +44,7 @@ private:
     std::vector<std::shared_ptr<Component>> components;
 
     glm::vec3 position;
-    float rotation;
+    glm::vec3 rotation;
 
     friend class BirdGame;
 };

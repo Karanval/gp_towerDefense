@@ -4,6 +4,7 @@
 #include "MaterialComponent.hpp"
 #include "ModelLoader.hpp"
 #include "Grid.hpp"
+#include "AudioManager.hpp"
 #include "LevelLoader.hpp"
 #include "PhysicsComponent.hpp"
 #include "ClickableComponent.hpp"
@@ -49,6 +50,7 @@ void TowerDefense::update(float deltaTime) {
 
 	if (lives <= 0 && !gameLost) {
 		displayMessage("You died!");
+		audioManager->play(END_MUSIC);
 		gameLost = true;
 	}
 }
@@ -99,7 +101,7 @@ void TowerDefense::updatePhysics() {
 		auto gameObject = phys.second->getGameObject();
 		// TODO constant Y
 		gameObject->setPosition(glm::vec3((position.x * physicsScale),gameObject->getPosition().y, position.y * physicsScale));
-		gameObject->setRotation(angle);
+		gameObject->setRotation(gameObject->getRotation() + glm::vec3(0, 0, angle));
 	}
 }
 
@@ -115,7 +117,10 @@ void TowerDefense::render() {
 		std::shared_ptr<GameObject> go = gameObjects[i];
 		if (go->getComponent<MeshComponent>()) {
 			rp.draw(go->getComponent<MeshComponent>()->getMesh(), 
-					glm::translate(go->getPosition()) * glm::rotate(glm::radians(go->getRotation()), glm::vec3(0, 1, 0)),
+					glm::translate(go->getPosition()) * 
+					glm::rotate(glm::radians(go->getRotation().x), glm::vec3(1, 0, 0)) *
+					glm::rotate(glm::radians(go->getRotation().y), glm::vec3(0, 1, 0)) *
+					glm::rotate(glm::radians(go->getRotation().z), glm::vec3(0, 0, 1)),
 					go->getComponent<MaterialComponent>()->getMaterial());
 		}
 		if (doDebugDraw) {
@@ -174,6 +179,11 @@ void TowerDefense::init() {
 	//spawner->startSpawningCycle({glm::vec2(5-3,-4)/*, glm::vec2(-3,-3)*/ });
 	spawner->startSpawningCycle(enemyPath);
 	gameObjects.push_back(spawnObj);
+
+	std::shared_ptr<GameObject> am = GameObject::createGameObject();
+	audioManager = am->addComponent<AudioManager>();
+	// Static variable comes from AudioManager
+	audioManager->play(MAIN_MUSIC);
 }
 
 void TowerDefense::initPhysics() {
@@ -537,6 +547,10 @@ std::shared_ptr<Grid> TowerDefense::getGrid() {
 	return grid;
 }
 
+sre::Camera TowerDefense::getCamera() {
+	return camera;
+}
+
 std::shared_ptr<EnemyController> TowerDefense::getClosestEnemy(glm::vec3 pos) {
 	std::shared_ptr<EnemyController> closestEnemy = nullptr;
 	float closestDist = FLT_MAX;
@@ -604,6 +618,29 @@ void TowerDefense::drawMessage() {
 	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 }
+
+/*void TowerDefense::drawEnemyHealth() {
+	std::shared_ptr<EnemyController> enemy;
+
+	for (int i = 0; i < gameObjects.size(); i++) {
+		enemy = gameObjects[i]->getComponent<EnemyController>();
+		glm::vec2 winSize = sre::Renderer::instance->getWindowSize();
+		if (enemy) {
+			glm::vec3 pos = enemy->getGameObject()->getPosition();
+			float dist = glm::distance(camPos, lookat); // glm::distance(camera.getPosition(), pos);
+			//glm::mat4 inverseViewTransform = glm::inverse(camera.getViewTransform());
+			pos = camera.getViewTransform() * glm::vec4(pos.x, pos.y, pos.z, 1.0f); // transform to XY-view plane
+			pos = pos * 1200.0f / dist; // normalize
+			ImVec2 screenCoord = ImVec2(winSize.x / 2 + pos.x - enemyHealthBarSize.x / 2,
+										winSize.y / 2 - bottomMenuHeight - pos.y);
+			ImGui::SetNextWindowPos(screenCoord, ImGuiSetCond_Always);
+			ImGui::SetNextWindowSize(enemyHealthBarSize, ImGuiSetCond_Always);
+			ImGui::Begin("HealthBar" + i, nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+			ImGui::Dummy(enemyHealthBarSize);
+			ImGui::End();
+		}
+	}
+}*/
 
 int TowerDefense::getGold() {
 	return gold;

@@ -25,15 +25,25 @@ void ProjectileController::setStartingPos(glm::vec3 pos) {
 	startingPos = pos;
 }
 
+void ProjectileController::setDamage(int damage) {
+	ProjectileController::damage = damage;
+}
+
 void ProjectileController::update(float deltaTime) {
-	if (enemy) {
+	if (enemy && !destinationReached) {
 		glm::vec3 enemyPos = enemy->getGameObject()->getPosition();
 		glm::vec3 pos = gameObject->getPosition();
-		gameObject->setPosition(glm::mix(startingPos, enemyPos, movementTime));
-		gameObject->setRotation(-glm::degrees(std::atan2(enemyPos.z - pos.z, enemyPos.x - pos.x)));
-		if (glm::distance(gameObject->getPosition(), enemyPos) > 0.1f) {
-			destinationReached = true;
+
+		float rad = glm::mix(0.0f, 3.14f, movementTime);
+		glm::vec3 p = glm::mix(startingPos, enemyPos, movementTime);
+		p.y += glm::sin(rad) * 10;
+		gameObject->setPosition(p);
+		float rotY = glm::degrees(std::atan2(enemyPos.z - pos.z, enemyPos.x - pos.x));
+		float rotXZ = 45 - glm::degrees(rad / 2);
+		gameObject->setRotation(glm::vec3(rotXZ, -rotY, rotXZ));
+		if (glm::distance(gameObject->getPosition(), enemyPos) < 0.1f) {
 			enemy->hurt(damage);
+			destinationReached = true;
 		}
 		movementTime += deltaTime;
 	}

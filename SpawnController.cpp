@@ -5,7 +5,7 @@
 SpawnController::SpawnController(GameObject* gameObj) :
 	Component(gameObj) {
 	waitTimeAmount = 0.5;
-	waveTime = 10;
+	waveTime = 1;
 	waveAmount = 4;
 }
 
@@ -58,7 +58,7 @@ std::shared_ptr<EnemyController> SpawnController::spawnEnemy() {
 		obj->getPosition().x / 100, obj->getPosition().z / 100 }, 1);
 
 	auto enemyController = obj->addComponent<EnemyController>();
-	enemyController->init(100, 20.0f, 5, &enemyPath);
+	enemyController->init(5, 20.0f, 5, &enemyPath);
 
 	gameObjects->push_back(obj);
 
