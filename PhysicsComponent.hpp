@@ -33,6 +33,7 @@ public:
 
 	// Get position in physics scale
 	glm::vec2 getPosition();
+	void applyBlastImpulse(b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower);
 
 private:
 	b2PolygonShape* polygon = nullptr;

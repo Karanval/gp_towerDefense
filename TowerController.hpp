@@ -33,7 +33,9 @@ public:
 	void setProjectile(std::string projectile);
 	std::string getProjectile();
 	void shoot(std::shared_ptr<EnemyController> target);
-
+	void explode();
+	void addBrick(std::shared_ptr<GameObject> brickObj);
+	std::vector<std::shared_ptr<GameObject>> getBricks();
 
 private:
 	std::shared_ptr<sre::Texture> icon;
@@ -46,11 +48,15 @@ private:
 	float lastShotTime = 0.0f;
 	std::shared_ptr<ProjectileController> bullet;
 	std::shared_ptr<FieldController> field;
+	std::unique_ptr<PhysicsComponent> phys = nullptr;
 	bool dirty = false;
 	bool built = false;
 	bool snapping = false;
 	bool unbuildable = false;
+	bool exploding = false;
+	float fallTime = 0;
 	std::vector<std::string> upgrades;
 	std::string projectile;
+	std::vector<std::shared_ptr<GameObject>> bricks;
 };
 
