@@ -80,7 +80,7 @@ void Grid::setBasePosition(glm::vec2 newBasePosition) {
 bool Grid::allowsTowers(int x, int y) {
 	if (x < 0 || y < 0 || x >= tileValues[0].size() || y >= tileValues.size()) return false;
 	int tileValue = getTile(x, y);
-	if (tileValue) return true; // not 0 (enemy path)
+	if (tileValue && tileValue != 10) return true; // not 0 (enemy path)
 	else return false;
 }
 
