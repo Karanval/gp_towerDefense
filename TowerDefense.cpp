@@ -8,6 +8,7 @@
 #include "LevelLoader.hpp"
 #include "PhysicsComponent.hpp"
 #include "ClickableComponent.hpp"
+#include "Box2D/Dynamics/Contacts/b2Contact.h"
 #include <limits>
 
 TowerDefense* TowerDefense::instance = nullptr;
@@ -42,10 +43,30 @@ void TowerDefense::update(float deltaTime) {
 	updateCamera(deltaTime);
 	updatePhysics();
 
+	std::vector<int> toRemove;
 	for (int i = 0; i < gameObjects.size(); i++) {
 		gameObjects[i]->update(deltaTime);
 		std::shared_ptr<ProjectileController> pc = gameObjects[i]->getComponent<ProjectileController>();
 		//if (pc && pc->isDestinationReached()) gameObjects[i].reset(); // <--------------------------------------------- FIX FIX FIX
+
+		std::shared_ptr<EnemyController> ec = gameObjects[i]->getComponent<EnemyController>();
+		if (ec && ec->isDead) {
+			gold += ec->getCoinDrop();
+			toRemove.push_back(i);
+		}
+	}
+
+	for (int i = 0; i < toRemove.size(); i++) {
+		int index = toRemove[i];
+
+		std::shared_ptr<PhysicsComponent> phys = gameObjects[index]->getComponent<PhysicsComponent>();
+		auto physB = physicsComponentLookup.find(phys->fixture);
+		deregisterPhysicsComponent(physB->second);
+		
+		gameObjects[index]->cleanUp();
+		
+		auto iterator = gameObjects.begin() + index; 
+		gameObjects.erase(iterator);
 	}
 
 	if (lives <= 0 && !gameLost) {
@@ -204,7 +225,32 @@ void TowerDefense::EndContact(b2Contact* contact) {
 	handleContact(contact, false);
 }
 
-void TowerDefense::handleContact(b2Contact* contact, bool begin) {}
+void TowerDefense::handleContact(b2Contact* contact, bool begin) {
+	auto fixA = contact->GetFixtureA();
+	auto fixB = contact->GetFixtureB();
+	auto physA = physicsComponentLookup.find(fixA);
+	auto physB = physicsComponentLookup.find(fixB);
+	if (physA != physicsComponentLookup.end() && physB != physicsComponentLookup.end()) {
+		auto& aComponents = physA->second->getGameObject()->getComponents();
+		auto& bComponents = physB->second->getGameObject()->getComponents();
+		for (auto& c : aComponents) {
+			if (begin) {
+				c->onCollisionStart(physB->second);
+			}
+			else {
+				c->onCollisionEnd(physB->second);
+			}
+		}
+		for (auto& c : bComponents) {
+			if (begin) {
+				c->onCollisionStart(physA->second);
+			}
+			else {
+				c->onCollisionEnd(physA->second);
+			}
+		}
+	}
+}
 
 void TowerDefense::keyInput(SDL_Event& event) {
 	switch (event.type) {

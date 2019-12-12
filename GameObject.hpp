@@ -21,6 +21,8 @@ public:
 
     bool removeComponent(std::shared_ptr<Component> component);
 
+	void cleanUp();
+
     void update(float deltaTime);
 
     const glm::vec3 &getPosition() const;

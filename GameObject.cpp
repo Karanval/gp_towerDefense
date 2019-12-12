@@ -13,9 +13,18 @@ GameObject::~GameObject() {
 bool GameObject::removeComponent(std::shared_ptr<Component> component) {
     auto comp = std::find(components.begin(), components.end(),component);
     if (comp != components.end()){
+		delete component.get();
         components.erase(comp);
     }
     return false;
+}
+
+void GameObject::cleanUp() {
+	auto it = components.begin();
+
+	while (it != components.end()) {
+		it = components.erase(it);
+	}
 }
 
 const glm::vec3 &GameObject::getPosition() const {

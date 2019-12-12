@@ -18,7 +18,7 @@ public:
 private:
 	std::shared_ptr<PhysicsComponent> phys;
 	float speed;
-	float damage;
+	float damage = 5;
 	float movementTime = 0.0f;
 	std::shared_ptr<EnemyController> enemy;
 	glm::vec3 startingPos;

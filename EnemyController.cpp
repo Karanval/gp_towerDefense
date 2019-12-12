@@ -5,11 +5,12 @@ EnemyController::EnemyController(GameObject* gameObject)
 	: Component(gameObject) {
 }
 
-void EnemyController::init(int health, float damage, int coinDrop, std::vector<glm::vec2>* path) {
+void EnemyController::init(float health, float damage, int coinDrop, std::vector<glm::vec2>* path) {
 
 	phys = gameObject->getComponent<PhysicsComponent>();
 	initialHealth = health;
 	currentHealth = initialHealth;
+	printf("current: %f , initial: %f, health %f\n", currentHealth, initialHealth, health);
 	this->damage = damage;
 	this->coinDrop = coinDrop;
 	this->path = path;
@@ -42,8 +43,8 @@ void EnemyController::update(float deltaTime) {
 	}
 }
 
-
 void EnemyController::moveToNextWaypoint() {
+	//TODO add Enemy rotate
 	waypointIndex++;
 	if (waypointIndex < path->size()) {
 		pos = glm::vec2(gameObject->getPosition().x, gameObject->getPosition().z);
@@ -71,6 +72,7 @@ int EnemyController::getDamage() { return damage; }
 void EnemyController::hurt(float hurtAmount) {
 	currentHealth -= hurtAmount;
 	if (currentHealth <= 0) {
-		//TODO die
+		printf("Current: %f hurt: %f\n", currentHealth, hurtAmount);
+		isDead = true;
 	}
 }
