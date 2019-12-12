@@ -35,6 +35,7 @@ public:
 
 	static TowerDefense* instance;
 	static constexpr float32 timeStep = 1.0f / 60.0f;
+	const float  physicsScale = 100;
 
 private:
 	~TowerDefense();
@@ -67,7 +68,6 @@ private:
 	b2World* world = nullptr;
 	Box2DDebugDraw debugDraw;
 	bool doDebugDraw = false;
-	const float  physicsScale = 100;
 	std::map<b2Fixture*, PhysicsComponent*> physicsComponentLookup;
 	std::shared_ptr<SpawnController> spawner;
 	std::shared_ptr<AudioManager> audioManager;

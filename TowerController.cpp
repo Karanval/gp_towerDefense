@@ -19,6 +19,17 @@ void TowerController::update(float deltaTime) {
 		}
 		timeSinceBuilt += deltaTime;
 	}
+
+	if (exploding) {
+		for (int i = 0; i < bricks.size(); i++) {
+			auto brickObj = bricks[i];
+			auto brickPos = brickObj->getPosition();
+			glm::vec3 p = glm::mix(brickPos, glm::vec3 (32, 32, 0), fallTime / 500);
+			brickObj->setPosition(p);
+		}
+
+		fallTime += deltaTime;
+	}
 }
 
 void TowerController::onMouse(SDL_Event& event) {
@@ -30,6 +41,7 @@ void TowerController::onMouse(SDL_Event& event) {
 				TowerDefense::instance->displayMessage("Not enough gold!", ImVec4(1.0f, 0.8f, 0.05f, 1.0f));
 			else if (TowerDefense::instance->getGrid()->allowsTowers(gridPos.x, gridPos.y)) {
 				build();
+				// explode();
 			}
 		}
 		break;
@@ -131,5 +143,28 @@ void TowerController::shoot(std::shared_ptr<EnemyController> target) {
 	projectileC->setTarget(target);
 	projectileC->setSpeed(speed);
 	projectileC->setDamage(damage);
+}
 
+void TowerController::explode() {
+	exploding = true;
+	auto towerPos = gameObject->getPosition();
+	float physicsScale = TowerDefense::instance->physicsScale;
+	for (int i = 0; i < bricks.size(); i++) {
+		std::shared_ptr<GameObject> brickObj = bricks[i];
+		auto pos = bricks[i]->getPosition();
+		std::shared_ptr<PhysicsComponent> phys = brickObj->addComponent<PhysicsComponent>();
+		phys->initBox(b2_dynamicBody, glm::vec2(0.1, 0.1) / physicsScale, glm::vec2(pos.x, pos.z) /physicsScale, 1);
+		if (i / 2 == 0) {
+			std::cout << "here \n";
+			phys->applyBlastImpulse(b2Vec2(1 / physicsScale, 1 / physicsScale) , b2Vec2(2 / physicsScale, 2 / physicsScale), 0.000000001);
+		}
+	}
+}
+
+void TowerController::addBrick(std::shared_ptr<GameObject> brickObj) {
+	bricks.push_back(brickObj);
+}
+
+std::vector<std::shared_ptr<GameObject>> TowerController::getBricks() {
+	return bricks;
 }

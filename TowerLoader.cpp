@@ -34,6 +34,8 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 	for (SizeType i = 0; i < bricks.Size(); i++) {
 		const Value& brick = bricks[i];
 		std::shared_ptr<GameObject> brickObj = GameObject::createGameObject();
+
+		const Value& brickPos = brick["position"];
 		brickObjs->push_back(brickObj);
 		std::shared_ptr<BrickController> brickC = brickObj->addComponent<BrickController>();
 		std::string objName = brick["objName"].GetString();
@@ -42,7 +44,6 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 		if (textureFileName.IsNull()) TowerDefense::instance->getModelLoader()->loadModel(brickObj, objName, mtlName);
 		else TowerDefense::instance->getModelLoader()->loadModel(brickObj, objName, mtlName, textureFileName.GetString());
 		brickC->setupDefaultMaterial();
-		const Value& brickPos = brick["position"];
 		brickC->setLocalPosition(glm::vec3(brickPos["x"].GetFloat(), brickPos["y"].GetFloat(), brickPos["z"].GetFloat()));
 		brickObj->setRotation(glm::vec3(0, brick["rotation"].GetFloat(), 0));
 		brickC->setTowerController(towerC);
@@ -54,10 +55,10 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 			if (box[0][i] < boundary[0][i]) boundary[0][i] = box[0][i]; // min XYZ
 			if (box[1][i] > boundary[1][i]) boundary[1][i] = box[1][i]; // max XYZ
 		}
+		towerC->addBrick(brickObj);
 	}
 	/* add clickable component to the tower, construct boundary based on bricks */
 	std::shared_ptr<ClickableComponent> clickable = towerObj->addComponent<ClickableComponent>();
 	clickable->setBounds(boundary);
 	clickable->setActive(false);
-
 }
