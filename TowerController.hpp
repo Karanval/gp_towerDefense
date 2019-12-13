@@ -35,16 +35,17 @@ public:
 	std::string getProjectile();
 	void shoot(std::shared_ptr<EnemyController> target);
 	void explode();
+	bool isExploding();
 	void addBrick(std::shared_ptr<GameObject> brickObj);
 	std::vector<std::shared_ptr<GameObject>> getBricks();
 
 private:
 	std::shared_ptr<sre::Texture> icon;
-	int cost;
-	int damage;
-	float firerate;
-	float radius;
-	float speed;
+	int cost = 0;
+	int damage = 0;
+	float firerate = 0.0f;
+	float radius = 0.0f;
+	float speed = 0.0f;
 	float timeSinceBuilt = 0.0f;
 	float lastShotTime = 0.0f;
 	std::shared_ptr<ProjectileController> bullet;

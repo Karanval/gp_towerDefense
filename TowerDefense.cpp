@@ -41,6 +41,7 @@ void TowerDefense::update(float deltaTime) {
 	fixedTime += deltaTime;
 	updateCamera(deltaTime);
 	updatePhysics();
+	updateFPS();
 
 	for (int i = 0; i < gameObjects.size(); i++) {
 		if (gameObjects[i]->isMarkedForDeath()) gameObjects.erase(gameObjects.begin() + i);
@@ -105,9 +106,21 @@ void TowerDefense::updatePhysics() {
 	}
 }
 
+void TowerDefense::updateFPS() {
+	float fpsTime = fixedTime - lastFPSUpdate; // time since last FPS update
+	fps = glm::mix(lastBestFPS, frames++ / (fixedTime - lastFPSUpdate), fpsTime); // lerp between prev. best and current FPS
+	if (fpsTime > 1.0f) { // recalculate FPS to better detect sudden lagg-spikes
+		lastFPSUpdate = fixedTime;
+		frames = 0;
+		lastBestFPS = bestFPS;
+	}
+	else if (fps > bestFPS) bestFPS = fps;
+}
+
 void TowerDefense::render() {
 	sre::RenderPass rp = sre::RenderPass::create()
 						.withCamera(camera).withWorldLights(&lights)
+						.withClearColor(true, sre::Color(0.0f, 1.0f, 1.0f, 1.0f))
 						.build();
 
 	float x = 0.0f;
@@ -241,6 +254,9 @@ void TowerDefense::keyInput(SDL_Event& event) {
 			break;
 		case SDLK_z:
 			zoom = !zoom;
+			break;
+		case SDLK_m:
+			audioManager->pause();
 			break;
 		/* DEBUGGING */
 		case SDLK_1:
@@ -461,6 +477,8 @@ void TowerDefense::drawResourceOverview() {
 	ImGui::PushStyleColor(ImGuiCol_Text, lifeTextCol);
 	ImGui::Text("lives %i", lives);
 	ImGui::PopStyleColor();
+	ImGui::SameLine(winSize.x - 120);
+	ImGui::Text("FPS: %f", fps);
 	ImGui::End();
 	ImGui::PopFont();
 	ImGui::PopStyleColor();
@@ -497,8 +515,7 @@ void TowerDefense::drawBuildingOverview() {
 	ImGui::PopStyleColor();
 }
 
-void TowerDefense::drawUpgradeOverview() {
-	std::shared_ptr<TowerController> tower = selectedClickable->getGameObject()->getComponent<TowerController>();
+void TowerDefense::drawUpgradeOverview(std::shared_ptr<TowerController> tower) {
 	ImVec2 winPos = ImVec2(0, sre::Renderer::instance->getWindowSize().y - bottomMenuHeight);
 	ImVec2 winSize = ImVec2(sre::Renderer::instance->getWindowSize().x, bottomMenuHeight);
 	ImGui::SetNextWindowPos(winPos, ImGuiSetCond_Always);
@@ -526,6 +543,7 @@ void TowerDefense::drawUpgradeOverview() {
 		}
 		if (ImGui::ImageButton(loadedTextures.at(tex)->getNativeTexturePtr(), ImVec2(56, 56), ImVec2(0, 1), ImVec2(1, 0))) {
 			std::cout << "UPGRADE: " << tex << "\n";
+			if (tex == "bomb_tower.png") tower->explode(); // <-------------------------------- TODO: REMOVE
 		}
 	}
 	ImGui::SetCursorPosY(winSize.y - bottomMenuHeight + imgMargin.y);
@@ -540,7 +558,12 @@ void TowerDefense::drawUpgradeOverview() {
 
 void TowerDefense::drawGUI() {
 	drawResourceOverview();
-	if (selectedClickable && selectedClickable->getGameObject()->getComponent<TowerController>()) drawUpgradeOverview();
+	std::shared_ptr<TowerController> tower = nullptr;
+	if (selectedClickable && selectedClickable->getGameObject()) {
+		tower = selectedClickable->getGameObject()->getComponent<TowerController>();
+		if (tower && tower->isExploding()) selectedClickable = nullptr;
+	}
+	if (selectedClickable && tower) drawUpgradeOverview(tower);
 	else drawBuildingOverview();
 	if (showMessage) drawMessage();
 }

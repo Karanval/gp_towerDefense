@@ -84,6 +84,7 @@ void EnemyController::moveToNextWaypoint() {
 		phys->setLinearVelocity(glm::vec2(0));
 		moving = false;
 		TowerDefense::instance->decrementHealthBy(1);
+		gameObject->die();
 	}
 }
 
@@ -98,7 +99,6 @@ int EnemyController::getDamage() { return damage; }
 void EnemyController::hurt(int hurtAmount) {
 	currentHealth -= hurtAmount;
 	if (currentHealth <= 0) {
-		//TowerDefense::instance->removeGameObject(gameObject);
 		gameObject->die();
 	}
 }

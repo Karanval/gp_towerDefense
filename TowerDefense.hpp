@@ -31,7 +31,6 @@ public:
 	void incrementGoldBy(int gold);
 	int getGold();
 	sre::Camera getCamera();
-	void removeGameObject(GameObject* go);
 
 	static TowerDefense* instance;
 	static constexpr float32 timeStep = 1.0f / 60.0f;
@@ -44,6 +43,7 @@ private:
 	void update(float deltaTime);
 	void updateCamera(float deltaTime);
 	void updatePhysics();
+	void updateFPS();
 	void BeginContact(b2Contact* contact);
 	void EndContact(b2Contact* contact);
 	void handleContact(b2Contact* contact, bool begin);
@@ -60,7 +60,7 @@ private:
 	void registerPhysicsComponent(PhysicsComponent* r);
 	void drawResourceOverview();
 	void drawBuildingOverview();
-	void drawUpgradeOverview();
+	void drawUpgradeOverview(std::shared_ptr<TowerController> tower);
 	void drawGUI();
 	void drawMessage();
 	bool rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec3, 2>& box);
@@ -93,6 +93,11 @@ private:
 	bool down = false;
 	bool zoom = false;
 	
+	float fps = 0.0f;
+	float bestFPS = 0.0f;
+	float lastBestFPS = 0.0f;
+	int frames = 0;
+	float lastFPSUpdate = 0.0f;
 	float fixedTime = 0.0f;
 	int gold = 0;
 	int lives = 0;

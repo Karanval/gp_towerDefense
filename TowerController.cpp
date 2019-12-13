@@ -20,12 +20,16 @@ void TowerController::update(float deltaTime) {
 		timeSinceBuilt += deltaTime;
 	}
 
-	if (exploding) {
+	std::shared_ptr<ClickableComponent> clickable = gameObject->getComponent<ClickableComponent>();
+
+	if (exploding && clickable) {
+		if (bricks.size() == 0) gameObject->die();
 		for (int i = 0; i < bricks.size(); i++) {
 			auto brickObj = bricks[i];
 			auto brickPos = brickObj->getPosition();
-			glm::vec3 p = glm::mix(brickPos, glm::vec3 (32, 32, 0), fallTime / 500);
+			glm::vec3 p = glm::mix(brickPos, glm::vec3(32, 32, 0), fallTime / 500);
 			brickObj->setPosition(p);
+			if (brickPos.y < clickable->getBounds()[0].y + 1) brickObj->die();
 		}
 
 		fallTime += deltaTime;
@@ -146,7 +150,10 @@ void TowerController::shoot(std::shared_ptr<EnemyController> target) {
 }
 
 void TowerController::explode() {
+	if (exploding) return;
 	exploding = true;
+	TowerDefense::instance->incrementGoldBy(cost / 2);
+	setFirerate(0.0f);
 	auto towerPos = gameObject->getPosition();
 	float physicsScale = TowerDefense::instance->physicsScale;
 	for (int i = 0; i < bricks.size(); i++) {
@@ -159,6 +166,10 @@ void TowerController::explode() {
 			phys->applyBlastImpulse(b2Vec2(1 / physicsScale, 1 / physicsScale) , b2Vec2(2 / physicsScale, 2 / physicsScale), 0.000000001);
 		}
 	}
+}
+
+bool TowerController::isExploding() {
+	return exploding;
 }
 
 void TowerController::addBrick(std::shared_ptr<GameObject> brickObj) {

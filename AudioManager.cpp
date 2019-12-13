@@ -36,7 +36,7 @@ void AudioManager::cleanUP() {
 	Mix_CloseAudio();
 }
 
-void pause() {
+void AudioManager::pause() {
 	if (Mix_PausedMusic() == 1)
 		Mix_ResumeMusic();
 	else
