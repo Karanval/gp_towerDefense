@@ -10,7 +10,7 @@ EnemyController::~EnemyController() {
 	//TowerDefense::instance->removeGameObject(healthPoints[i].get());
 }
 
-void EnemyController::init(int health, float damage, int coinDrop, std::vector<glm::vec2>* path) {
+void EnemyController::init(float health, float damage, int coinDrop, std::vector<glm::vec2>* path) {
 	phys = gameObject->getComponent<PhysicsComponent>();
 	initialHealth = health;
 	currentHealth = initialHealth;
@@ -69,8 +69,8 @@ void EnemyController::update(float deltaTime) {
 	}
 }
 
-
 void EnemyController::moveToNextWaypoint() {
+	//TODO add Enemy rotate
 	waypointIndex++;
 	if (waypointIndex < path->size()) {
 		pos = glm::vec2(gameObject->getPosition().x, gameObject->getPosition().z);
@@ -98,6 +98,7 @@ int EnemyController::getDamage() { return damage; }
 
 void EnemyController::hurt(int hurtAmount) {
 	currentHealth -= hurtAmount;
+
 	if (currentHealth <= 0) {
 		gameObject->die();
 	}

@@ -8,6 +8,7 @@
 #include "LevelLoader.hpp"
 #include "PhysicsComponent.hpp"
 #include "ClickableComponent.hpp"
+#include "Box2D/Dynamics/Contacts/b2Contact.h"
 #include <limits>
 
 TowerDefense* TowerDefense::instance = nullptr;
@@ -43,12 +44,33 @@ void TowerDefense::update(float deltaTime) {
 	updatePhysics();
 	updateFPS();
 
+	std::vector<int> toRemove;
 	for (int i = 0; i < gameObjects.size(); i++) {
-		if (gameObjects[i]->isMarkedForDeath()) gameObjects.erase(gameObjects.begin() + i);
+		if (gameObjects[i]->isMarkedForDeath()) /*gameObjects.erase(gameObjects.begin() + i)*/
+			toRemove.push_back(i);
 		else gameObjects[i]->update(deltaTime);
 	}
 
+	for (int i = 0; i < toRemove.size(); i++) {
+		int index = toRemove[i];
+		printf("REMOVED %s\n", gameObjects[index]->name);
+		auto ec = gameObjects[index]->getComponent<EnemyController>();
+		if (ec) gold += ec->getCoinDrop();
+
+		std::shared_ptr<PhysicsComponent> phys = gameObjects[index]->getComponent<PhysicsComponent>();
+		if (phys) {
+			auto physB = physicsComponentLookup.find(phys->fixture);
+			deregisterPhysicsComponent(physB->second);
+		}
+		
+		gameObjects[index]->cleanUp();
+		
+		auto iterator = gameObjects.begin() + index; 
+		gameObjects.erase(iterator);
+	}
+
 	if (lives <= 0 && !gameLost) {
+		//TODO game restart option i.e. press 'space' to restart
 		displayMessage("You died!");
 		audioManager->play(END_MUSIC);
 		gameLost = true;
@@ -99,7 +121,7 @@ void TowerDefense::updatePhysics() {
 		auto position = phys.second->body->GetPosition();
 		float angle = phys.second->body->GetAngle();
 		auto gameObject = phys.second->getGameObject();
-		// TODO constant Y
+
 		if (!gameObject) continue;
 		gameObject->setPosition(glm::vec3((position.x * physicsScale),gameObject->getPosition().y, position.y * physicsScale));
 		gameObject->setRotation(gameObject->getRotation() + glm::vec3(0, 0, angle));
@@ -187,7 +209,6 @@ void TowerDefense::init() {
 	std::shared_ptr<GameObject> spawnObj = GameObject::createGameObject();
 	spawner = spawnObj->addComponent<SpawnController>();
 	spawner->setGameObjects(&gameObjects);
-	// TODO: replace with actual path when Grid is ready
 
 	//spawner->startSpawningCycle({glm::vec2(5-3,-4)/*, glm::vec2(-3,-3)*/ });
 	spawner->startSpawningCycle(enemyPath);
@@ -220,7 +241,32 @@ void TowerDefense::EndContact(b2Contact* contact) {
 	handleContact(contact, false);
 }
 
-void TowerDefense::handleContact(b2Contact* contact, bool begin) {}
+void TowerDefense::handleContact(b2Contact* contact, bool begin) {
+	auto fixA = contact->GetFixtureA();
+	auto fixB = contact->GetFixtureB();
+	auto physA = physicsComponentLookup.find(fixA);
+	auto physB = physicsComponentLookup.find(fixB);
+	if (physA != physicsComponentLookup.end() && physB != physicsComponentLookup.end()) {
+		auto& aComponents = physA->second->getGameObject()->getComponents();
+		auto& bComponents = physB->second->getGameObject()->getComponents();
+		for (auto& c : aComponents) {
+			if (begin) {
+				c->onCollisionStart(physB->second);
+			}
+			else {
+				c->onCollisionEnd(physB->second);
+			}
+		}
+		for (auto& c : bComponents) {
+			if (begin) {
+				c->onCollisionStart(physA->second);
+			}
+			else {
+				c->onCollisionEnd(physA->second);
+			}
+		}
+	}
+}
 
 void TowerDefense::keyInput(SDL_Event& event) {
 	switch (event.type) {

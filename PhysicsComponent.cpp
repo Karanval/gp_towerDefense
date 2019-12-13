@@ -90,6 +90,25 @@ void PhysicsComponent::initBox(b2BodyType type, glm::vec2 size, glm::vec2 center
 	TowerDefense::instance->registerPhysicsComponent(this);
 }
 
+void PhysicsComponent::initRectangle(b2BodyType type,float hx, float hy, glm::vec2 center, float density) {
+	assert(body == nullptr);
+	// do init
+	shapeType = b2Shape::Type::e_polygon;
+	b2BodyDef bd;
+	bd.type = type;
+	rbType = type;
+	bd.position = b2Vec2(center.x, center.y);
+	body = world->CreateBody(&bd);
+	polygon = new b2PolygonShape();
+	polygon->SetAsBox(hx, hy, { 0,0 }, 0);
+	b2FixtureDef fxD;
+	fxD.shape = polygon;
+	fxD.density = density;
+	fixture = body->CreateFixture(&fxD);
+
+	TowerDefense::instance->registerPhysicsComponent(this);
+}
+
 bool PhysicsComponent::isSensor() {
 	return fixture->IsSensor();
 }

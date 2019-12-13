@@ -8,7 +8,7 @@ public:
 	explicit EnemyController(GameObject* gameObject);
 	~EnemyController();
 
-	void init(int health, float damage, int coinDrop, std::vector<glm::vec2>* path);
+	void init(float health, float damage, int coinDrop, std::vector<glm::vec2>* path);
 
 	void onCollisionStart(PhysicsComponent* comp) override;
 
@@ -36,10 +36,10 @@ private:
 	sre::Color healthColor = sre::Color(0, 1, 0, 1);
 	sre::Color missingHealthColor = sre::Color(1, 0, 0, 1);
 	int waypointIndex;
-	int initialHealth;
-	int currentHealth;
 	int coinDrop;
 	int width;
+	float initialHealth;
+	float currentHealth;
 	float damage;
 	float tileSize = 32.0f;
 	float speed = 0.1f;

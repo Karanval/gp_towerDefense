@@ -1,0 +1,23 @@
+# Blender MTL File: 'lego_cutout.blend'
+# Material Count: 2
+
+newmtl Lego
+Ns 189.062484
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.282196 0.294912
+Ks 0.141667 0.141667 0.141667
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Karolina\\projects\\SimpleRenderEngineProject\\project\\towerDefense\\data\\textures\\lego_frankie.png
+
+newmtl Material
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.396650 0.296761
+Ks 0.291667 0.291667 0.291667
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 2

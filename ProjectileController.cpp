@@ -48,7 +48,7 @@ void ProjectileController::update(float deltaTime) {
 		}
 		movementTime += deltaTime;
 	}
-	else gameObject->die();
+	//else gameObject->die();
 }
 
 bool ProjectileController::isDestinationReached() {

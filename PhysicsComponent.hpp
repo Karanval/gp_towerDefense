@@ -12,6 +12,7 @@ public:
 	virtual ~PhysicsComponent();
 	void initCircle(b2BodyType type, float radius, glm::vec2 center, float density);
 	void initBox(b2BodyType type, glm::vec2 size, glm::vec2 center, float density);
+	void initRectangle(b2BodyType type, float hx, float hy, glm::vec2 center, float density);
 
 	void addForce(glm::vec2 force);     // Force gradually affects the velocity over time
 

@@ -14,7 +14,7 @@ void Component::renderSprite(sre::SpriteBatch::SpriteBatchBuilder& spriteBatchBu
 }
 
 void Component::update(float deltaTime) {
-	if (!gameObject) Component::~Component();
+	//if (!gameObject) Component::~Component();
 }
 
 GameObject *Component::getGameObject() {
