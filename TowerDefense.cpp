@@ -47,8 +47,9 @@ void TowerDefense::update(float deltaTime) {
 
 	std::vector<int> toRemove;
 	for (int i = 0; i < gameObjects.size(); i++) {
-		if (gameObjects[i]->isMarkedForDeath()) /*gameObjects.erase(gameObjects.begin() + i)*/
+		if (gameObjects[i]->isMarkedForDeath()) /*gameObjects.erase(gameObjects.begin() + i)*/ {
 			toRemove.push_back(i);
+		}
 		else gameObjects[i]->update(deltaTime);
 	}
 
@@ -61,14 +62,14 @@ void TowerDefense::update(float deltaTime) {
 	}
 
 	if (lives <= 0 && !gameLost) {
-		displayMessage("You died!");
+		displayMessage("You died! Press 'Enter' to restart.");
 		state = GameOver;
 		audioManager->play(END_MUSIC);
 		gameLost = true;
 	}
 
 	if (lives > 0 && gold >= 100) {
-		displayMessage("You won!");
+		displayMessage("You won! Press 'Enter' to restart.");
 		state = GameOver;
 		audioManager->play(END_MUSIC);
 		gameWon = true;
@@ -327,7 +328,8 @@ void TowerDefense::keyInput(SDL_Event& event) {
 				restart();
 				state = Running;
 				endMessageShown = false;
-				//gameLost = false;
+				gameLost = false;
+				showMessage = false;
 			//}
 			break;
 		/* DEBUGGING END */
@@ -564,7 +566,7 @@ void TowerDefense::drawBuildingOverview() {
 			towerBeingBuilt.reset();
 		}
 		std::shared_ptr<GameObject> obj = createGameObject();
-		TowerLoader::loadTower(obj, &gameObjects, "basic");
+		TowerLoader::loadTower(obj, &gameObjects, "basic", true);
 		towerBeingBuilt = obj->getComponent<TowerController>();
 
 	}

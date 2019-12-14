@@ -147,6 +147,7 @@ void TowerController::shoot(std::shared_ptr<EnemyController> target) {
 	projectileC->setTarget(target);
 	projectileC->setSpeed(speed);
 	projectileC->setDamage(damage);
+	projectileObj->name = "Arrow";
 }
 
 void TowerController::explode() {

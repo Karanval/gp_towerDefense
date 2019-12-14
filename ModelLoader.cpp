@@ -11,7 +11,16 @@ void ModelLoader::loadModel(std::shared_ptr<GameObject> obj, std::string objName
 	if (loadedMesh != loadedMeshes.end()) {
 		obj->addComponent<MeshComponent>()->setMesh(loadedMesh->second->getMesh());
 		auto loadedMat = loadedMaterials.find(mtlName);
-		if (loadedMat != loadedMaterials.end()) obj->addComponent<MaterialComponent>()->setMaterial(loadedMat->second->getMaterial());
+		if (loadedMat == loadedMaterials.end()) {
+			std::shared_ptr<sre::Material> material;
+			ObjImporter::loadMaterial(material, materialPath + mtlName + ".mtl", 
+									  loadedMesh->second->getMesh()->getUVs(), 
+									  textureNameWithExt == "" ? "" : texturePath + textureNameWithExt);
+			obj->addComponent<MaterialComponent>()->setMaterial(material);
+			loadedMaterials.insert(std::pair<std::string, std::shared_ptr<MaterialComponent>>(mtlName, 
+													      obj->getComponent<MaterialComponent>()));
+		}
+		else obj->addComponent<MaterialComponent>()->setMaterial(loadedMat->second->getMaterial());
 		return;
 	}
 	

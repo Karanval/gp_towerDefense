@@ -10,11 +10,12 @@
 #include <limits>
 #include "TowerDefense.hpp"
 #include "ProjectileController.hpp"
+#include <time.h>
 
 using namespace rapidjson;
 
 void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<std::shared_ptr<GameObject>>* brickObjs,
-							std::string towerName) {
+							std::string towerName, bool randomizeColors) {
 	std::ifstream fis(TowerLoader::towerPath + towerName + ".json");
 	IStreamWrapper sw(fis);
 	Document d;
@@ -31,6 +32,7 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 	for (SizeType i = 0; i < upgrades.Size(); i++) towerC->addUpgrade(upgrades[i]["icon"].GetString());
 	const Value& bricks = d["bricks"];
 	std::array<glm::vec3, 2> boundary = { glm::vec3(FLT_MAX), glm::vec3(FLT_MIN) };
+	if (randomizeColors) srand(time(0));
 	for (SizeType i = 0; i < bricks.Size(); i++) {
 		const Value& brick = bricks[i];
 		std::shared_ptr<GameObject> brickObj = GameObject::createGameObject();
@@ -39,7 +41,20 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 		brickObjs->push_back(brickObj);
 		std::shared_ptr<BrickController> brickC = brickObj->addComponent<BrickController>();
 		std::string objName = brick["objName"].GetString();
-		std::string mtlName = brick["mtlName"].GetString();
+		std::string mtlName = "";
+		if (randomizeColors) {
+			switch (rand() % 6) {
+			case 0: mtlName = "blue"; break;
+			case 1: mtlName = "red"; break;
+			case 2: mtlName = "green"; break;
+			case 3: mtlName = "grey"; break;
+			case 4: mtlName = "lightgrey"; break;
+			case 5: mtlName = "lightblue"; break;
+			default: mtlName = "blue"; break;
+			}
+		}
+		else mtlName = brick["mtlName"].GetString();
+		std::cout << mtlName << "\n";
 		const Value& textureFileName = brick["txtFilename"];
 		if (textureFileName.IsNull()) TowerDefense::instance->getModelLoader()->loadModel(brickObj, objName, mtlName);
 		else TowerDefense::instance->getModelLoader()->loadModel(brickObj, objName, mtlName, textureFileName.GetString());
