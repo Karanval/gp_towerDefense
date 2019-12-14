@@ -522,7 +522,8 @@ void TowerDefense::setupGUI() {
 void TowerDefense::drawResourceOverview() {
 	ImVec2 winPos = ImVec2(0, 0);
 	ImVec2 winSize = ImVec2(sre::Renderer::instance->getWindowSize().x, resourceMenuHeight);
-	ImVec4 background = ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
+	ImVec4 background = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+	//ImVec4 background = ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
 	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);
 	ImVec4 goldTextCol = ImVec4(1.0f, 0.76f, 0.14f, 1.0f);
 	ImVec4 lifeTextCol = ImVec4(0.96f, 0.18f, 0.18f, 1.0f);

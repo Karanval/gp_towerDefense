@@ -27,15 +27,15 @@ void LevelLoader::placeTile(int tileType, glm::vec3 tileSize, glm::vec2 offset, 
 	std::shared_ptr<GameObject> obj = GameObject::createGameObject();
 	switch (tileType) {
 	case 0: TowerDefense::instance->getModelLoader()->loadModel(obj, "path", "path", "path.png"); break;
-	case 1: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain", "terrain", "terrain.png"); break;
-	case 2: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_north", "terrain", "terrain.png"); break;
-	case 3: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_northeast", "terrain", "terrain.png"); break;
-	case 4: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_east", "terrain", "terrain.png"); break;
-	case 5: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_southeast", "terrain", "terrain.png"); break;
-	case 6: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_south", "terrain", "terrain.png"); break;
-	case 7: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_southwest", "terrain", "terrain.png"); break;
-	case 8: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_west", "terrain", "terrain.png"); break;
-	case 9: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_northwest", "terrain", "terrain.png"); break;
+	case 1: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain", "terrain", "lego_terrain.png"); break;
+	case 2: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_north", "terrain", "lego_terrain.png"); break;
+	case 3: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_northeast", "terrain", "lego_terrain.png"); break;
+	case 4: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_east", "terrain", "lego_terrain.png"); break;
+	case 5: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_southeast", "terrain", "lego_terrain.png"); break;
+	case 6: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_south", "terrain", "lego_terrain.png"); break;
+	case 7: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_southwest", "terrain", "lego_terrain.png"); break;
+	case 8: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_west", "terrain", "lego_terrain.png"); break;
+	case 9: TowerDefense::instance->getModelLoader()->loadModel(obj, "terrain_northwest", "terrain", "lego_terrain.png"); break;
 	case 10:
 		TowerDefense::instance->getModelLoader()->loadModel(obj, "gate", "gate", "gate.png");
 		obj->addComponent<TowerController>();
