@@ -6,6 +6,7 @@
 #include "Box2D/Dynamics/b2Body.h"
 #include "Component.hpp"
 
+// Component for handling physics on GameObjects.
 class PhysicsComponent : public Component {
 public:
 	explicit PhysicsComponent(GameObject* gameObject);

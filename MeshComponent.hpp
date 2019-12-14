@@ -1,5 +1,7 @@
 #pragma once
 #include "Component.hpp"
+
+// Extension of a component that loads and sets meshes for imported objects.
 class MeshComponent : public Component {
 public:
 	explicit MeshComponent(GameObject* gameObject);

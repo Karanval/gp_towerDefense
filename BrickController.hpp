@@ -4,6 +4,7 @@
 #include "TowerController.hpp"
 #include <sre/RenderPass.hpp>
 
+// Class for manipulating the bricks of which the towers are built of.
 class BrickController : public Component {
 public:
 	explicit BrickController(GameObject* gameObject);

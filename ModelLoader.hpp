@@ -8,6 +8,7 @@
 #include "MaterialComponent.hpp"
 #include <map>
 
+// Class for loading objects, materials and textured for importing models.
 class ModelLoader
 {
 	public:

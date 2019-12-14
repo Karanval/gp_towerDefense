@@ -2,6 +2,7 @@
 #include "Component.hpp"
 #include "EnemyController.hpp"
 
+// Class for handling projectile shooting from towers.
 class ProjectileController : public Component {
 public:
 	explicit ProjectileController(GameObject* gameObject);

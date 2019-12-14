@@ -6,6 +6,7 @@
 
 enum TowerState {building, active};
 
+// Class for controlling tower building, destroying, and upgrading.
 class TowerController : public Component {
 public:
 	explicit TowerController(GameObject* gameObject);

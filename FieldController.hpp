@@ -1,5 +1,8 @@
 #pragma once
 #include "Component.hpp"
+
+// Basic component structure for a Field.
+// Used for manipulating grid positions.
 class FieldController : public Component {
 public:
 	explicit FieldController(GameObject* gameObject);

@@ -3,7 +3,7 @@
 #include "EnemyController.hpp"
 #include "ModelLoader.hpp"
 
-
+// Class for handling spawning of enemies, and manipulating spawn waves.
 class SpawnController : public Component {
 public:
 	explicit SpawnController(GameObject* gameObject);
