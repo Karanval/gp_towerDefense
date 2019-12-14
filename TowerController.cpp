@@ -23,13 +23,19 @@ void TowerController::update(float deltaTime) {
 	std::shared_ptr<ClickableComponent> clickable = gameObject->getComponent<ClickableComponent>();
 
 	if (exploding && clickable) {
-		if (bricks.size() == 0) gameObject->die();
+		if (bricks.size() == 0) {
+			gameObject->name = gameObject->name + " (killed by TowerController::update)";
+			gameObject->die();
+		}
 		for (int i = 0; i < bricks.size(); i++) {
 			auto brickObj = bricks[i];
 			auto brickPos = brickObj->getPosition();
 			glm::vec3 p = glm::mix(brickPos, glm::vec3(32, 32, 0), fallTime / 100);
 			brickObj->setPosition(p);
-			if (brickPos.y < clickable->getBounds()[0].y + 1) brickObj->die();
+			if (brickPos.y < clickable->getBounds()[0].y + 1) {
+				brickObj->name = gameObject->name + " (killed by TowerController::update)";
+				brickObj->die();
+			}
 		}
 
 		fallTime += deltaTime;

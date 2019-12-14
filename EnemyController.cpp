@@ -17,7 +17,7 @@ void EnemyController::init(float health, float damage, int coinDrop, std::vector
 	this->path = path;
 	waypointIndex = 0;
 	moveToNextWaypoint();
-	for (int i = 0; i < health; i++) {
+	/*for (int i = 0; i < health; i++) {
 		std::shared_ptr<GameObject> hp = TowerDefense::instance->createGameObject();
 		std::stringstream ss;
 		ss << gameObject->name << "_hp_" << i;
@@ -30,7 +30,7 @@ void EnemyController::init(float health, float damage, int coinDrop, std::vector
 		std::shared_ptr<sre::Material> mat = sre::Shader::getUnlit()->createMaterial();
 		mat->setColor(healthColor);
 		healthPoints[i]->getComponent<MaterialComponent>()->setMaterial(mat);
-	}
+	}*/
 }
 
 void EnemyController::onCollisionStart(PhysicsComponent* comp) {
@@ -88,7 +88,11 @@ void EnemyController::moveToNextWaypoint() {
 		phys->setLinearVelocity(glm::vec2(0));
 		moving = false;
 		TowerDefense::instance->decrementHealthBy(1);
-		for (int i = 0; i < healthPoints.size(); i++) healthPoints[i]->die();
+		for (int i = 0; i < healthPoints.size(); i++) {
+			healthPoints[i]->name = gameObject->name + " (killed by EnemyController::moveToNextWaypoint)";
+			healthPoints[i]->die();
+		}
+		gameObject->name = gameObject->name + " (killed by EnemyController::moveToNextWaypoint)";
 		gameObject->die();
 	}
 }
@@ -105,7 +109,11 @@ void EnemyController::hurt(int hurtAmount) {
 	currentHealth -= hurtAmount;
 
 	if (currentHealth <= 0) {
-		for (int i = 0; i < healthPoints.size(); i++) healthPoints[i]->die();
+		for (int i = 0; i < healthPoints.size(); i++) {
+			healthPoints[i]->name = gameObject->name + " (killed by EnemyController::hurt)";
+			healthPoints[i]->die();
+		}
+		gameObject->name = gameObject->name + " (killed by EnemyController::hurt)";
 		gameObject->die();
 	}
 }

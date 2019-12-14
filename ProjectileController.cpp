@@ -48,7 +48,10 @@ void ProjectileController::update(float deltaTime) {
 		}
 		movementTime += deltaTime;
 	}
-	else gameObject->die();
+	else {
+		gameObject->name = gameObject->name + " (killed by ProjectileController::update)";
+		gameObject->die();
+	}
 
 }
 

@@ -52,13 +52,13 @@ void TowerDefense::update(float deltaTime) {
 		}
 		else gameObjects[i]->update(deltaTime);
 	}
-
+	
 	for (int i = 0; i < toRemove.size(); i++) {
 		int index = toRemove[i];
-		std::cout << gameObjects[index]->name << " ";
+		if (gameObjects[index]->name.substr(0,5) != "Arrow") std::cout << gameObjects[index]->name << "\n";
 		auto ec = gameObjects[index]->getComponent<EnemyController>();
 		if (ec) gold += ec->getCoinDrop();
-
+		
 		cleanUpGameObject(index);
 	}
 
@@ -566,7 +566,10 @@ void TowerDefense::drawBuildingOverview() {
 	ImGui::SetCursorPosY(winSize.y - bottomMenuHeight + imgMargin.y);
 	if (ImGui::ImageButton(basicImg->getNativeTexturePtr(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) {
 		if (towerBeingBuilt) {
-			if (!towerBeingBuilt->isBuilt()) towerBeingBuilt->getGameObject()->die();
+			if (!towerBeingBuilt->isBuilt()) {
+				towerBeingBuilt->getGameObject()->name = towerBeingBuilt->getGameObject()->name + " (killed by TowerDefense::drawBuildingOVerview)";
+				towerBeingBuilt->getGameObject()->die();
+			}
 			towerBeingBuilt.reset();
 		}
 		std::shared_ptr<GameObject> obj = createGameObject();
