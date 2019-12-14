@@ -54,7 +54,6 @@ void TowerDefense::update(float deltaTime) {
 
 	for (int i = 0; i < toRemove.size(); i++) {
 		int index = toRemove[i];
-		//printf("REMOVED %s\n", gameObjects[index]->name);
 		auto ec = gameObjects[index]->getComponent<EnemyController>();
 		if (ec) gold += ec->getCoinDrop();
 
@@ -62,7 +61,6 @@ void TowerDefense::update(float deltaTime) {
 	}
 
 	if (lives <= 0 && !gameLost) {
-		//TODO game restart option i.e. press 'space' to restart
 		displayMessage("You died!");
 		state = GameOver;
 		audioManager->play(END_MUSIC);
@@ -326,10 +324,10 @@ void TowerDefense::keyInput(SDL_Event& event) {
 			break;
 		case SDLK_RETURN:
 			//if (state == GameOver) {
-				printf("GAME OVER\n");
-				// TODO clean up and restart
 				restart();
 				state = Running;
+				endMessageShown = false;
+				//gameLost = false;
 			//}
 			break;
 		/* DEBUGGING END */
