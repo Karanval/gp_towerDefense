@@ -55,6 +55,7 @@ void TowerDefense::update(float deltaTime) {
 
 	for (int i = 0; i < toRemove.size(); i++) {
 		int index = toRemove[i];
+		std::cout << gameObjects[index]->name << " ";
 		auto ec = gameObjects[index]->getComponent<EnemyController>();
 		if (ec) gold += ec->getCoinDrop();
 
@@ -510,7 +511,7 @@ void TowerDefense::setupGUI() {
 	fonts->AddFontDefault();
 	std::string fontName = miscPath + "UIFont.ttf";
 	uiFont = fonts->AddFontFromFileTTF(fontName.c_str(), 26);
-	messageFont = fonts->AddFontFromFileTTF(fontName.c_str(), 46);
+	messageFont = fonts->AddFontFromFileTTF(fontName.c_str(), 36);
 	
 	// Images
 	basicImg = sre::Texture::create().withFile(modelLoader->texturePath + "basic_tower.png")
@@ -697,7 +698,7 @@ void TowerDefense::drawMessage() {
 		return;
 	}
 	messageCol.w = a;
-	ImGui::SetNextWindowPos(ImVec2(sre::Renderer::instance->getWindowSize().x / 2 - messageWindowSize.x,
+	ImGui::SetNextWindowPos(ImVec2((sre::Renderer::instance->getWindowSize().x - messageWindowSize.x) / 2,
 								   sre::Renderer::instance->getWindowSize().y / 2 - messageWindowSize.y), ImGuiSetCond_Always);
 	ImGui::SetNextWindowSize(messageWindowSize, ImGuiSetCond_Always);
 	ImGui::PushFont(messageFont);
@@ -724,8 +725,17 @@ void TowerDefense::restart() {
 	}
 
 	//setup level
-	gold = 0; // restaar without dying
+	fps = 0.0f;
+	bestFPS = 0.0f;
+	lastBestFPS = 0.0f;
+	frames = 0;
+	lastFPSUpdate = 0.0f;
+	fixedTime = 0.0f;
+	gold = 0;
 	lives = 0;
+	gameLost = false;
+	gameWon = false;
+	endMessageShown = false;
 	setupLevel();
 	setupSpawner();
 	setupSounds();

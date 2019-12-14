@@ -40,10 +40,12 @@ void SpawnController::setWaveAmount(int waveAmount) { this->waveAmount = waveAmo
 
 void SpawnController::setWaveTime(float waveTime) { this->waveTime = waveTime; }
 
-
+int enemies = 0;
 std::shared_ptr<EnemyController> SpawnController::spawnEnemy() {
 	std::shared_ptr<GameObject> obj = GameObject::createGameObject();
-	obj->name = "Enemy";
+	std::stringstream ss;
+	ss << "Enemy_" << ++enemies;
+	obj->name = ss.str();
 
 	/*ModelLoader::loadModel(obj, "sphere", "sphere");
 	glm::vec2 initialPosition = 32.0f*enemyPath[0];*/

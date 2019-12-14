@@ -133,8 +133,7 @@ private:
 	float messageFadeTime = 2.0f;
 	float messageStayTime = 0.5f;
 	ImVec4 messageCol;
-	ImVec2 messageWindowSize = ImVec2(280, 80);
-	ImVec2 enemyHealthBarSize = ImVec2(80, 30);
+	ImVec2 messageWindowSize = ImVec2(512, 80);
 
 
 	friend class PhysicsComponent;

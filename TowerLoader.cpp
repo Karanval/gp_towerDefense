@@ -32,7 +32,28 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 	for (SizeType i = 0; i < upgrades.Size(); i++) towerC->addUpgrade(upgrades[i]["icon"].GetString());
 	const Value& bricks = d["bricks"];
 	std::array<glm::vec3, 2> boundary = { glm::vec3(FLT_MAX), glm::vec3(FLT_MIN) };
-	if (randomizeColors) srand(time(0));
+	std::string mtl1, mtl2;
+	if (randomizeColors) {
+		srand(time(0));
+		switch (rand() % 6) {
+		case 0: mtl1 = "blue"; break;
+		case 1: mtl1 = "red"; break;
+		case 2: mtl1 = "green"; break;
+		case 3: mtl1 = "grey"; break;
+		case 4: mtl1 = "lightgrey"; break;
+		case 5: mtl1 = "lightblue"; break;
+		default: mtl1 = "blue"; break;
+		}
+		switch (rand() % 6) {
+		case 0: mtl2 = "blue"; break;
+		case 1: mtl2 = "red"; break;
+		case 2: mtl2 = "green"; break;
+		case 3: mtl2 = "grey"; break;
+		case 4: mtl2 = "lightgrey"; break;
+		case 5: mtl2 = "lightblue"; break;
+		default: mtl2 = "blue"; break;
+		}
+	}
 	for (SizeType i = 0; i < bricks.Size(); i++) {
 		const Value& brick = bricks[i];
 		std::shared_ptr<GameObject> brickObj = GameObject::createGameObject();
@@ -43,15 +64,8 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 		std::string objName = brick["objName"].GetString();
 		std::string mtlName = "";
 		if (randomizeColors) {
-			switch (rand() % 6) {
-			case 0: mtlName = "blue"; break;
-			case 1: mtlName = "red"; break;
-			case 2: mtlName = "green"; break;
-			case 3: mtlName = "grey"; break;
-			case 4: mtlName = "lightgrey"; break;
-			case 5: mtlName = "lightblue"; break;
-			default: mtlName = "blue"; break;
-			}
+			if (rand() % 2) mtlName = mtl1;
+			else mtlName = mtl2;
 		}
 		else mtlName = brick["mtlName"].GetString();
 		const Value& textureFileName = brick["txtFilename"];

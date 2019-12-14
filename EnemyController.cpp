@@ -6,7 +6,6 @@ EnemyController::EnemyController(GameObject* gameObject)
 }
 
 EnemyController::~EnemyController() {
-	for (int i = 0; i < healthPoints.size(); i++) healthPoints[i]->die();
 }
 
 void EnemyController::init(float health, float damage, int coinDrop, std::vector<glm::vec2>* path) {
@@ -20,6 +19,9 @@ void EnemyController::init(float health, float damage, int coinDrop, std::vector
 	moveToNextWaypoint();
 	for (int i = 0; i < health; i++) {
 		std::shared_ptr<GameObject> hp = TowerDefense::instance->createGameObject();
+		std::stringstream ss;
+		ss << gameObject->name << "_hp_" << i;
+		hp->name = ss.str();
 		healthPoints.push_back(hp);
 		TowerDefense::instance->getModelLoader()->loadModel(hp, "healthpoint", "healthpoint");
 		if (i == 0) hpSize = hp->getComponent<MeshComponent>()->getMesh()->getBoundsMinMax()[1] -
@@ -60,11 +62,13 @@ void EnemyController::update(float deltaTime) {
 		glm::vec3 camPos = TowerDefense::instance->getCamera().getPosition();
 		glm::vec3 rot = glm::vec3(45, 90 - glm::degrees(std::atan2(pos.z - camPos.z, pos.x - camPos.x)), -45);
 		for (int i = 0; i < healthPoints.size(); i++) {
+			std::shared_ptr<GameObject> hp = healthPoints[i];
 			glm::vec3 offset = glm::vec3(hpSize.z, 5, hpSize.x * i - healthPoints.size() / 2 * hpSize.x);
-			healthPoints[i]->setPosition(pos + offset);
-			healthPoints[i]->setRotation(rot);
-			if (currentHealth < i)
-				healthPoints[i]->getComponent<MaterialComponent>()->getMaterial()->setColor(missingHealthColor);
+			hp->setPosition(pos + offset);
+			hp->setRotation(rot);
+			if (currentHealth < i && hp->getComponent<MaterialComponent>()) {
+				hp->getComponent<MaterialComponent>()->getMaterial()->setColor(missingHealthColor);
+			}
 		}
 	}
 }
@@ -84,6 +88,7 @@ void EnemyController::moveToNextWaypoint() {
 		phys->setLinearVelocity(glm::vec2(0));
 		moving = false;
 		TowerDefense::instance->decrementHealthBy(1);
+		for (int i = 0; i < healthPoints.size(); i++) healthPoints[i]->die();
 		gameObject->die();
 	}
 }
@@ -100,6 +105,7 @@ void EnemyController::hurt(int hurtAmount) {
 	currentHealth -= hurtAmount;
 
 	if (currentHealth <= 0) {
+		for (int i = 0; i < healthPoints.size(); i++) healthPoints[i]->die();
 		gameObject->die();
 	}
 }
