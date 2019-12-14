@@ -4,7 +4,8 @@
 #include <vector>
 #include "glm/glm.hpp"
 
-
+// Class that controls basic functions of the Grid system.
+// It allows for loading of the maps from a JSON file, alongside with keeping track of tile values.
 class Grid {
 public:
 	Grid();

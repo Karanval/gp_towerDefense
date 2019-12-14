@@ -2,6 +2,8 @@
 #include "Component.hpp"
 #include "PhysicsComponent.hpp"
 
+// Base class for controlling the basic functions of Enemy Game Objects.
+// An extension of a component.
 class EnemyController : public Component {
 public:
 	//explicit EnemyController(GameObject* gameObject);

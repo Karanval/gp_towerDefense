@@ -6,8 +6,6 @@ EnemyController::EnemyController(GameObject* gameObject)
 }
 
 EnemyController::~EnemyController() {
-	for (int i = 0; i < healthPoints.size(); i++) healthPoints[i]->die();
-	//TowerDefense::instance->removeGameObject(healthPoints[i].get());
 }
 
 void EnemyController::init(float health, float damage, int coinDrop, std::vector<glm::vec2>* path) {
@@ -56,7 +54,8 @@ void EnemyController::update(float deltaTime) {
 		}
 
 		// update hp-bar position and orientation
-		glm::vec3 pos = gameObject->getPosition();
+		glm::vec3 pos = gameObject->getPosition() +
+						glm::vec3(0, gameObject->getComponent<MeshComponent>()->getMesh()->getBoundsMinMax()[1].y, 0);
 		glm::vec3 camPos = TowerDefense::instance->getCamera().getPosition();
 		glm::vec3 rot = glm::vec3(45, 90 - glm::degrees(std::atan2(pos.z - camPos.z, pos.x - camPos.x)), -45);
 		for (int i = 0; i < healthPoints.size(); i++) {
@@ -101,5 +100,6 @@ void EnemyController::hurt(int hurtAmount) {
 
 	if (currentHealth <= 0) {
 		gameObject->die();
+		for (int i = 0; i < healthPoints.size(); i++) healthPoints[i]->die();
 	}
 }

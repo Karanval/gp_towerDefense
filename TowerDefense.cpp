@@ -68,13 +68,20 @@ void TowerDefense::update(float deltaTime) {
 		audioManager->play(END_MUSIC);
 		gameLost = true;
 	}
+
+	if (lives > 0 && gold >= 100) {
+		displayMessage("You won!");
+		state = GameOver;
+		audioManager->play(END_MUSIC);
+		gameWon = true;
+	}
 }
 
 void TowerDefense::updateCamera(float deltaTime) {
 	glm::vec3 fwdVec = glm::vec3(-10.0, 0, 10.0f);
 	glm::normalize(fwdVec);
 	glm::vec3 leftVec = glm::cross(upVec, fwdVec);
-	glm::vec3 zoomDist = zoom ? (lookat - camPos) * 0.80f : glm::vec3();
+	glm::vec3 zoomDist = zoom ? (lookat - camPos) * 0.50f : glm::vec3();
 	
 	if (fwd) {
 		camPos += fwdVec * 0.05f;
@@ -446,8 +453,8 @@ void TowerDefense::setupCamera() {
 	camPos = glm::vec3(300.0f, 300.0f, -300.0f);
 	lookat = glm::vec3(0.0f, 0.0f, 0.0f);
 	upVec = glm::vec3(0.0f, 1.0f, 0.0f);
-	
-	camera.setPerspectiveProjection(800.0f, 0.1f, 1000.0f);
+
+	camera.setPerspectiveProjection(35.264f, 0.1f, 700.0f);
 }
 
 void TowerDefense::deregisterPhysicsComponent(PhysicsComponent* r) {
@@ -664,7 +671,7 @@ void TowerDefense::incrementGoldBy(int gold) {
 }
 
 void TowerDefense::displayMessage(std::string message, ImVec4 color) {
-	if (gameLost) return;
+	if (gameLost || gameWon) return;
 	TowerDefense::message = message;
 	messageCol = color;
 	showMessage = true;

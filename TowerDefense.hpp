@@ -15,6 +15,8 @@
 
 enum GameState { Running, GameOver };
 
+// Base class for initiating and updating game states, objects and drawing.
+// Main game class.
 class TowerDefense : public b2ContactListener
 {
 public:
@@ -109,6 +111,7 @@ private:
 	int gold = 0;
 	int lives = 0;
 	bool gameLost = false;
+	bool gameWon = false;
 	bool endMessageShown = false;
 
 	// GUI

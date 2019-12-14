@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <iterator>
 
+// Class for loading 3D objects into SRE.
 namespace ObjImporter {
 	void loadMaterial(std::shared_ptr<sre::Material> &material, std::string filepath, std::vector<glm::vec4>& uvs,
 					  std::string texturePath = "");

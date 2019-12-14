@@ -1,5 +1,7 @@
 #pragma once
 #include "Component.hpp"
+
+// Extension of a component that loads and sets materials for imported objects.
 class MaterialComponent : public Component {
 public:
 	explicit MaterialComponent(GameObject* gameObject);
