@@ -85,7 +85,14 @@ void EnemyController::moveToNextWaypoint() {
 		glm::vec2 heading = nextTilePos - pos;
 		direction = glm::normalize(heading);
 
-		gameObject->setRotation(glm::vec3(0, 90, 0));
+		if (direction.x ==1 && direction.y == 0)
+			gameObject->setRotation(glm::vec3(0, 180, 0));
+		else if (direction.x == 0 && direction.y == 1)
+			gameObject->setRotation(glm::vec3(0, -90, 0));
+		else if (direction.x == 0 && direction.y == -1)
+			gameObject->setRotation(glm::vec3(0, 90, 0));
+		else if (direction.x == -1 && direction.y == 0)
+			gameObject->setRotation(glm::vec3(0, 360, 0));
 
 		phys->setLinearVelocity(speed * direction);
 	}
