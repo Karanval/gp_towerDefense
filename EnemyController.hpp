@@ -16,11 +16,11 @@ public:
 
 	void update(float deltaTime) override;
 
-	int getHealth();
+	float getHealth();
 
-	int getMaxHealth();
+	float getMaxHealth();
 
-	int getDamage();
+	float getDamage();
 
 	int getCoinDrop();
 

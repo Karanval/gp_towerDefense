@@ -13,6 +13,8 @@
 #include "Grid.hpp"
 #include "AudioManager.hpp"
 
+enum GameState { Running, GameOver };
+
 class TowerDefense : public b2ContactListener
 {
 public:
@@ -84,7 +86,8 @@ private:
 	std::shared_ptr<ClickableComponent> selectedClickable = nullptr;
 	std::shared_ptr<TowerController> towerBeingBuilt = nullptr;
 	std::vector<glm::vec2> enemyPath;
-	
+	GameState state;
+
 	bool fwd = false;
 	bool bwd = false;
 	bool left = false;

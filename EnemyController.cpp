@@ -88,13 +88,13 @@ void EnemyController::moveToNextWaypoint() {
 	}
 }
 
-int EnemyController::getHealth() { return currentHealth; }
+float EnemyController::getHealth() { return currentHealth; }
 
-int EnemyController::getMaxHealth() { return initialHealth; }
+float EnemyController::getMaxHealth() { return initialHealth; }
 
 int EnemyController::getCoinDrop() { return coinDrop; }
 
-int EnemyController::getDamage() { return damage; }
+float EnemyController::getDamage() { return damage; }
 
 void EnemyController::hurt(int hurtAmount) {
 	currentHealth -= hurtAmount;

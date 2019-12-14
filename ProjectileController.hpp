@@ -13,8 +13,8 @@ public:
 	float getSpeed();
 	void setTarget(std::shared_ptr<EnemyController> enemy);
 	void setDamage(int damage);
-	void ProjectileController::setStartingPos(glm::vec3 pos);
-	bool ProjectileController::isDestinationReached();
+	void setStartingPos(glm::vec3 pos);
+	bool isDestinationReached();
 
 private:
 	std::shared_ptr<PhysicsComponent> phys;
