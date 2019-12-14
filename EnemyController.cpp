@@ -6,6 +6,7 @@ EnemyController::EnemyController(GameObject* gameObject)
 }
 
 EnemyController::~EnemyController() {
+	for (int i = 0; i < healthPoints.size(); i++) healthPoints[i]->die();
 }
 
 void EnemyController::init(float health, float damage, int coinDrop, std::vector<glm::vec2>* path) {
@@ -100,6 +101,5 @@ void EnemyController::hurt(int hurtAmount) {
 
 	if (currentHealth <= 0) {
 		gameObject->die();
-		for (int i = 0; i < healthPoints.size(); i++) healthPoints[i]->die();
 	}
 }

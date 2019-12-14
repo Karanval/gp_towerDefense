@@ -542,6 +542,8 @@ void TowerDefense::drawResourceOverview() {
 	ImGui::PopStyleColor();
 	ImGui::SameLine(winSize.x - 120);
 	ImGui::Text("FPS: %f", fps);
+	ImGui::SameLine(winSize.x / 2);
+	ImGui::Text("Time: %i seconds", (int)fixedTime);
 	ImGui::End();
 	ImGui::PopFont();
 	ImGui::PopStyleColor();
