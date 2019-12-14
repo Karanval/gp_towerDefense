@@ -53,7 +53,7 @@ void TowerDefense::update(float deltaTime) {
 		else gameObjects[i]->update(deltaTime);
 	}
 
-	for (int i = 0; i < toRemove.size(); i++) {
+	for (int i = toRemove.size() -1; i >= 0; i--) {
 		int index = toRemove[i];
 		auto ec = gameObjects[index]->getComponent<EnemyController>();
 		if (ec) gold += ec->getCoinDrop();

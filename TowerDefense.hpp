@@ -120,7 +120,7 @@ private:
 	int resourceMenuHeight = 50;
 	int bottomMenuHeight = 180;
 	float slideVal = 1.0f;
-	ImVec4 background = ImVec4(0.0f, 0.0f, 0.5f, slideVal);
+	ImVec4 background = ImVec4(0.0f, 0.0f, 0.0f, 0.5);
 	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);
 	ImVec4 transparent = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
 	ImVec2 imgMargin = ImVec2(/*right*/5, /*top*/5);
