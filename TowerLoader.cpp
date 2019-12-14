@@ -54,7 +54,6 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 			}
 		}
 		else mtlName = brick["mtlName"].GetString();
-		std::cout << mtlName << "\n";
 		const Value& textureFileName = brick["txtFilename"];
 		if (textureFileName.IsNull()) TowerDefense::instance->getModelLoader()->loadModel(brickObj, objName, mtlName);
 		else TowerDefense::instance->getModelLoader()->loadModel(brickObj, objName, mtlName, textureFileName.GetString());
