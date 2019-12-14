@@ -13,7 +13,7 @@
 #include "Grid.hpp"
 #include "AudioManager.hpp"
 
-enum GameState { Running, GameOver };
+enum GameState : std::uint8_t { Running, GameOver };
 
 // Base class for initiating and updating game states, objects and drawing.
 // Main game class.
