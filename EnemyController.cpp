@@ -17,6 +17,9 @@ void EnemyController::init(float health, float damage, int coinDrop, std::vector
 	this->path = path;
 	waypointIndex = 0;
 	moveToNextWaypoint();
+	/* TODO this is cpu/memory heavy solution for the health bar. If posible find a more 
+	 eficient solution -> ex. draw 2 rectangles -> one on top that when enemy is damaged 
+	it's size is reduced.*/
 	/*for (int i = 0; i < health; i++) {
 		std::shared_ptr<GameObject> hp = TowerDefense::instance->createGameObject();
 		std::stringstream ss;
@@ -41,7 +44,7 @@ void EnemyController::onCollisionEnd(PhysicsComponent* comp) {
 
 }
 void EnemyController::update(float deltaTime) {
-	if (moving) {
+	if (moving && !gameObject->isMarkedForDeath()) {
 		pos = glm::vec2(gameObject->getPosition().x, gameObject->getPosition().z);
 		glm::vec2 nextPosition = tileSize * path->at(waypointIndex);
 		glm::vec2 heading = nextPosition - pos;
@@ -82,6 +85,8 @@ void EnemyController::moveToNextWaypoint() {
 		glm::vec2 heading = nextTilePos - pos;
 		direction = glm::normalize(heading);
 
+		gameObject->setRotation(glm::vec3(0, 90, 0));
+
 		phys->setLinearVelocity(speed * direction);
 	}
 	else {
@@ -115,5 +120,7 @@ void EnemyController::hurt(int hurtAmount) {
 		}
 		gameObject->name = gameObject->name + " (killed by EnemyController::hurt)";
 		gameObject->die();
+		for (auto healthObject : healthPoints)
+			healthObject->die();
 	}
 }

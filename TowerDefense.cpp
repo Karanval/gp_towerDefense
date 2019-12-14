@@ -54,6 +54,8 @@ void TowerDefense::update(float deltaTime) {
 	}
 	
 	for (int i = 0; i < toRemove.size(); i++) {
+		for (int j = 0; j < toRemove.size(); j++) 
+			if (toRemove[i] == toRemove[j] && i != j) std::cout << "DUPLICATE! " + i << "\n";
 		int index = toRemove[i];
 		if (gameObjects[index]->name.substr(0,5) != "Arrow") std::cout << gameObjects[index]->name << "\n";
 		auto ec = gameObjects[index]->getComponent<EnemyController>();
