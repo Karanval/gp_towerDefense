@@ -15,6 +15,7 @@ TowerDefense* TowerDefense::instance = nullptr;
 
 TowerDefense::TowerDefense() : debugDraw(physicsScale){
 	instance = this;
+
 	renderer.init();
 	init();
 
@@ -53,7 +54,7 @@ void TowerDefense::update(float deltaTime) {
 
 	for (int i = 0; i < toRemove.size(); i++) {
 		int index = toRemove[i];
-		printf("REMOVED %s\n", gameObjects[index]->name);
+		//printf("REMOVED %s\n", gameObjects[index]->name);
 		auto ec = gameObjects[index]->getComponent<EnemyController>();
 		if (ec) gold += ec->getCoinDrop();
 
@@ -72,6 +73,7 @@ void TowerDefense::update(float deltaTime) {
 	if (lives <= 0 && !gameLost) {
 		//TODO game restart option i.e. press 'space' to restart
 		displayMessage("You died!");
+		state = GameOver;
 		audioManager->play(END_MUSIC);
 		gameLost = true;
 	}
@@ -191,6 +193,7 @@ void TowerDefense::render() {
 }
 
 void TowerDefense::init() {
+	state = Running;
 	if (world != nullptr) { // deregister call backlistener to avoid getting callbacks when recreating the world
 		world->SetContactListener(nullptr);
 	}
@@ -334,6 +337,12 @@ void TowerDefense::keyInput(SDL_Event& event) {
 		case SDLK_8:
 			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
 				gameObjects[i]->getComponent<TowerController>()->setSpeed(gameObjects[i]->getComponent<TowerController>()->getSpeed() - 1);
+			break;
+		case SDLK_RETURN:
+			if (state == GameOver) {
+				printf("GAME OVER\n");
+				// TODO clean up and restart
+			}
 			break;
 		/* DEBUGGING END */
 		}
