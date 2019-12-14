@@ -58,6 +58,8 @@ private:
 	void setupGUI();
 	void setupLevel();
 	void setupLights();
+	void setupSpawner();
+	void setupSounds();
 	void deregisterPhysicsComponent(PhysicsComponent* r);
 	void registerPhysicsComponent(PhysicsComponent* r);
 	void drawResourceOverview();
@@ -66,6 +68,8 @@ private:
 	void drawGUI();
 	void drawMessage();
 	bool rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec3, 2>& box);
+	void restart();
+	void cleanUpGameObject(int index);
 
 	b2World* world = nullptr;
 	Box2DDebugDraw debugDraw;

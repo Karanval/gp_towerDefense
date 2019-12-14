@@ -58,16 +58,7 @@ void TowerDefense::update(float deltaTime) {
 		auto ec = gameObjects[index]->getComponent<EnemyController>();
 		if (ec) gold += ec->getCoinDrop();
 
-		std::shared_ptr<PhysicsComponent> phys = gameObjects[index]->getComponent<PhysicsComponent>();
-		if (phys) {
-			auto physB = physicsComponentLookup.find(phys->fixture);
-			deregisterPhysicsComponent(physB->second);
-		}
-		
-		gameObjects[index]->cleanUp();
-		
-		auto iterator = gameObjects.begin() + index; 
-		gameObjects.erase(iterator);
+		cleanUpGameObject(index);
 	}
 
 	if (lives <= 0 && !gameLost) {
@@ -207,20 +198,8 @@ void TowerDefense::init() {
 	setupGUI();
 	setupLevel();
 	setupLights();
-
-	// Create Spawner
-	std::shared_ptr<GameObject> spawnObj = GameObject::createGameObject();
-	spawner = spawnObj->addComponent<SpawnController>();
-	spawner->setGameObjects(&gameObjects);
-
-	//spawner->startSpawningCycle({glm::vec2(5-3,-4)/*, glm::vec2(-3,-3)*/ });
-	spawner->startSpawningCycle(enemyPath);
-	gameObjects.push_back(spawnObj);
-
-	std::shared_ptr<GameObject> am = GameObject::createGameObject();
-	audioManager = am->addComponent<AudioManager>();
-	// Static variable comes from AudioManager
-	audioManager->play(MAIN_MUSIC);
+	setupSpawner();
+	setupSounds();
 }
 
 void TowerDefense::initPhysics() {
@@ -339,10 +318,12 @@ void TowerDefense::keyInput(SDL_Event& event) {
 				gameObjects[i]->getComponent<TowerController>()->setSpeed(gameObjects[i]->getComponent<TowerController>()->getSpeed() - 1);
 			break;
 		case SDLK_RETURN:
-			if (state == GameOver) {
+			//if (state == GameOver) {
 				printf("GAME OVER\n");
 				// TODO clean up and restart
-			}
+				restart();
+				state = Running;
+			//}
 			break;
 		/* DEBUGGING END */
 		}
@@ -495,6 +476,25 @@ void TowerDefense::setupLights() {
 			lights.addLight(light);
 		}
 	}
+}
+
+
+void TowerDefense::setupSpawner() {
+	// Create Spawner
+	std::shared_ptr<GameObject> spawnObj = GameObject::createGameObject();
+	spawner = spawnObj->addComponent<SpawnController>();
+	spawner->setGameObjects(&gameObjects);
+
+	//spawner->startSpawningCycle({glm::vec2(5-3,-4)/*, glm::vec2(-3,-3)*/ });
+	spawner->startSpawningCycle(enemyPath);
+	gameObjects.push_back(spawnObj);
+}
+
+void TowerDefense::setupSounds() {
+	std::shared_ptr<GameObject> am = GameObject::createGameObject();
+	audioManager = am->addComponent<AudioManager>();
+	// Static variable comes from AudioManager
+	audioManager->play(MAIN_MUSIC);
 }
 
 void TowerDefense::setupGUI() {
@@ -706,6 +706,33 @@ void TowerDefense::drawMessage() {
 
 int TowerDefense::getGold() {
 	return gold;
+}
+
+void TowerDefense::restart() {
+	while (!gameObjects.empty()) {
+		//This removes the object
+		cleanUpGameObject(0);
+	}
+
+	//setup level
+	gold = 0; // restaar without dying
+	lives = 0;
+	setupLevel();
+	setupSpawner();
+	setupSounds();
+}
+
+void TowerDefense::cleanUpGameObject(int index) {
+	std::shared_ptr<PhysicsComponent> phys = gameObjects[index]->getComponent<PhysicsComponent>();
+	if (phys) {
+		auto physB = physicsComponentLookup.find(phys->fixture);
+		deregisterPhysicsComponent(physB->second);
+	}
+
+	gameObjects[index]->cleanUp();
+
+	auto iterator = gameObjects.begin() + index;
+	gameObjects.erase(iterator);
 }
 
 int main() {

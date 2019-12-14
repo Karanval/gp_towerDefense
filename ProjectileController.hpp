@@ -21,6 +21,7 @@ private:
 	float speed;
 	float damage = 15;
 	float movementTime = 0.0f;
+	float maxTimeAlive = 5;
 	std::shared_ptr<EnemyController> enemy;
 	glm::vec3 startingPos;
 	bool destinationReached = false;
