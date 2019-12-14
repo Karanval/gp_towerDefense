@@ -13,6 +13,6 @@
 namespace TowerLoader
 {
 	const std::string towerPath = "../data/towers/";
-	void loadTower(std::shared_ptr<GameObject> towerObj, std::vector<std::shared_ptr<GameObject>>* brickObjs, std::string towerName);
+	void loadTower(std::shared_ptr<GameObject> towerObj, std::vector<std::shared_ptr<GameObject>>* brickObjs, std::string towerName, bool randomizeColors);
 	
 };

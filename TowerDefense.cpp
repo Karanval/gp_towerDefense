@@ -47,14 +47,15 @@ void TowerDefense::update(float deltaTime) {
 
 	std::vector<int> toRemove;
 	for (int i = 0; i < gameObjects.size(); i++) {
-		if (gameObjects[i]->isMarkedForDeath()) /*gameObjects.erase(gameObjects.begin() + i)*/
+		if (gameObjects[i]->isMarkedForDeath()) /*gameObjects.erase(gameObjects.begin() + i)*/ {
 			toRemove.push_back(i);
+		}
 		else gameObjects[i]->update(deltaTime);
 	}
 
 	for (int i = 0; i < toRemove.size(); i++) {
 		int index = toRemove[i];
-		//printf("REMOVED %s\n", gameObjects[index]->name);
+		printf("REMOVED %s\n", gameObjects[index]->name.c_str());
 		auto ec = gameObjects[index]->getComponent<EnemyController>();
 		if (ec) gold += ec->getCoinDrop();
 
@@ -559,7 +560,7 @@ void TowerDefense::drawBuildingOverview() {
 			towerBeingBuilt.reset();
 		}
 		std::shared_ptr<GameObject> obj = createGameObject();
-		TowerLoader::loadTower(obj, &gameObjects, "basic");
+		TowerLoader::loadTower(obj, &gameObjects, "basic", true);
 		towerBeingBuilt = obj->getComponent<TowerController>();
 
 	}
