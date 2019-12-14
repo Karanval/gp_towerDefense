@@ -1,5 +1,7 @@
 #pragma once
 #include "Component.hpp"
+
+// Component which makes a GameObject clickable.
 class ClickableComponent : public Component {
 public:
 	explicit ClickableComponent(GameObject* gameObject);

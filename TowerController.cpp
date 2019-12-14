@@ -27,7 +27,7 @@ void TowerController::update(float deltaTime) {
 		for (int i = 0; i < bricks.size(); i++) {
 			auto brickObj = bricks[i];
 			auto brickPos = brickObj->getPosition();
-			glm::vec3 p = glm::mix(brickPos, glm::vec3(32, 32, 0), fallTime / 500);
+			glm::vec3 p = glm::mix(brickPos, glm::vec3(32, 32, 0), fallTime / 100);
 			brickObj->setPosition(p);
 			if (brickPos.y < clickable->getBounds()[0].y + 1) brickObj->die();
 		}

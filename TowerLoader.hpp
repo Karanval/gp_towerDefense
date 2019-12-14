@@ -10,6 +10,8 @@
 #include "MaterialComponent.hpp"
 #include "ModelLoader.hpp"
 #include "ClickableComponent.hpp"
+
+// Function for loading towers according to a JSON file.
 namespace TowerLoader
 {
 	const std::string towerPath = "../data/towers/";

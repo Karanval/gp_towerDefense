@@ -15,6 +15,8 @@
 
 enum GameState { Running, GameOver };
 
+// Base class for initiating and updating game states, objects and drawing.
+// Main game class.
 class TowerDefense : public b2ContactListener
 {
 public:
@@ -58,6 +60,8 @@ private:
 	void setupGUI();
 	void setupLevel();
 	void setupLights();
+	void setupSpawner();
+	void setupSounds();
 	void deregisterPhysicsComponent(PhysicsComponent* r);
 	void registerPhysicsComponent(PhysicsComponent* r);
 	void drawResourceOverview();
@@ -66,6 +70,8 @@ private:
 	void drawGUI();
 	void drawMessage();
 	bool rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec3, 2>& box);
+	void restart();
+	void cleanUpGameObject(int index);
 
 	b2World* world = nullptr;
 	Box2DDebugDraw debugDraw;
@@ -105,6 +111,7 @@ private:
 	int gold = 0;
 	int lives = 0;
 	bool gameLost = false;
+	bool gameWon = false;
 	bool endMessageShown = false;
 
 	// GUI
