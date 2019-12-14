@@ -4,8 +4,6 @@
 #include "sre/Material.hpp"
 #include <SDL_events.h>
 #include "GameObject.hpp"
-#include "MeshComponent.hpp"
-#include "MaterialComponent.hpp"
 #include <map>
 
 // Class for loading objects, materials and textured for importing models.
@@ -19,6 +17,6 @@ class ModelLoader
 		void loadModel(std::shared_ptr<GameObject> obj, std::string objName, std::string mtlName, std::string textureNameWithExt = "");
 
 	private:
-		std::map<std::string, std::shared_ptr<MeshComponent>> loadedMeshes;
-		std::map<std::string, std::shared_ptr<MaterialComponent>> loadedMaterials;
+		std::map<std::string, std::shared_ptr<sre::Mesh>> loadedMeshes;
+		std::map<std::string, std::shared_ptr<sre::Material>> loadedMaterials;
 };

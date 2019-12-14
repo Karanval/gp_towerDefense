@@ -37,6 +37,7 @@ public:
 	void shoot(std::shared_ptr<EnemyController> target);
 	void explode();
 	bool isExploding();
+	void destroy();
 	void addBrick(std::shared_ptr<GameObject> brickObj);
 	std::vector<std::shared_ptr<GameObject>> getBricks();
 

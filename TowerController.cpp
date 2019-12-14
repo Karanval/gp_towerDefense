@@ -33,7 +33,7 @@ void TowerController::update(float deltaTime) {
 			glm::vec3 p = glm::mix(brickPos, glm::vec3(32, 32, 0), fallTime / 100);
 			brickObj->setPosition(p);
 			if (brickPos.y < clickable->getBounds()[0].y + 1) {
-				brickObj->name = gameObject->name + " (killed by TowerController::update)";
+				brickObj->name = brickObj->name + " (killed by TowerController::update)";
 				brickObj->die();
 			}
 		}
@@ -173,6 +173,15 @@ void TowerController::explode() {
 			phys->applyBlastImpulse(b2Vec2(1 / physicsScale, 1 / physicsScale) , b2Vec2(2 / physicsScale, 2 / physicsScale), 0.000000001);
 		}
 	}
+}
+
+void TowerController::destroy() {
+	for (int i = bricks.size() - 1; i >= 0; i--) {
+		bricks[i]->name = bricks[i]->name + " (killed by TowerController::destroy)";
+		bricks[i]->die();
+	}
+	gameObject->name = gameObject->name + " (killed by TowerController::destroy)";
+	gameObject->die();
 }
 
 bool TowerController::isExploding() {
