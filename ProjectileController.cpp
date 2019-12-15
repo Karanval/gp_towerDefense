@@ -5,10 +5,11 @@ ProjectileController::ProjectileController(GameObject* gameObject) : Component(g
 
 void ProjectileController::onCollisionStart(PhysicsComponent* comp) {
 	std::string objectName = comp->getGameObject()->name;
-	//std::cout << "#### Projectile collided with: " << comp->getGameObject()->name << "\n";
 	destinationReached = true;
 	if (objectName.find("Enemy") != std::string::npos)
 		gameObject->die();
+	else
+		std::cout << "#### Projectile collided with: " << comp->getGameObject()->name << "\n";
 }
 
 void ProjectileController::onCollisionEnd(PhysicsComponent* comp) {

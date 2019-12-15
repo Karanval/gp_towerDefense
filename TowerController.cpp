@@ -163,7 +163,7 @@ void TowerController::shoot(std::shared_ptr<EnemyController> target) {
 
 	std::shared_ptr<PhysicsComponent> phys = projectileObj->addComponent<PhysicsComponent>();
 	phys->initBox(b2_dynamicBody, { 1 / PHYSICS_SCALE , 5 / PHYSICS_SCALE }, 
-		{ projectileObj->getPosition().x / PHYSICS_SCALE, projectileObj->getPosition().z / PHYSICS_SCALE }, 1, true);
+		{ projectileObj->getPosition().x / PHYSICS_SCALE, projectileObj->getPosition().z / PHYSICS_SCALE }, 1, true, -2);
 	phys->isSensor();
 }
 
@@ -178,7 +178,7 @@ void TowerController::explode() {
 		std::shared_ptr<GameObject> brickObj = bricks[i];
 		auto pos = bricks[i]->getPosition();
 		std::shared_ptr<PhysicsComponent> phys = brickObj->addComponent<PhysicsComponent>();
-		phys->initBox(b2_dynamicBody, glm::vec2(0.1, 0.1) / physicsScale, glm::vec2(pos.x, pos.z) /physicsScale, 1, false);
+		phys->initBox(b2_dynamicBody, glm::vec2(0.1, 0.1) / physicsScale, glm::vec2(pos.x, pos.z) /physicsScale, 1, false, 3);
 		if (i / 2 == 0) {
 			phys->applyBlastImpulse(b2Vec2(1 / physicsScale, 1 / physicsScale) , b2Vec2(2 / physicsScale, 2 / physicsScale), 0.00000001);
 		}

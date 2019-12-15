@@ -11,9 +11,9 @@ class PhysicsComponent : public Component {
 public:
 	explicit PhysicsComponent(GameObject* gameObject);
 	virtual ~PhysicsComponent();
-	void initCircle(b2BodyType type, float radius, glm::vec2 center, float density, bool isBullet);
-	void initBox(b2BodyType type, glm::vec2 size, glm::vec2 center, float density, bool isBullet);
-	void initRectangle(b2BodyType type, float hx, float hy, glm::vec2 center, float density, bool isBullet);
+	void initCircle(b2BodyType type, float radius, glm::vec2 center, float density, bool isBullet, int layer);
+	void initBox(b2BodyType type, glm::vec2 size, glm::vec2 center, float density, bool isBullet, int layer);
+	void initRectangle(b2BodyType type, float hx, float hy, glm::vec2 center, float density, bool isBullet, int layer);
 
 	void addForce(glm::vec2 force);     // Force gradually affects the velocity over time
 

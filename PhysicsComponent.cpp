@@ -52,7 +52,7 @@ void PhysicsComponent::setPosition(glm::vec2 newPos) {
 	body->SetTransform(posi, 0);
 }
 
-void PhysicsComponent::initCircle(b2BodyType type, float radius, glm::vec2 center, float density, bool isBullet) {
+void PhysicsComponent::initCircle(b2BodyType type, float radius, glm::vec2 center, float density, bool isBullet, int layer) {
 	assert(body == nullptr);
 	// do init
 	shapeType = b2Shape::Type::e_circle;
@@ -66,13 +66,15 @@ void PhysicsComponent::initCircle(b2BodyType type, float radius, glm::vec2 cente
 	b2FixtureDef fxD;
 	fxD.shape = circle;
 	fxD.density = density;
+	fxD.filter.groupIndex = layer;
+
 	fixture = body->CreateFixture(&fxD);
 	bd.bullet = isBullet;
 
 	TowerDefense::instance->registerPhysicsComponent(this);
 }
 
-void PhysicsComponent::initBox(b2BodyType type, glm::vec2 size, glm::vec2 center, float density, bool isBullet) {
+void PhysicsComponent::initBox(b2BodyType type, glm::vec2 size, glm::vec2 center, float density, bool isBullet, int layer) {
 	assert(body == nullptr);
 	// do init
 	shapeType = b2Shape::Type::e_polygon;
@@ -86,13 +88,14 @@ void PhysicsComponent::initBox(b2BodyType type, glm::vec2 size, glm::vec2 center
 	b2FixtureDef fxD;
 	fxD.shape = polygon;
 	fxD.density = density;
+	fxD.filter.groupIndex = layer;
 	fixture = body->CreateFixture(&fxD);
 	bd.bullet = isBullet;
 
 	TowerDefense::instance->registerPhysicsComponent(this);
 }
 
-void PhysicsComponent::initRectangle(b2BodyType type,float hx, float hy, glm::vec2 center, float density, bool isBullet) {
+void PhysicsComponent::initRectangle(b2BodyType type,float hx, float hy, glm::vec2 center, float density, bool isBullet, int layer) {
 	assert(body == nullptr);
 	// do init
 	shapeType = b2Shape::Type::e_polygon;
@@ -106,6 +109,7 @@ void PhysicsComponent::initRectangle(b2BodyType type,float hx, float hy, glm::ve
 	b2FixtureDef fxD;
 	fxD.shape = polygon;
 	fxD.density = density;
+	fxD.filter.groupIndex = layer;
 	fixture = body->CreateFixture(&fxD);
 	bd.bullet = isBullet;
 

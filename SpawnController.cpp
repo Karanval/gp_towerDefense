@@ -60,7 +60,7 @@ std::shared_ptr<EnemyController> SpawnController::spawnEnemy() {
 
 	auto phys = obj->addComponent<PhysicsComponent>();
 	phys->initBox(b2_kinematicBody, {10 / PHYSICS_SCALE, 5 / PHYSICS_SCALE }, 
-		{ obj->getPosition().x / PHYSICS_SCALE, obj->getPosition().z / PHYSICS_SCALE }, 1, false);
+		{ obj->getPosition().x / PHYSICS_SCALE, obj->getPosition().z / PHYSICS_SCALE }, 1, false, -1);
 	phys->setPosition( { obj->getPosition().x / PHYSICS_SCALE, obj->getPosition().z / PHYSICS_SCALE });
 	phys->isSensor();
 	//phys->initCircle(b2_kinematicBody, 20 / PHYSICS_SCALE, 
