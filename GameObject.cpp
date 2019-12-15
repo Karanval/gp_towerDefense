@@ -20,8 +20,11 @@ bool GameObject::removeComponent(std::shared_ptr<Component> component) {
 }
 
 void GameObject::cleanUp() {
-	auto it = components.begin();
 
+	for (int i = components.size() - 1; i > 0; i--) {
+		components[i]->cleanComponent();
+	}
+	auto it = components.begin();
 	while (it != components.end()) {
 		it = components.erase(it);
 	}

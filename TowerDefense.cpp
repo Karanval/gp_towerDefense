@@ -760,10 +760,15 @@ int TowerDefense::getGold() {
 }
 
 void TowerDefense::restart() {
-	while (!gameObjects.empty()) {
-		//This removes the object
-		cleanUpGameObject(0);
-	}
+	for (int i = 0; i < gameObjects.size(); i++) cleanUpGameObject(i);
+	physicsComponentLookup.clear();
+	spawner.reset();
+	audioManager.reset();
+	gameObjects.clear();
+	grid = nullptr;
+	selectedClickable = nullptr;
+	towerBeingBuilt = nullptr;
+	world = nullptr;
 
 	//setup level
 	fps = 0.0f;
@@ -777,6 +782,7 @@ void TowerDefense::restart() {
 	gameLost = false;
 	gameWon = false;
 	endMessageShown = false;
+	initPhysics();
 	setupLevel();
 	setupSpawner();
 	setupSounds();

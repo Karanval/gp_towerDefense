@@ -146,5 +146,10 @@ void PhysicsComponent::applyBlastImpulse(b2Vec2 blastCenter, b2Vec2 applyPoint, 
 }
 
 void PhysicsComponent::cleanComponent() {
-
+	polygon = nullptr;
+	circle = nullptr;
+	body = nullptr;
+	fixture = nullptr;
+	collidingBodies.clear();
+	world = nullptr;
 }

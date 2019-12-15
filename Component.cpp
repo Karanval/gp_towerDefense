@@ -34,5 +34,5 @@ void Component::onCollisionEnd(PhysicsComponent* comp) {
 }
 
 void Component::cleanComponent() {
-
+	gameObject = nullptr;
 }

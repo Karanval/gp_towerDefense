@@ -78,4 +78,5 @@ void SpawnController::cleanComponent() {
 	for (int i = 0; i < gameObjects->size(); i++) {
 		gameObjects->at(i).reset();
 	}
+	gameObjects = nullptr;
 }
