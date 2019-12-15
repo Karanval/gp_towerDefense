@@ -39,7 +39,7 @@ TowerDefense::~TowerDefense() {
 }
 
 void TowerDefense::update(float deltaTime) {
-	if (endMessageShown) return;
+	if (endMessageShown || gameStartScreen) return;
 	fixedTime += deltaTime;
 	updateCamera(deltaTime);
 	updatePhysics();
@@ -514,13 +514,13 @@ void TowerDefense::setupGUI() {
 									.withFilterSampling(false).build();
 	startScreenImg = sre::Texture::create().withFile(modelLoader->texturePath + "td_instructions.png")
 										   .withFilterSampling(false).build();
+	crossImg = sre::Texture::create().withFile(modelLoader->texturePath + "cross.png")
+									 .withFilterSampling(false).build();
 }
 
 void TowerDefense::drawResourceOverview() {
 	ImVec2 winPos = ImVec2(0, 0);
 	ImVec2 winSize = ImVec2(sre::Renderer::instance->getWindowSize().x, resourceMenuHeight);
-	//ImVec4 background = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-	//ImVec4 background = ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
 	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);
 	ImVec4 goldTextCol = ImVec4(1.0f, 0.76f, 0.14f, 1.0f);
 	ImVec4 lifeTextCol = ImVec4(0.96f, 0.18f, 0.18f, 1.0f);
@@ -644,16 +644,34 @@ void TowerDefense::drawUpgradeOverview(std::shared_ptr<TowerController> tower) {
 	ImGui::PopStyleColor();
 }
 
-void TowerDefense::drawGUI() {
-	drawResourceOverview();
-	std::shared_ptr<TowerController> tower = nullptr;
-	if (selectedClickable && selectedClickable->getGameObject()) {
-		tower = selectedClickable->getGameObject()->getComponent<TowerController>();
-		if (tower && tower->isExploding()) selectedClickable = nullptr;
+void TowerDefense::drawStartScreen() {
+	ImVec2 winPos = ImVec2(0, 0);
+	ImVec2 winSize = ImVec2(sre::Renderer::instance->getWindowSize().x, sre::Renderer::instance->getWindowSize().y);
+	ImGui::SetNextWindowPos(winPos, ImGuiSetCond_Always);
+	ImGui::SetNextWindowSize(winSize, ImGuiSetCond_Always);
+	ImGui::Begin("StartScreen", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+	ImGui::Image(startScreenImg->getNativeTexturePtr(), ImVec2(winSize.x, winSize.y - 20), ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::SetCursorPosX(winSize.x - 100);
+	ImGui::SetCursorPosY(0);
+	if (ImGui::ImageButton(crossImg->getNativeTexturePtr(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0))) {
+		gameStartScreen = false;
 	}
-	if (selectedClickable && tower) drawUpgradeOverview(tower);
-	else drawBuildingOverview();
-	if (showMessage) drawMessage();
+	ImGui::End();
+}
+
+void TowerDefense::drawGUI() {
+	if (gameStartScreen) drawStartScreen();
+	else {
+		drawResourceOverview();
+		std::shared_ptr<TowerController> tower = nullptr;
+		if (selectedClickable && selectedClickable->getGameObject()) {
+			tower = selectedClickable->getGameObject()->getComponent<TowerController>();
+			if (tower && tower->isExploding()) selectedClickable = nullptr;
+		}
+		if (selectedClickable && tower) drawUpgradeOverview(tower);
+		else drawBuildingOverview();
+		if (showMessage) drawMessage();
+	}
 }
 
 std::shared_ptr<ModelLoader> TowerDefense::getModelLoader() {

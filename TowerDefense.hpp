@@ -72,6 +72,7 @@ private:
 	void drawUpgradeOverview(std::shared_ptr<TowerController> tower);
 	void drawGUI();
 	void drawMessage();
+	void drawStartScreen();
 	bool rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec3, 2>& box);
 	void restart();
 	void cleanUpGameObject(int index);
@@ -131,6 +132,7 @@ private:
 	std::shared_ptr<sre::Texture> basicImg;
 	std::shared_ptr<sre::Texture> backImg;
 	std::shared_ptr<sre::Texture> startScreenImg;
+	std::shared_ptr<sre::Texture> crossImg;
 	std::map<std::string, std::shared_ptr<sre::Texture>> loadedTextures;
 	std::string message;
 	bool showMessage = false;
