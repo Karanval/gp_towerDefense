@@ -1,26 +1,28 @@
 #include "ModelLoader.hpp"
 #include "ObjImporter.hpp"
+#include "MeshComponent.hpp"
+#include "MaterialComponent.hpp"
 
 ModelLoader::ModelLoader() {
-	loadedMeshes = std::map<std::string, std::shared_ptr<MeshComponent>>();
-	loadedMaterials = std::map<std::string, std::shared_ptr<MaterialComponent>>();
+	loadedMeshes = std::map<std::string, std::shared_ptr<sre::Mesh>>();
+	loadedMaterials = std::map<std::string, std::shared_ptr<sre::Material>>();
 }
 
 void ModelLoader::loadModel(std::shared_ptr<GameObject> obj, std::string objName, std::string mtlName, std::string textureNameWithExt) {
 	auto loadedMesh = loadedMeshes.find(objName);
 	if (loadedMesh != loadedMeshes.end()) {
-		obj->addComponent<MeshComponent>()->setMesh(loadedMesh->second->getMesh());
+		obj->addComponent<MeshComponent>()->setMesh(loadedMesh->second);
 		auto loadedMat = loadedMaterials.find(mtlName);
 		if (loadedMat == loadedMaterials.end()) {
 			std::shared_ptr<sre::Material> material;
 			ObjImporter::loadMaterial(material, materialPath + mtlName + ".mtl", 
-									  loadedMesh->second->getMesh()->getUVs(), 
+									  loadedMesh->second->getUVs(), 
 									  textureNameWithExt == "" ? "" : texturePath + textureNameWithExt);
 			obj->addComponent<MaterialComponent>()->setMaterial(material);
-			loadedMaterials.insert(std::pair<std::string, std::shared_ptr<MaterialComponent>>(mtlName, 
-													      obj->getComponent<MaterialComponent>()));
+			loadedMaterials.insert(std::pair<std::string, std::shared_ptr<sre::Material>>(mtlName, 
+													      obj->getComponent<MaterialComponent>()->getMaterial()));
 		}
-		else obj->addComponent<MaterialComponent>()->setMaterial(loadedMat->second->getMaterial());
+		else obj->addComponent<MaterialComponent>()->setMaterial(loadedMat->second);
 		return;
 	}
 	
@@ -39,6 +41,6 @@ void ModelLoader::loadModel(std::shared_ptr<GameObject> obj, std::string objName
 	std::shared_ptr<MaterialComponent> matComponent = obj->addComponent<MaterialComponent>();
 	meshComponent->setMesh(mesh);
 	matComponent->setMaterial(material);
-	loadedMeshes.insert(std::pair <std::string, std::shared_ptr<MeshComponent>>(objName, meshComponent));
-	loadedMaterials.insert(std::pair <std::string, std::shared_ptr<MaterialComponent>>(mtlName, matComponent));
+	loadedMeshes.insert(std::pair <std::string, std::shared_ptr<sre::Mesh>>(objName, mesh));
+	loadedMaterials.insert(std::pair <std::string, std::shared_ptr<sre::Material>>(mtlName, material));
 }

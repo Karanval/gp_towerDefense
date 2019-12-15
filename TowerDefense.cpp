@@ -47,14 +47,14 @@ void TowerDefense::update(float deltaTime) {
 
 	std::vector<int> toRemove;
 	for (int i = 0; i < gameObjects.size(); i++) {
-		if (gameObjects[i]->isMarkedForDeath()) /*gameObjects.erase(gameObjects.begin() + i)*/ {
+		if (gameObjects[i]->isMarkedForDeath()) {
 			toRemove.push_back(i);
 		}
 		else gameObjects[i]->update(deltaTime);
 	}
 	
-	for (int i = 0; i < toRemove.size(); i++) {
-		for (int j = 0; j < toRemove.size(); j++) 
+	for (int i = toRemove.size() - 1; i >= 0; i--) {
+		for (int j = toRemove.size() - 1; j >= 0; j--) 
 			if (toRemove[i] == toRemove[j] && i != j) std::cout << "DUPLICATE! " + i << "\n";
 		int index = toRemove[i];
 		if (gameObjects[index]->name.substr(0,5) != "Arrow") std::cout << gameObjects[index]->name << "\n";
@@ -569,8 +569,7 @@ void TowerDefense::drawBuildingOverview() {
 	if (ImGui::ImageButton(basicImg->getNativeTexturePtr(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) {
 		if (towerBeingBuilt) {
 			if (!towerBeingBuilt->isBuilt()) {
-				towerBeingBuilt->getGameObject()->name = towerBeingBuilt->getGameObject()->name + " (killed by TowerDefense::drawBuildingOVerview)";
-				towerBeingBuilt->getGameObject()->die();
+				towerBeingBuilt->destroy();
 			}
 			towerBeingBuilt.reset();
 		}
@@ -596,13 +595,11 @@ void TowerDefense::drawUpgradeOverview(std::shared_ptr<TowerController> tower) {
 	ImGui::PushStyleColor(ImGuiCol_Button, transparent);
 	ImGui::PushStyleColor(ImGuiCol_Border, borderCol);
 	ImGui::Begin("upgrades", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
-	//ImGui::BeginGroup();
 	ImGui::Text(tower->getGameObject()->name.c_str());
 	ImGui::Text(("Cost: " + std::to_string(tower->getCost())).c_str());
 	ImGui::Text(("damage: " + std::to_string(tower->getDamage())).c_str());
 	ImGui::Text(("Firerate: " + std::to_string(tower->getFirerate())).c_str());
 	ImGui::Text(("radius: " + std::to_string(tower->getRadius())).c_str());
-	//ImGui::EndGroup();
 	std::vector<std::string> *upgrades = tower->getUpgrades();
 	for (int i = 0; i < upgrades->size(); i++) {
 		ImGui::SetCursorPosY(winSize.y - bottomMenuHeight + imgMargin.y);
@@ -613,8 +610,24 @@ void TowerDefense::drawUpgradeOverview(std::shared_ptr<TowerController> tower) {
 							(tex, sre::Texture::create().withFile(modelLoader->texturePath + tex).withFilterSampling(false).build()));
 		}
 		if (ImGui::ImageButton(loadedTextures.at(tex)->getNativeTexturePtr(), ImVec2(56, 56), ImVec2(0, 1), ImVec2(1, 0))) {
-			std::cout << "UPGRADE: " << tex << "\n";
-			if (tex == "bomb_tower.png") tower->explode(); // <-------------------------------- TODO: REMOVE
+			if (tex == "bomb_tower.png") tower->explode();
+			else if (tex == "arrow_tower.png") {
+				std::shared_ptr<GameObject> newTowerObj = createGameObject();
+				TowerLoader::loadTower(newTowerObj, &gameObjects, "arrow_tower", true);
+				std::shared_ptr<TowerController> newTower = newTowerObj->getComponent<TowerController>();
+				if (gold < newTower->getCost()) {
+					displayMessage("Not enough gold!", ImVec4(1.0f, 0.8f, 0.05f, 1.0f));
+					newTower->destroy();
+				}
+				else {
+					glm::vec3 pos = tower->getGameObject()->getPosition();
+					tower->destroy();
+					newTowerObj->setPosition(pos);
+					newTowerObj->getComponent<TowerController>()->build();
+					newTower->markDirty();
+					selectedClickable = newTowerObj->getComponent<ClickableComponent>();
+				}
+			}
 		}
 	}
 	ImGui::SetCursorPosY(winSize.y - bottomMenuHeight + imgMargin.y);
