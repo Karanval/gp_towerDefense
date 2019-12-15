@@ -27,8 +27,9 @@ private:
 	float enemyCurrentWait = 0;
 	/* How much time between each enemy spawn*/
 	float waitTimeAmount;
-	/* Hos much time is between waves*/
+	/* How much time is between waves*/
 	float waveTime;
+	bool initialWait = false;
 	/* How many enemies are spawned per wave*/
 	int waveAmount;
 	int enemiesSpawn = 0;
