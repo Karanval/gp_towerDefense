@@ -13,6 +13,12 @@ void TowerController::update(float deltaTime) {
 		if (firerate * (timeSinceBuilt - lastShotTime) > 1.0f) {
 			target = TowerDefense::instance->getClosestEnemy(gameObject->getPosition());
 			if (target && glm::distance(target->getGameObject()->getPosition(), gameObject->getPosition()) <= radius) {
+				std::shared_ptr<AudioManager> am = gameObject->getComponent<AudioManager>();
+				if (am) {
+					// TODO change to a more reasonable condition
+					if (getCost() != 5)	am->playOnce(SHOOT_BOMB);
+					else am->playOnce(SHOOT_ARROW);
+				}
 				shoot(target);
 				lastShotTime = timeSinceBuilt;
 			}
