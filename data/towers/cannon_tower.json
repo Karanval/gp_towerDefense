@@ -8,7 +8,7 @@
 
   "firerate":1.0,
   
-  "radius":150.0,
+  "radius":80.0,
 
   "projectile":"cannon_ball",
 

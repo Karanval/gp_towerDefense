@@ -10,6 +10,7 @@
 #include "ClickableComponent.hpp"
 #include "Box2D/Dynamics/Contacts/b2Contact.h"
 #include <limits>
+#include <cmath>
 
 TowerDefense* TowerDefense::instance = nullptr;
 
@@ -39,8 +40,9 @@ TowerDefense::~TowerDefense() {
 }
 
 void TowerDefense::update(float deltaTime) {
-	if (endMessageShown || gameStartScreen) return;
+	if (endMessageShown || gameWon || gameStartScreen) return;
 	fixedTime += deltaTime;
+	makeEnemiesTougher += deltaTime;
 	updateCamera(deltaTime);
 	updatePhysics();
 	updateFPS();
@@ -50,7 +52,14 @@ void TowerDefense::update(float deltaTime) {
 		if (gameObjects[i]->isMarkedForDeath()) {
 			toRemove.push_back(i);
 		}
-		else gameObjects[i]->update(deltaTime);
+		else {
+			std::shared_ptr<SpawnController> sc = gameObjects[i]->getComponent<SpawnController>();
+			if (sc && makeEnemiesTougher > 30) {
+				sc->addTenToEnemyHealth();
+				makeEnemiesTougher = 0;
+			}
+			gameObjects[i]->update(deltaTime);
+		}
 	}
 	
 	for (int i = toRemove.size() - 1; i >= 0; i--) {
@@ -65,7 +74,8 @@ void TowerDefense::update(float deltaTime) {
 		gameLost = true;
 	}
 
-	if (lives > 0 && gold >= 100) {
+	// just more than 5 mins
+	if (lives > 0 && fixedTime > 300) {
 		displayMessage("You won! Press 'Enter' to restart.");
 		state = GameOver;
 		audioManager->play(END_MUSIC);
@@ -542,7 +552,7 @@ void TowerDefense::drawResourceOverview() {
 	ImGui::SameLine(winSize.x - 120);
 	ImGui::Text("FPS: %f", fps);
 	ImGui::SameLine(winSize.x / 2);
-	ImGui::Text("Time: %i seconds", (int)fixedTime);
+	ImGui::Text("Time: %i/300 seconds", (int)fixedTime);
 	ImGui::PopStyleColor();
 	ImGui::End();
 	ImGui::PopFont();

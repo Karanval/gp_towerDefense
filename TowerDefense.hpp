@@ -118,6 +118,7 @@ private:
 	bool gameWon = false;
 	bool endMessageShown = false;
 	bool gameStartScreen = true;
+	float makeEnemiesTougher = 0;
 
 	// GUI
 	ImFont* uiFont;

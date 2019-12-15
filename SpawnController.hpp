@@ -19,8 +19,10 @@ public:
 	void setWaveAmount(int waveAmount);
 
 	void setWaveTime(float waveTime);
-	void cleanComponent() override;
 
+	void addTenToEnemyHealth();
+
+	void cleanComponent() override;
 
 	std::shared_ptr<EnemyController> spawnEnemy();
 
@@ -34,7 +36,9 @@ private:
 	bool initialWait = false;
 	/* How many enemies are spawned per wave*/
 	int waveAmount;
+	float enemyHealth = 20;
 	int enemiesSpawn = 0;
+	int increaseWaveAmount = 0;
 	bool spawning = false;
 
 	std::vector<std::shared_ptr<GameObject>>* gameObjects;

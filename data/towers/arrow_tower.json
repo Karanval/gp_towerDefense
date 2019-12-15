@@ -8,11 +8,11 @@
 
   "firerate":2.0,
   
-  "radius":150.0,
+  "radius":125.0,
 
   "projectile":"arrow",
 
-  "speed":5.0,
+  "speed":5.5,
   
   "upgrades":[
     {"icon":"cross.png"}],
