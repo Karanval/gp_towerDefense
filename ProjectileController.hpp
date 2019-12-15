@@ -14,6 +14,7 @@ public:
 	float getSpeed();
 	void setTarget(std::shared_ptr<EnemyController> enemy);
 	void setDamage(int damage);
+	float getDamage();
 	void setStartingPos(glm::vec3 pos);
 	bool isDestinationReached();
 

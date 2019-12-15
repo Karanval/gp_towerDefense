@@ -483,9 +483,7 @@ void TowerDefense::setupLights() {
 	}
 }
 
-
 void TowerDefense::setupSpawner() {
-	// Create Spawner
 	std::shared_ptr<GameObject> spawnObj = GameObject::createGameObject();
 	spawner = spawnObj->addComponent<SpawnController>();
 	spawner->setGameObjects(&gameObjects);
@@ -520,7 +518,7 @@ void TowerDefense::setupGUI() {
 void TowerDefense::drawResourceOverview() {
 	ImVec2 winPos = ImVec2(0, 0);
 	ImVec2 winSize = ImVec2(sre::Renderer::instance->getWindowSize().x, resourceMenuHeight);
-	ImVec4 background = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+	//ImVec4 background = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	//ImVec4 background = ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
 	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);
 	ImVec4 goldTextCol = ImVec4(1.0f, 0.76f, 0.14f, 1.0f);
@@ -531,13 +529,13 @@ void TowerDefense::drawResourceOverview() {
 	ImGui::PushFont(uiFont);
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, background);
 	ImGui::PushStyleColor(ImGuiCol_Border, background);
-	ImGui::Begin("resources", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
+	ImGui::Begin("Resources", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
 	ImGui::PushStyleColor(ImGuiCol_Text, goldTextCol);
-	ImGui::Text("gold %i", gold);
+	ImGui::Text("Gold %i", gold);
 	ImGui::PopStyleColor();
 	ImGui::SameLine(0.0f, 40.0f);
 	ImGui::PushStyleColor(ImGuiCol_Text, lifeTextCol);
-	ImGui::Text("lives %i", lives);
+	ImGui::Text("Lives %i", lives);
 	ImGui::PopStyleColor();
 	ImGui::PushStyleColor(ImGuiCol_Text, textCol);
 	ImGui::SameLine(winSize.x - 120);
@@ -616,7 +614,7 @@ void TowerDefense::drawUpgradeOverview(std::shared_ptr<TowerController> tower) {
 				std::string name = tex.erase(tex.find('.'));
 				std::shared_ptr<GameObject> newTowerObj = createGameObject();
 				TowerLoader::loadTower(newTowerObj, &gameObjects, name, true);
-				newTowerObj->addComponent<AudioManager>();
+				std::shared_ptr<AudioManager> am = newTowerObj->addComponent<AudioManager>();
 				std::shared_ptr<TowerController> newTower = newTowerObj->getComponent<TowerController>();
 				if (gold < newTower->getCost()) {
 					audioManager->playOnce(UI_ERROR);

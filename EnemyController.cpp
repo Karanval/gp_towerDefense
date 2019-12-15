@@ -8,11 +8,10 @@ EnemyController::EnemyController(GameObject* gameObject)
 EnemyController::~EnemyController() {
 }
 
-void EnemyController::init(float health, float damage, int coinDrop, std::vector<glm::vec2>* path) {
+void EnemyController::init(float health, int coinDrop, std::vector<glm::vec2>* path) {
 	phys = gameObject->getComponent<PhysicsComponent>();
 	initialHealth = health;
 	currentHealth = initialHealth;
-	this->damage = damage;
 	this->coinDrop = coinDrop;
 	this->path = path;
 	waypointIndex = 0;
@@ -37,13 +36,13 @@ void EnemyController::init(float health, float damage, int coinDrop, std::vector
 }
 
 void EnemyController::onCollisionStart(PhysicsComponent* comp) {
-	// TODO Check if it is a bullet, if so get hurt -> this check is done in bullet instead
-	std::cout << "#### Enemy collided with: " << comp->getGameObject()->name << "\n";
-	/*if (comp->getGameObject()->name.find("Wall") != std::string::npos)
+	std::string objectName = comp->getGameObject()->name;
+	//std::cout << "#### Projectile collided with: " << comp->getGameObject()->name << "\n";
+	if (objectName.find("Arrow") != std::string::npos) {
+		std::shared_ptr<ProjectileController> pc = comp->getGameObject()->getComponent<ProjectileController>();
+		hurt(pc->getDamage());
+	}
 		
-	else if (comp->getGameObject()->name == "Coin") {
-		
-	}*/
 }
 
 void EnemyController::onCollisionEnd(PhysicsComponent* comp) {
@@ -122,8 +121,6 @@ float EnemyController::getHealth() { return currentHealth; }
 float EnemyController::getMaxHealth() { return initialHealth; }
 
 int EnemyController::getCoinDrop() { return coinDrop; }
-
-float EnemyController::getDamage() { return damage; }
 
 void EnemyController::hurt(int hurtAmount) {
 	currentHealth -= hurtAmount;

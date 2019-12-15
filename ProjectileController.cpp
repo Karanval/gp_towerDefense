@@ -5,7 +5,8 @@ ProjectileController::ProjectileController(GameObject* gameObject) : Component(g
 
 void ProjectileController::onCollisionStart(PhysicsComponent* comp) {
 	std::string objectName = comp->getGameObject()->name;
-	std::cout << "#### Projectile collided with: " << comp->getGameObject()->name << "\n";
+	//std::cout << "#### Projectile collided with: " << comp->getGameObject()->name << "\n";
+	destinationReached = true;
 	if (objectName.find("Enemy") != std::string::npos)
 		gameObject->die();
 }
@@ -33,6 +34,8 @@ void ProjectileController::setDamage(int damage) {
 	ProjectileController::damage = damage;
 }
 
+float ProjectileController::getDamage() { return ProjectileController::damage; }
+
 void ProjectileController::update(float deltaTime) {
 	if (!enemy || !enemy->getGameObject()) destinationReached = true;
 	if (!destinationReached && movementTime < maxTimeAlive) {
@@ -46,16 +49,16 @@ void ProjectileController::update(float deltaTime) {
 		float rotY = glm::degrees(std::atan2(enemyPos.z - pos.z, enemyPos.x - pos.x));
 		float rotXZ = 45 - glm::degrees(rad / 2);
 		gameObject->setRotation(glm::vec3(rotXZ, -rotY, rotXZ));
-		if (glm::distance(gameObject->getPosition(), enemyPos) < 0.1f) {
+		/*if (glm::distance(gameObject->getPosition(), enemyPos) < 0.1f) {
 			enemy->hurt(damage);
 			destinationReached = true;
-		}
+		}*/
 		std::shared_ptr<PhysicsComponent> phys = gameObject->getComponent<PhysicsComponent>();
 		phys->setPosition({p.x / PHYSICS_SCALE, p.z /PHYSICS_SCALE});
 		movementTime += deltaTime;
 	}
 	else {
-		gameObject->name = gameObject->name + " (killed by ProjectileController::update)";
+		//gameObject->name = gameObject->name + " (killed by ProjectileController::update)";
 		//gameObject->die();
 	}
 

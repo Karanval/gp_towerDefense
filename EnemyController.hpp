@@ -10,7 +10,7 @@ public:
 	explicit EnemyController(GameObject* gameObject);
 	~EnemyController();
 
-	void init(float health, float damage, int coinDrop, std::vector<glm::vec2>* path);
+	void init(float health, int coinDrop, std::vector<glm::vec2>* path);
 
 	void onCollisionStart(PhysicsComponent* comp) override;
 
@@ -42,9 +42,8 @@ private:
 	int width;
 	float initialHealth;
 	float currentHealth;
-	float damage;
 	float tileSize = 32.0f;
-	float speed = 0.5f;
+	float speed = 0.15f;
 	bool moving = true;
 	bool looted = false;
 
