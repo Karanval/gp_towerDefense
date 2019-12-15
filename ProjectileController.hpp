@@ -17,6 +17,8 @@ public:
 	float getDamage();
 	void setStartingPos(glm::vec3 pos);
 	bool isDestinationReached();
+	void cleanComponent() override;
+
 
 private:
 	std::shared_ptr<PhysicsComponent> phys;

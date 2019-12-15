@@ -33,3 +33,7 @@ float SpriteAnimationComponent::getAnimationTime() const {
 void SpriteAnimationComponent::setAnimationTime(float animationTime) {
     SpriteAnimationComponent::animationTime = animationTime;
 }
+
+void SpriteAnimationComponent::cleanComponent() {
+
+}

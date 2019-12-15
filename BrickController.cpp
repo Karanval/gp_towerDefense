@@ -62,3 +62,9 @@ void BrickController::setupDefaultMaterial() {
 void BrickController::setRotate(bool state) {
 	rotate = state;
 }
+
+void BrickController::cleanComponent() {
+	towerController.reset();
+	defaultMaterial.reset();
+	unbuildableMaterial.reset();
+}

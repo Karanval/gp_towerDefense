@@ -7,6 +7,8 @@ public:
 	explicit MaterialComponent(GameObject* gameObject);
 
 	void setMaterial(const std::shared_ptr<sre::Material> material);
+	void cleanComponent() override;
+
 	std::shared_ptr<sre::Material> getMaterial();
 private:
 	std::shared_ptr<sre::Material> material;

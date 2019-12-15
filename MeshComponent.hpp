@@ -8,6 +8,8 @@ public:
 
 	void setMesh(const std::shared_ptr<sre::Mesh> mesh);
 	std::shared_ptr<sre::Mesh> getMesh();
+	void cleanComponent() override;
+
 private:
 	std::shared_ptr<sre::Mesh> mesh = sre::Mesh::create().build();
 };

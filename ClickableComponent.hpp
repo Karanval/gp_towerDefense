@@ -10,6 +10,7 @@ public:
 	bool isActive();
 	void setActive(bool state);
 	glm::vec3 getCenter();
+	void cleanComponent() override;
 
 	void click();
 private:

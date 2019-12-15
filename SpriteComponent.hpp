@@ -8,6 +8,8 @@ public:
 
 	void setSprite(const sre::Sprite& sprite);
 	sre::Sprite getSprite();
+	void cleanComponent() override;
+
 private:
 	sre::Sprite sprite;
 };

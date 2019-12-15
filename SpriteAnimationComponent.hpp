@@ -14,6 +14,8 @@ public:
 
     float getAnimationTime() const;                         // time between animations (in seconds)
     void setAnimationTime(float animationTime);
+	void cleanComponent() override;
+
 private:
     float animationTime = 0.300f;
     std::vector<sre::Sprite> sprites;

@@ -144,3 +144,7 @@ void PhysicsComponent::applyBlastImpulse(b2Vec2 blastCenter, b2Vec2 applyPoint, 
 	float impulseMag = blastPower * invDistance * invDistance;
 	body->ApplyLinearImpulse(impulseMag * blastDir, applyPoint, true);
 }
+
+void PhysicsComponent::cleanComponent() {
+
+}

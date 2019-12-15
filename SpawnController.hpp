@@ -19,6 +19,8 @@ public:
 	void setWaveAmount(int waveAmount);
 
 	void setWaveTime(float waveTime);
+	void cleanComponent() override;
+
 
 	std::shared_ptr<EnemyController> spawnEnemy();
 

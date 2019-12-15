@@ -27,6 +27,8 @@ public:
 	int getCoinDrop();
 
 	void hurt(int hurtAmount);
+	void cleanComponent() override;
+
 
 private:
 	glm::vec2 direction; 

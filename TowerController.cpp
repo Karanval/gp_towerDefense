@@ -23,6 +23,13 @@ void TowerController::update(float deltaTime) {
 				lastShotTime = timeSinceBuilt;
 			}
 		}
+		if (dirty) {
+			bool takeShower = false;
+			for (int i = 0; i < bricks.size(); i++) {
+				if (bricks[i]->getComponent<BrickController>()->isDirty()) takeShower = true;
+			}
+			if (!takeShower) dirty = false;
+		}
 		timeSinceBuilt += deltaTime;
 	}
 
@@ -35,7 +42,7 @@ void TowerController::update(float deltaTime) {
 		for (int i = 0; i < bricks.size(); i++) {
 			auto brickObj = bricks[i];
 			auto brickPos = brickObj->getPosition();
-			glm::vec3 p = glm::mix(brickPos, glm::vec3(32, 32, 0), fallTime);
+			glm::vec3 p = glm::mix(brickPos, glm::vec3(32, 32, 0), fallTime / 100);
 			brickObj->setPosition(p);
 			if (brickPos.y < clickable->getBounds()[0].y + 1) {
 				brickObj->die();
@@ -204,4 +211,13 @@ std::vector<std::shared_ptr<GameObject>> TowerController::getBricks() {
 
 std::shared_ptr<EnemyController> TowerController::getTarget() {
 	return target;
+}
+
+void TowerController::cleanComponent() {
+	bullet.reset();
+	field.reset();
+	target.reset();
+	phys.reset();
+	for (int i = 0; i < bricks.size(); i++)
+		bricks[i].reset();
 }

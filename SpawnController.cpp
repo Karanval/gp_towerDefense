@@ -73,3 +73,9 @@ std::shared_ptr<EnemyController> SpawnController::spawnEnemy() {
 
 	return enemyController;
 }
+
+void SpawnController::cleanComponent() {
+	for (int i = 0; i < gameObjects->size(); i++) {
+		gameObjects->at(i).reset();
+	}
+}

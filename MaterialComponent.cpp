@@ -10,3 +10,7 @@ void MaterialComponent::setMaterial(const std::shared_ptr<sre::Material> materia
 std::shared_ptr<sre::Material> MaterialComponent::getMaterial() {
 	return material;
 }
+
+void MaterialComponent::cleanComponent() {
+	material.reset();
+}

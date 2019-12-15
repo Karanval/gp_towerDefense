@@ -21,6 +21,8 @@ public:
 
 	void setLinearVelocity(glm::vec2 velocity);
 	void setPosition(glm::vec2 newPos);
+	void cleanComponent() override;
+
 
 	glm::vec2 getLinearVelocity();
 

@@ -14,3 +14,7 @@ void MeshComponent::setMesh(const std::shared_ptr<sre::Mesh> mesh) {
 std::shared_ptr<sre::Mesh> MeshComponent::getMesh() {
 	return mesh;
 }
+
+void MeshComponent::cleanComponent() {
+	mesh.reset();
+}

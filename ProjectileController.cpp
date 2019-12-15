@@ -65,3 +65,8 @@ void ProjectileController::update(float deltaTime) {
 bool ProjectileController::isDestinationReached() {
 	return destinationReached;
 }
+
+void ProjectileController::cleanComponent() {
+	phys.reset();
+	enemy.reset();
+}

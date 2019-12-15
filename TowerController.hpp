@@ -41,6 +41,8 @@ public:
 	void addBrick(std::shared_ptr<GameObject> brickObj);
 	std::vector<std::shared_ptr<GameObject>> getBricks();
 	std::shared_ptr<EnemyController> getTarget();
+	void cleanComponent() override;
+
 
 private:
 	std::shared_ptr<sre::Texture> icon;

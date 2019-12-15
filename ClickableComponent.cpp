@@ -33,3 +33,6 @@ glm::vec3 ClickableComponent::getCenter() {
 	return center + gameObject->getPosition();
 }
 
+void ClickableComponent::cleanComponent() {
+
+}

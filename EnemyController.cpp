@@ -137,3 +137,10 @@ void EnemyController::hurt(int hurtAmount) {
 			healthObject->die();
 	}
 }
+
+void EnemyController::cleanComponent() {
+	phys.reset();
+	for (int i = 0; i < healthPoints.size(); i++)
+		healthPoints[i].reset();
+
+}

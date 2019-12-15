@@ -16,3 +16,7 @@ void SpriteComponent::setSprite(const sre::Sprite& sprite) {
 sre::Sprite SpriteComponent::getSprite() {
 	return sprite;
 }
+
+void SpriteComponent::cleanComponent() {
+
+}

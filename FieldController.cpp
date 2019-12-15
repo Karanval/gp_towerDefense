@@ -14,3 +14,6 @@ void FieldController::setGridPos(glm::ivec2 pos) {
 	gridPosition = pos;
 }
 
+void FieldController::cleanComponent() {
+
+}

@@ -11,6 +11,7 @@ public:
 
 	void update(float deltaTime) override;
 	void init(bool isStatic);
+	void cleanComponent() override;
 	glm::vec3 getPosition();
 	glm::vec3 getLocalPosition();
 	void setLocalPosition(glm::vec3 position);
