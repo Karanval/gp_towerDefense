@@ -1,5 +1,4 @@
 #include "AudioManager.hpp"
-#include "SDL2-2.0.10\include\SDL.h"
 #include "SDL2_mixer-2.0.4\include\SDL_mixer.h"
 
 Mix_Music* music = NULL;
@@ -24,11 +23,17 @@ void AudioManager::play(const char * filename) {
 
 void AudioManager::playOnce(const char * filename) {
 	Mix_Chunk* sound = Mix_LoadWAV(filename);;
+	if (sound == NULL)
+		printf("Sound was NOT loaded");
 	Mix_PlayChannel ( -1, sound, 0);
 }
 
-void AudioManager::playTimes(int amount) {
-
+void AudioManager::playOnceWithVolume(const char * filename, int volume) {
+	Mix_Chunk* sound = Mix_LoadWAV(filename);;
+	if (sound == NULL)
+		printf("Sound was NOT loaded");
+	Mix_VolumeChunk(sound, volume);
+	Mix_PlayChannel ( -1, sound, 0);
 }
 
 void AudioManager::cleanUP() {

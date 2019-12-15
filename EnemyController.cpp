@@ -129,6 +129,7 @@ void EnemyController::hurt(int hurtAmount) {
 		}
 		gameObject->name = gameObject->name + " (killed by EnemyController::hurt)";
 		if (!looted) {
+			TowerDefense::instance->enemyHurt();
 			TowerDefense::instance->incrementGoldBy(getCoinDrop());
 			looted = true;
 		}

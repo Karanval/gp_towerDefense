@@ -33,6 +33,7 @@ public:
 	void decrementGoldBy(int gold);
 	void incrementHealthBy(int health);
 	void incrementGoldBy(int gold);
+	void enemyHurt();
 	int getGold();
 	sre::Camera getCamera();
 
