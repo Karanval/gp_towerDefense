@@ -1,4 +1,6 @@
 #include "BrickController.hpp"
+#include "ClickableComponent.hpp"
+#include "EnemyController.hpp"
 
 BrickController::BrickController(GameObject* gameObject) : Component(gameObject) {
 	BrickController::unbuildableMaterial = sre::Shader::getUnlit()->createMaterial();
@@ -15,6 +17,16 @@ void BrickController::update(float deltaTime) {
 		else if (defaultMaterial) gameObject->getComponent<MaterialComponent>()->setMaterial(defaultMaterial);
 		else defaultMaterial = gameObject->getComponent<MaterialComponent>()->getMaterial();
 		dirty = false;
+	}
+
+	if (rotate) {
+		std::shared_ptr<EnemyController> target = towerController->getTarget();
+		if (target && target->getGameObject()) {
+			glm::vec3 targetPos = target->getGameObject()->getPosition();
+			glm::vec3 pos = towerController->getGameObject()->getPosition();
+			float rot = glm::degrees(std::atan2(targetPos.z - pos.z, targetPos.x - pos.x));
+			gameObject->setRotation(glm::vec3(0, rot, 0));
+		}
 	}
 }
 
@@ -45,4 +57,8 @@ bool BrickController::isDirty() {
 
 void BrickController::setupDefaultMaterial() {
 	defaultMaterial = gameObject->getComponent<MaterialComponent>()->getMaterial();
+}
+
+void BrickController::setRotate(bool state) {
+	rotate = state;
 }

@@ -40,6 +40,7 @@ public:
 	void destroy();
 	void addBrick(std::shared_ptr<GameObject> brickObj);
 	std::vector<std::shared_ptr<GameObject>> getBricks();
+	std::shared_ptr<EnemyController> getTarget();
 
 private:
 	std::shared_ptr<sre::Texture> icon;
@@ -52,6 +53,7 @@ private:
 	float lastShotTime = 0.0f;
 	std::shared_ptr<ProjectileController> bullet;
 	std::shared_ptr<FieldController> field;
+	std::shared_ptr<EnemyController> target;
 	std::unique_ptr<PhysicsComponent> phys = nullptr;
 	bool dirty = false;
 	bool built = false;

@@ -74,6 +74,7 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 		brickC->setupDefaultMaterial();
 		brickC->setLocalPosition(glm::vec3(brickPos["x"].GetFloat(), brickPos["y"].GetFloat(), brickPos["z"].GetFloat()));
 		brickObj->setRotation(glm::vec3(0, brick["rotation"].GetFloat(), 0));
+		if (brick["rotate"].GetBool()) brickC->setRotate(true);
 		brickC->setTowerController(towerC);
 		brickObj->name = objName;
 		std::array<glm::vec3, 2> box = brickObj->getComponent<MeshComponent>()->getMesh()->getBoundsMinMax();

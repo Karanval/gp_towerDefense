@@ -610,10 +610,11 @@ void TowerDefense::drawUpgradeOverview(std::shared_ptr<TowerController> tower) {
 							(tex, sre::Texture::create().withFile(modelLoader->texturePath + tex).withFilterSampling(false).build()));
 		}
 		if (ImGui::ImageButton(loadedTextures.at(tex)->getNativeTexturePtr(), ImVec2(56, 56), ImVec2(0, 1), ImVec2(1, 0))) {
-			if (tex == "bomb_tower.png") tower->explode();
-			else if (tex == "arrow_tower.png") {
+			if (tex == "cross.png") tower->explode();
+			else {
+				std::string name = tex.erase(tex.find('.'));
 				std::shared_ptr<GameObject> newTowerObj = createGameObject();
-				TowerLoader::loadTower(newTowerObj, &gameObjects, "arrow_tower", true);
+				TowerLoader::loadTower(newTowerObj, &gameObjects, name, true);
 				std::shared_ptr<TowerController> newTower = newTowerObj->getComponent<TowerController>();
 				if (gold < newTower->getCost()) {
 					displayMessage("Not enough gold!", ImVec4(1.0f, 0.8f, 0.05f, 1.0f));

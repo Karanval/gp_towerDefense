@@ -11,7 +11,7 @@ void TowerController::update(float deltaTime) {
 	if (!built) snapToGrid();
 	else {
 		if (firerate * (timeSinceBuilt - lastShotTime) > 1.0f) {
-			std::shared_ptr<EnemyController> target = TowerDefense::instance->getClosestEnemy(gameObject->getPosition());
+			target = TowerDefense::instance->getClosestEnemy(gameObject->getPosition());
 			if (target && glm::distance(target->getGameObject()->getPosition(), gameObject->getPosition()) <= radius) {
 				shoot(target);
 				lastShotTime = timeSinceBuilt;
@@ -51,7 +51,6 @@ void TowerController::onMouse(SDL_Event& event) {
 				TowerDefense::instance->displayMessage("Not enough gold!", ImVec4(1.0f, 0.8f, 0.05f, 1.0f));
 			else if (TowerDefense::instance->getGrid()->allowsTowers(gridPos.x, gridPos.y)) {
 				build();
-				// explode();
 			}
 		}
 		break;
@@ -194,4 +193,8 @@ void TowerController::addBrick(std::shared_ptr<GameObject> brickObj) {
 
 std::vector<std::shared_ptr<GameObject>> TowerController::getBricks() {
 	return bricks;
+}
+
+std::shared_ptr<EnemyController> TowerController::getTarget() {
+	return target;
 }

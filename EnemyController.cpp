@@ -20,7 +20,7 @@ void EnemyController::init(float health, float damage, int coinDrop, std::vector
 	/* TODO this is cpu/memory heavy solution for the health bar. If posible find a more 
 	 eficient solution -> ex. draw 2 rectangles -> one on top that when enemy is damaged 
 	it's size is reduced.*/
-	/*for (int i = 0; i < health; i++) {
+	for (int i = 0; i < health; i++) {
 		std::shared_ptr<GameObject> hp = TowerDefense::instance->createGameObject();
 		std::stringstream ss;
 		ss << gameObject->name << "_hp_" << i;
@@ -33,7 +33,7 @@ void EnemyController::init(float health, float damage, int coinDrop, std::vector
 		std::shared_ptr<sre::Material> mat = sre::Shader::getUnlit()->createMaterial();
 		mat->setColor(healthColor);
 		healthPoints[i]->getComponent<MaterialComponent>()->setMaterial(mat);
-	}*/
+	}
 }
 
 void EnemyController::onCollisionStart(PhysicsComponent* comp) {

@@ -19,6 +19,7 @@ public:
 	void markDirty();
 	bool isDirty();
 	void setupDefaultMaterial();
+	void setRotate(bool state);
 	
 
 private:
@@ -27,4 +28,5 @@ private:
 	bool dirty = false;
 	std::shared_ptr<sre::Material> defaultMaterial;
 	std::shared_ptr<sre::Material> unbuildableMaterial;
+	bool rotate = false;
 };
