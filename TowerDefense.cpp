@@ -55,7 +55,7 @@ void TowerDefense::update(float deltaTime) {
 	
 	for (int i = toRemove.size() - 1; i >= 0; i--) {
 		int index = toRemove[i];
-		std::cout << gameObjects[index]->name << "\n";		
+		//std::cout << gameObjects[index]->name << "\n";		
 		cleanUpGameObject(index);
 	}
 
