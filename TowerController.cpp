@@ -88,6 +88,7 @@ void TowerController::snapToGrid() {
 	}
 }
 
+
 void TowerController::build() {
 	std::shared_ptr<ClickableComponent> clickable = gameObject->getComponent<ClickableComponent>();
 	TowerDefense::instance->decrementGoldBy(cost);

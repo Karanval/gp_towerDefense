@@ -54,6 +54,12 @@ void TowerLoader::loadTower(std::shared_ptr<GameObject> towerObj, std::vector<st
 		default: mtl2 = "blue"; break;
 		}
 	}
+	if ((rand() % 10) < 2) { // You got lucky!
+		mtl1 = "gold"; 
+		mtl2 = "gold"; 
+		towerC->setFirerate(towerC->getFirerate() * 1.5f);  
+		towerC->setSpeed(towerC->getSpeed() * 2);
+	}
 	for (SizeType i = 0; i < bricks.Size(); i++) {
 		const Value& brick = bricks[i];
 		std::shared_ptr<GameObject> brickObj = GameObject::createGameObject();
