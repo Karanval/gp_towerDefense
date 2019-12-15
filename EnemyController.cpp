@@ -93,13 +93,13 @@ void EnemyController::moveToNextWaypoint() {
 		direction = glm::normalize(heading);
 
 		if (direction.x ==1 && direction.y == 0)
-			gameObject->setRotation(glm::vec3(0, 180, 0));
+			gameObject->setRotation(glm::vec3(0, 0, 0));
 		else if (direction.x == 0 && direction.y == 1)
 			gameObject->setRotation(glm::vec3(0, -90, 0));
 		else if (direction.x == 0 && direction.y == -1)
 			gameObject->setRotation(glm::vec3(0, 90, 0));
 		else if (direction.x == -1 && direction.y == 0)
-			gameObject->setRotation(glm::vec3(0, 360, 0));
+			gameObject->setRotation(glm::vec3(0, -180, 0));
 
 		phys->setLinearVelocity(speed * direction);
 	}

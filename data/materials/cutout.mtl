@@ -15,7 +15,7 @@ map_Kd C:\\Users\\Karolina\\projects\\SimpleRenderEngineProject\\project\\towerD
 newmtl Material
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.396650 0.296761
+Kd 1.000000 1.000000 1.000000
 Ks 0.291667 0.291667 0.291667
 Ke 0.0 0.0 0.0
 Ni 1.450000

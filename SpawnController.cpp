@@ -49,8 +49,6 @@ std::shared_ptr<EnemyController> SpawnController::spawnEnemy() {
 	ss << "Enemy_" << ++enemies;
 	obj->name = ss.str();
 
-	/*ModelLoader::loadModel(obj, "sphere", "sphere");
-	glm::vec2 initialPosition = 32.0f*enemyPath[0];*/
 	TowerDefense::instance->getModelLoader()->loadModel(obj, "cutout", "cutout", "lego_frankie.png");
 	glm::vec2 initialPosition = 32.0f * enemyPath[0];
 

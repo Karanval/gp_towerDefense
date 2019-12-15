@@ -116,6 +116,7 @@ private:
 	bool gameLost = false;
 	bool gameWon = false;
 	bool endMessageShown = false;
+	bool gameStartScreen = true;
 
 	// GUI
 	ImFont* uiFont;
@@ -129,6 +130,7 @@ private:
 	ImVec2 imgMargin = ImVec2(/*right*/5, /*top*/5);
 	std::shared_ptr<sre::Texture> basicImg;
 	std::shared_ptr<sre::Texture> backImg;
+	std::shared_ptr<sre::Texture> startScreenImg;
 	std::map<std::string, std::shared_ptr<sre::Texture>> loadedTextures;
 	std::string message;
 	bool showMessage = false;

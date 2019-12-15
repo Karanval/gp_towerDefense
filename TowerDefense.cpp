@@ -511,7 +511,9 @@ void TowerDefense::setupGUI() {
 	basicImg = sre::Texture::create().withFile(modelLoader->texturePath + "basic_tower.png")
 									 .withFilterSampling(false).build();
 	backImg = sre::Texture::create().withFile(modelLoader->texturePath + "back_arrow.png")
-		.withFilterSampling(false).build();
+									.withFilterSampling(false).build();
+	startScreenImg = sre::Texture::create().withFile(modelLoader->texturePath + "td_instructions.png")
+										   .withFilterSampling(false).build();
 }
 
 void TowerDefense::drawResourceOverview() {
