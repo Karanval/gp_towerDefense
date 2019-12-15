@@ -135,13 +135,13 @@ glm::vec2 PhysicsComponent::getPosition() {
 }
 
 void PhysicsComponent::applyBlastImpulse(b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower) {
-	b2Vec2 blastRadius = applyPoint - blastCenter;
-	float distance = blastRadius.Normalize();
+	b2Vec2 blastDistance = applyPoint - blastCenter;
+	float distance = blastDistance.Normalize();
 	// Do not blast the objects right at the center
 	if (distance == 0) return;
 	float inverseDistance = 1 / distance;
 	float impulseMagnitude = blastPower * inverseDistance * inverseDistance;
-	body->ApplyLinearImpulse(impulseMagnitude * blastRadius, applyPoint, true);
+	body->ApplyLinearImpulse(impulseMagnitude * blastDistance, applyPoint, true);
 }
 
 void PhysicsComponent::cleanComponent() {
