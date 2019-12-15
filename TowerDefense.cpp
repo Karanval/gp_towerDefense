@@ -54,12 +54,8 @@ void TowerDefense::update(float deltaTime) {
 	}
 	
 	for (int i = toRemove.size() - 1; i >= 0; i--) {
-		for (int j = toRemove.size() - 1; j >= 0; j--) 
-			if (toRemove[i] == toRemove[j] && i != j) std::cout << "DUPLICATE! " + i << "\n";
 		int index = toRemove[i];
-		if (gameObjects[index]->name.substr(0,5) != "Arrow") std::cout << gameObjects[index]->name << "\n";
-		auto ec = gameObjects[index]->getComponent<EnemyController>();
-		if (ec) gold += ec->getCoinDrop();
+		std::cout << gameObjects[index]->name << "\n";
 		
 		cleanUpGameObject(index);
 	}
@@ -530,6 +526,7 @@ void TowerDefense::drawResourceOverview() {
 	ImVec4 borderCol = ImVec4(0.35f, 0.0, 0.5f, 1.0f);
 	ImVec4 goldTextCol = ImVec4(1.0f, 0.76f, 0.14f, 1.0f);
 	ImVec4 lifeTextCol = ImVec4(0.96f, 0.18f, 0.18f, 1.0f);
+	ImVec4 textCol = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 	ImGui::SetNextWindowPos(winPos, ImGuiSetCond_Always);
 	ImGui::SetNextWindowSize(winSize, ImGuiSetCond_Always);
 	ImGui::PushFont(uiFont);
@@ -543,10 +540,12 @@ void TowerDefense::drawResourceOverview() {
 	ImGui::PushStyleColor(ImGuiCol_Text, lifeTextCol);
 	ImGui::Text("lives %i", lives);
 	ImGui::PopStyleColor();
+	ImGui::PushStyleColor(ImGuiCol_Text, textCol);
 	ImGui::SameLine(winSize.x - 120);
 	ImGui::Text("FPS: %f", fps);
 	ImGui::SameLine(winSize.x / 2);
 	ImGui::Text("Time: %i seconds", (int)fixedTime);
+	ImGui::PopStyleColor();
 	ImGui::End();
 	ImGui::PopFont();
 	ImGui::PopStyleColor();

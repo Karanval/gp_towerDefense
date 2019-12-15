@@ -128,6 +128,10 @@ void EnemyController::hurt(int hurtAmount) {
 			healthPoints[i]->die();
 		}
 		gameObject->name = gameObject->name + " (killed by EnemyController::hurt)";
+		if (!looted) {
+			TowerDefense::instance->incrementGoldBy(getCoinDrop());
+			looted = true;
+		}
 		gameObject->die();
 		for (auto healthObject : healthPoints)
 			healthObject->die();

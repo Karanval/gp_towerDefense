@@ -23,9 +23,11 @@ void BrickController::update(float deltaTime) {
 		std::shared_ptr<EnemyController> target = towerController->getTarget();
 		if (target && target->getGameObject()) {
 			glm::vec3 targetPos = target->getGameObject()->getPosition();
-			glm::vec3 pos = towerController->getGameObject()->getPosition();
-			float rot = glm::degrees(std::atan2(targetPos.z - pos.z, targetPos.x - pos.x));
+			glm::vec3 towerPos = towerController->getGameObject()->getPosition();
+			//glm::vec3 pos = gameObject->getPosition();
+			float rot = glm::degrees(std::atan2(targetPos.z - towerPos.z, targetPos.x - towerPos.x));
 			gameObject->setRotation(glm::vec3(0, rot, 0));
+			gameObject->setPosition(gameObject->getPosition() + glm::vec3(glm::cos(rot), 0, glm::sin(rot)));
 		}
 	}
 }

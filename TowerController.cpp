@@ -82,6 +82,7 @@ void TowerController::snapToGrid() {
 	}
 }
 
+
 void TowerController::build() {
 	std::shared_ptr<ClickableComponent> clickable = gameObject->getComponent<ClickableComponent>();
 	TowerDefense::instance->decrementGoldBy(cost);
@@ -152,7 +153,6 @@ void TowerController::shoot(std::shared_ptr<EnemyController> target) {
 	projectileC->setTarget(target);
 	projectileC->setSpeed(speed);
 	projectileC->setDamage(damage);
-	projectileObj->name = "Arrow";
 }
 
 void TowerController::explode() {

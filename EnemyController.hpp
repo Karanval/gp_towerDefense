@@ -46,6 +46,7 @@ private:
 	float tileSize = 32.0f;
 	float speed = 0.11f;
 	bool moving = true;
+	bool looted = false;
 
 	void moveToNextWaypoint();
 };
