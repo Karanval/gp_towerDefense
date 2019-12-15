@@ -44,7 +44,7 @@ private:
 	float currentHealth;
 	float damage;
 	float tileSize = 32.0f;
-	float speed = 0.11f;
+	float speed = 0.5f;
 	bool moving = true;
 
 	void moveToNextWaypoint();

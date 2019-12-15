@@ -52,7 +52,7 @@ void PhysicsComponent::setPosition(glm::vec2 newPos) {
 	body->SetTransform(posi, 0);
 }
 
-void PhysicsComponent::initCircle(b2BodyType type, float radius, glm::vec2 center, float density) {
+void PhysicsComponent::initCircle(b2BodyType type, float radius, glm::vec2 center, float density, bool isBullet) {
 	assert(body == nullptr);
 	// do init
 	shapeType = b2Shape::Type::e_circle;
@@ -67,11 +67,12 @@ void PhysicsComponent::initCircle(b2BodyType type, float radius, glm::vec2 cente
 	fxD.shape = circle;
 	fxD.density = density;
 	fixture = body->CreateFixture(&fxD);
+	bd.bullet = isBullet;
 
 	TowerDefense::instance->registerPhysicsComponent(this);
 }
 
-void PhysicsComponent::initBox(b2BodyType type, glm::vec2 size, glm::vec2 center, float density) {
+void PhysicsComponent::initBox(b2BodyType type, glm::vec2 size, glm::vec2 center, float density, bool isBullet) {
 	assert(body == nullptr);
 	// do init
 	shapeType = b2Shape::Type::e_polygon;
@@ -86,11 +87,12 @@ void PhysicsComponent::initBox(b2BodyType type, glm::vec2 size, glm::vec2 center
 	fxD.shape = polygon;
 	fxD.density = density;
 	fixture = body->CreateFixture(&fxD);
+	bd.bullet = isBullet;
 
 	TowerDefense::instance->registerPhysicsComponent(this);
 }
 
-void PhysicsComponent::initRectangle(b2BodyType type,float hx, float hy, glm::vec2 center, float density) {
+void PhysicsComponent::initRectangle(b2BodyType type,float hx, float hy, glm::vec2 center, float density, bool isBullet) {
 	assert(body == nullptr);
 	// do init
 	shapeType = b2Shape::Type::e_polygon;
@@ -105,6 +107,7 @@ void PhysicsComponent::initRectangle(b2BodyType type,float hx, float hy, glm::ve
 	fxD.shape = polygon;
 	fxD.density = density;
 	fixture = body->CreateFixture(&fxD);
+	bd.bullet = isBullet;
 
 	TowerDefense::instance->registerPhysicsComponent(this);
 }

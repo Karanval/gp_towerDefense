@@ -50,16 +50,20 @@ std::shared_ptr<EnemyController> SpawnController::spawnEnemy() {
 	/*ModelLoader::loadModel(obj, "sphere", "sphere");
 	glm::vec2 initialPosition = 32.0f*enemyPath[0];*/
 	TowerDefense::instance->getModelLoader()->loadModel(obj, "cutout", "cutout", "lego_frankie.png");
-	glm::vec2 initialPosition = 32.0f* enemyPath[0];
+	glm::vec2 initialPosition = 32.0f * enemyPath[0];
 
 	glm::vec3 objPos = glm::vec3(initialPosition.x, 0.0f, initialPosition.y);
 
 	obj->setPosition(objPos);
 
 	auto phys = obj->addComponent<PhysicsComponent>();
-	phys->initCircle(b2_dynamicBody, 10 / 100, 
-	//phys->initBox(b2_dynamicBody, glm::vec2(16.0f, 20.0f), 
-		{ obj->getPosition().x / 100, obj->getPosition().z / 100 }, 1);
+	phys->initBox(b2_kinematicBody, {10 / PHYSICS_SCALE, 5 / PHYSICS_SCALE }, 
+		{ obj->getPosition().x / PHYSICS_SCALE, obj->getPosition().z / PHYSICS_SCALE }, 1, false);
+	phys->setPosition( { obj->getPosition().x / PHYSICS_SCALE, obj->getPosition().z / PHYSICS_SCALE });
+	phys->isSensor();
+	//phys->initCircle(b2_kinematicBody, 20 / PHYSICS_SCALE, 
+	////phys->initBox(b2_dynamicBody, glm::vec2(16.0f, 20.0f), 
+	//	{ obj->getPosition().x / PHYSICS_SCALE, obj->getPosition().z / PHYSICS_SCALE }, 1, false);
 
 	auto enemyController = obj->addComponent<EnemyController>();
 	enemyController->init(20, 20.0f, 5, &enemyPath);

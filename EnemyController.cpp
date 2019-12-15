@@ -38,6 +38,12 @@ void EnemyController::init(float health, float damage, int coinDrop, std::vector
 
 void EnemyController::onCollisionStart(PhysicsComponent* comp) {
 	// TODO Check if it is a bullet, if so get hurt -> this check is done in bullet instead
+	std::cout << "#### Enemy collided with: " << comp->getGameObject()->name << "\n";
+	/*if (comp->getGameObject()->name.find("Wall") != std::string::npos)
+		
+	else if (comp->getGameObject()->name == "Coin") {
+		
+	}*/
 }
 
 void EnemyController::onCollisionEnd(PhysicsComponent* comp) {

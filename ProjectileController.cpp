@@ -1,9 +1,13 @@
 #include "ProjectileController.hpp"
+#include "TowerDefense.hpp"
 
 ProjectileController::ProjectileController(GameObject* gameObject) : Component(gameObject) {}
 
 void ProjectileController::onCollisionStart(PhysicsComponent* comp) {
-
+	std::string objectName = comp->getGameObject()->name;
+	std::cout << "#### Projectile collided with: " << comp->getGameObject()->name << "\n";
+	if (objectName.find("Enemy") != std::string::npos)
+		gameObject->die();
 }
 
 void ProjectileController::onCollisionEnd(PhysicsComponent* comp) {
@@ -46,11 +50,13 @@ void ProjectileController::update(float deltaTime) {
 			enemy->hurt(damage);
 			destinationReached = true;
 		}
+		std::shared_ptr<PhysicsComponent> phys = gameObject->getComponent<PhysicsComponent>();
+		phys->setPosition({p.x / PHYSICS_SCALE, p.z /PHYSICS_SCALE});
 		movementTime += deltaTime;
 	}
 	else {
 		gameObject->name = gameObject->name + " (killed by ProjectileController::update)";
-		gameObject->die();
+		//gameObject->die();
 	}
 
 }
