@@ -166,9 +166,9 @@ void TowerController::explode() {
 		std::shared_ptr<GameObject> brickObj = bricks[i];
 		auto pos = bricks[i]->getPosition();
 		std::shared_ptr<PhysicsComponent> phys = brickObj->addComponent<PhysicsComponent>();
-		phys->initBox(b2_dynamicBody, glm::vec2(1, 1) / physicsScale, glm::vec2(pos.x, pos.y) /physicsScale, 1);
+		phys->initBox(b2_dynamicBody, glm::vec2(0.1, 0.1) / physicsScale, glm::vec2(pos.x, pos.z) /physicsScale, 1);
 		if (i / 2 == 0) {
-			phys->applyBlastImpulse(b2Vec2(1 / physicsScale, 1 / physicsScale), b2Vec2(2 / physicsScale, 2 / physicsScale), 0.00000001);
+			phys->applyBlastImpulse(b2Vec2(1 / physicsScale, 1 / physicsScale) , b2Vec2(2 / physicsScale, 2 / physicsScale), 0.00000001);
 		}
 	}
 }
