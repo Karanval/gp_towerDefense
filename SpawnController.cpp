@@ -65,6 +65,7 @@ std::shared_ptr<EnemyController> SpawnController::spawnEnemy() {
 	enemyController->init(20, 20.0f, 5, &enemyPath);
 
 	gameObjects->push_back(obj);
+	//waveTime = 5000;
 
 	return enemyController;
 }

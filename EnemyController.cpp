@@ -37,7 +37,7 @@ void EnemyController::init(float health, float damage, int coinDrop, std::vector
 }
 
 void EnemyController::onCollisionStart(PhysicsComponent* comp) {
-	// TODO Check if it is a bullet, if so get hurt
+	// TODO Check if it is a bullet, if so get hurt -> this check is done in bullet instead
 }
 
 void EnemyController::onCollisionEnd(PhysicsComponent* comp) {
@@ -49,8 +49,10 @@ void EnemyController::update(float deltaTime) {
 		glm::vec2 nextPosition = tileSize * path->at(waypointIndex);
 		glm::vec2 heading = nextPosition - pos;
 		glm::vec2 currentDirection = glm::normalize(heading);
+		//	printf("Direction %f, %f  Current %f, %f, \n", direction.x, direction.y, currentDirection.x, currentDirection.y);
 
-		if (direction.x == -currentDirection.x && direction.y == -currentDirection.y) {
+		if ((direction.x!=0 && direction.x == -currentDirection.x) 
+			|| (direction.y!=0 && direction.y == -currentDirection.y)) {
 			glm::vec2 waypoint = path->at(waypointIndex) * tileSize;
 			// Synchronize double values
 			// TODO think about adding the set position of the physics in gameobject?
@@ -77,12 +79,12 @@ void EnemyController::update(float deltaTime) {
 }
 
 void EnemyController::moveToNextWaypoint() {
-	//TODO add Enemy rotate
 	waypointIndex++;
 	if (waypointIndex < path->size()) {
 		pos = glm::vec2(gameObject->getPosition().x, gameObject->getPosition().z);
 		glm::vec2 nextTilePos = tileSize * path->at(waypointIndex);
 		glm::vec2 heading = nextTilePos - pos;
+		//printf ("NEXT wavepoint: %f, %f, position: %f, %f \n", heading.x, heading.y, path->at(waypointIndex).x, path->at(waypointIndex).y);
 		direction = glm::normalize(heading);
 
 		if (direction.x ==1 && direction.y == 0)
