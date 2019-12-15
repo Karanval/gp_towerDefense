@@ -36,7 +36,7 @@ void TowerController::update(float deltaTime) {
 		for (int i = 0; i < bricks.size(); i++) {
 			auto brickObj = bricks[i];
 			auto brickPos = brickObj->getPosition();
-			glm::vec3 p = glm::mix(brickPos, glm::vec3(32, 32, 0), fallTime / 100);
+			glm::vec3 p = glm::mix(brickPos, glm::vec3(32, 32, 0), fallTime);
 			brickObj->setPosition(p);
 			if (brickPos.y < clickable->getBounds()[0].y + 1) {
 				brickObj->name = brickObj->name + " (killed by TowerController::update)";
@@ -174,8 +174,7 @@ void TowerController::explode() {
 		std::shared_ptr<PhysicsComponent> phys = brickObj->addComponent<PhysicsComponent>();
 		phys->initBox(b2_dynamicBody, glm::vec2(0.1, 0.1) / physicsScale, glm::vec2(pos.x, pos.z) /physicsScale, 1);
 		if (i / 2 == 0) {
-			std::cout << "here \n";
-			phys->applyBlastImpulse(b2Vec2(1 / physicsScale, 1 / physicsScale) , b2Vec2(2 / physicsScale, 2 / physicsScale), 0.000000001);
+			phys->applyBlastImpulse(b2Vec2(1 / physicsScale, 1 / physicsScale) , b2Vec2(2 / physicsScale, 2 / physicsScale), 0.00000001);
 		}
 	}
 }
