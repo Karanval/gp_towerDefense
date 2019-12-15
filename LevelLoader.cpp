@@ -21,6 +21,19 @@ void LevelLoader::generateLevel(std::vector<std::vector<int>> tileValues, glm::v
 			placeTile(tileType, tileSize, offset, j, i, gObj);
 		}
 	}
+	std::shared_ptr<GameObject> ground = TowerDefense::instance->createGameObject();
+	glm::vec3 globalMin = glm::vec3((offset.x - 5) * tileSize.x, -10, (offset.y - 5) * tileSize.z);
+	glm::vec3 globalMax = glm::vec3((offset.x + tileValues[0].size() + 5) * tileSize.x , -10, 
+									(offset.y + tileValues.size() + 5) * tileSize.z);
+	std::shared_ptr<sre::Material> groundMat = sre::Shader::getUnlit()->createMaterial();
+	groundMat->setColor(sre::Color(0.2f, 0.4f, 0.1f, 1.0f));
+	std::shared_ptr<sre::Mesh> groundMesh = sre::Mesh::create().withPositions({
+		glm::vec3(globalMin.x, globalMin.y, globalMin.z), glm::vec3(globalMin.x, globalMin.y, globalMax.z),
+		glm::vec3(globalMax.x, globalMin.y, globalMin.z), glm::vec3(globalMax.x, globalMin.y, globalMax.z),
+		glm::vec3(globalMax.x, globalMin.y, globalMin.z), glm::vec3(globalMin.x, globalMin.y, globalMax.z) })
+		.build();
+	ground->addComponent<MaterialComponent>()->setMaterial(groundMat);
+	ground->addComponent<MeshComponent>()->setMesh(groundMesh);
 }
 
 void LevelLoader::placeTile(int tileType, glm::vec3 tileSize, glm::vec2 offset, int x, int z, std::vector<std::shared_ptr<GameObject>>* gObj) {

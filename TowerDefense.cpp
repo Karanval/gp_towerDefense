@@ -55,7 +55,6 @@ void TowerDefense::update(float deltaTime) {
 	
 	for (int i = toRemove.size() - 1; i >= 0; i--) {
 		int index = toRemove[i];
-		std::cout << gameObjects[index]->name << "\n";		
 		cleanUpGameObject(index);
 	}
 
@@ -448,11 +447,11 @@ std::shared_ptr<GameObject> TowerDefense::createGameObject() {
 }
 
 void TowerDefense::setupCamera() {
-	camPos = glm::vec3(300.0f, 300.0f, -300.0f);
+	camPos = glm::vec3(200, 200, -200);
 	lookat = glm::vec3(0.0f, 0.0f, 0.0f);
 	upVec = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	camera.setPerspectiveProjection(35.264f, 0.1f, 700.0f);
+	camera.setPerspectiveProjection(35.264f, 0.1f, 2000.0f);
 }
 
 void TowerDefense::deregisterPhysicsComponent(PhysicsComponent* r) {

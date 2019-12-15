@@ -103,10 +103,8 @@ void EnemyController::moveToNextWaypoint() {
 		moving = false;
 		TowerDefense::instance->decrementHealthBy(1);
 		for (int i = 0; i < healthPoints.size(); i++) {
-			healthPoints[i]->name = gameObject->name + " (killed by EnemyController::moveToNextWaypoint)";
 			healthPoints[i]->die();
 		}
-		gameObject->name = gameObject->name + " (killed by EnemyController::moveToNextWaypoint)";
 		gameObject->die();
 	}
 }
@@ -124,10 +122,8 @@ void EnemyController::hurt(int hurtAmount) {
 
 	if (currentHealth <= 0) {
 		for (int i = 0; i < healthPoints.size(); i++) {
-			healthPoints[i]->name = gameObject->name + " (killed by EnemyController::hurt)";
 			healthPoints[i]->die();
 		}
-		gameObject->name = gameObject->name + " (killed by EnemyController::hurt)";
 		if (!looted) {
 			TowerDefense::instance->enemyHurt();
 			TowerDefense::instance->incrementGoldBy(getCoinDrop());

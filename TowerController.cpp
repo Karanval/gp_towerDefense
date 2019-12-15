@@ -30,7 +30,6 @@ void TowerController::update(float deltaTime) {
 
 	if (exploding && clickable) {
 		if (bricks.size() == 0) {
-			gameObject->name = gameObject->name + " (killed by TowerController::update)";
 			gameObject->die();
 		}
 		for (int i = 0; i < bricks.size(); i++) {
@@ -39,7 +38,6 @@ void TowerController::update(float deltaTime) {
 			glm::vec3 p = glm::mix(brickPos, glm::vec3(32, 32, 0), fallTime);
 			brickObj->setPosition(p);
 			if (brickPos.y < clickable->getBounds()[0].y + 1) {
-				brickObj->name = brickObj->name + " (killed by TowerController::update)";
 				brickObj->die();
 			}
 		}
@@ -154,7 +152,7 @@ std::string TowerController::getProjectile() {
 void TowerController::shoot(std::shared_ptr<EnemyController> target) {
 	std::shared_ptr<GameObject> projectileObj = TowerDefense::instance->createGameObject();
 	std::shared_ptr<ProjectileController> projectileC = projectileObj->addComponent<ProjectileController>();
-	TowerDefense::instance->getModelLoader()->loadModel(projectileObj, projectile, "lightgrey");
+	TowerDefense::instance->getModelLoader()->loadModel(projectileObj, projectile, projectile);
 	projectileC->setStartingPos(gameObject->getComponent<ClickableComponent>()->getCenter());
 	projectileC->setTarget(target);
 	projectileC->setSpeed(speed);
@@ -181,10 +179,8 @@ void TowerController::explode() {
 
 void TowerController::destroy() {
 	for (int i = bricks.size() - 1; i >= 0; i--) {
-		bricks[i]->name = bricks[i]->name + " (killed by TowerController::destroy)";
 		bricks[i]->die();
 	}
-	gameObject->name = gameObject->name + " (killed by TowerController::destroy)";
 	gameObject->die();
 }
 
