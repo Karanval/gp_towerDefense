@@ -27,6 +27,8 @@ void SpawnController::update(float deltaTime) {
 	else if (enemiesSpawn >= waveAmount) {
 		waveCurrentWait = 0;
 		enemiesSpawn = 0;
+		if (!initialWait) waveTime = 20;
+		else if (waveTime > 5) waveTime--;
 	}
 }
 
