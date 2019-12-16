@@ -35,9 +35,9 @@ public:
 
     const std::vector<std::shared_ptr<Component>>& getComponents();
 
-	bool isMarkedForDeath();
+	bool isMarkedForDeath(); // returns true if the gameobject should no longer be referenced
 
-	void die();
+	void die(); // marks the gameobject for death
 
 	static std::shared_ptr<GameObject> createGameObject() {
 		std::shared_ptr<GameObject> obj = std::shared_ptr<GameObject>(new GameObject());

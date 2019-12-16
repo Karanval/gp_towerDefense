@@ -45,36 +45,37 @@ public:
 
 private:
 	~TowerDefense();
-	void init();
-	void initPhysics();
-	void update(float deltaTime);
-	void updateCamera(float deltaTime);
-	void updatePhysics();
-	void updateFPS();
+	void init(); // insantiate game
+	void initPhysics(); // instantiate physics
+	void update(float deltaTime); // update game
+	void updateCamera(float deltaTime); // update game camera
+	void updatePhysics(); // update physics of all gameobjects
+	void updateFPS(); // update value for FPS-counter
 	void BeginContact(b2Contact* contact);
 	void EndContact(b2Contact* contact);
 	void handleContact(b2Contact* contact, bool begin);
-	void render();
-	void keyInput(SDL_Event& event);
-	void mouseInput(SDL_Event& event);
-	void mouseClick(SDL_Event& event);
-	void genLevel();
-	void setupCamera();
-	void setupGUI();
-	void setupLevel();
-	void setupLights();
-	void setupSpawner();
-	void setupSounds();
-	void deregisterPhysicsComponent(PhysicsComponent* r);
-	void registerPhysicsComponent(PhysicsComponent* r);
-	void drawResourceOverview();
-	void drawBuildingOverview();
-	void drawUpgradeOverview(std::shared_ptr<TowerController> tower);
-	void drawGUI();
-	void drawMessage();
-	void drawStartScreen();
-	bool rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec3, 2>& box);
-	void restart();
+	void render(); // render next frame
+	void keyInput(SDL_Event& event); // manage key inputs
+	void mouseInput(SDL_Event& event); // manage mouse inputs
+	void mouseClick(SDL_Event& event); // manage mouse-click
+	void genLevel(); // generate level used by the game
+	void setupCamera(); // setup game camera
+	void setupGUI(); // setup all GUI-overlays
+	void setupLevel(); // setup the level to be loaded
+	void setupLights(); // setup lights in the level, should be done after the level setup
+	void setupSpawner(); // setup enemy spawner
+	void setupSounds(); // setup game sounds
+	void deregisterPhysicsComponent(PhysicsComponent* r); // remove a given physics from the world
+	void registerPhysicsComponent(PhysicsComponent* r); // add a given physics to the world
+	void drawResourceOverview(); // draw the resource overview (top information)
+	void drawBuildingOverview(); // draw building overview (bottom menu when no tower has been selected)
+	void drawUpgradeOverview(std::shared_ptr<TowerController> tower); // draw upgrade-menu when a tower has been selected
+	void drawGUI(); // draw and manage current frame's GUI
+	void drawMessage(); // draw the GUI-message
+	void drawStartScreen(); // draw the intro-message
+	// Ray-box-intersection test, used for clickableComponent selection
+	bool rayBoxTest(std::array<glm::vec3, 2>& ray, std::array<glm::vec3, 2>& box); 
+	void restart(); // restart game
 	void cleanUpGameObject(int index);
 
 	b2World* world = nullptr;

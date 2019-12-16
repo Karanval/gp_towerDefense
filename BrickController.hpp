@@ -12,15 +12,15 @@ public:
 	void update(float deltaTime) override;
 	void init(bool isStatic);
 	void cleanComponent() override;
-	glm::vec3 getPosition();
-	glm::vec3 getLocalPosition();
-	void setLocalPosition(glm::vec3 position);
-	std::shared_ptr<TowerController> getTowerController();
-	void setTowerController(std::shared_ptr<TowerController> towerController);
-	void markDirty();
-	bool isDirty();
-	void setupDefaultMaterial();
-	void setRotate(bool state);
+	glm::vec3 getPosition(); // position in world-space
+	glm::vec3 getLocalPosition(); // position in local-space
+	void setLocalPosition(glm::vec3 position); // set position relative to the brick's tower
+	std::shared_ptr<TowerController> getTowerController(); // get attached tower
+	void setTowerController(std::shared_ptr<TowerController> towerController); // set attached tower
+	void markDirty(); // tell the brick that it should update its material and position
+	bool isDirty(); // returns true when the brick should update
+	void setupDefaultMaterial(); // the default material for when the brick is not red (indicating unbuildable tower)
+	void setRotate(bool state);  // if true, then the brick rotates around itself, aiming at the tower's target
 	
 
 private:

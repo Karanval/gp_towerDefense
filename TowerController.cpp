@@ -15,7 +15,6 @@ void TowerController::update(float deltaTime) {
 			if (target && glm::distance(target->getGameObject()->getPosition(), gameObject->getPosition()) <= radius) {
 				std::shared_ptr<AudioManager> am = gameObject->getComponent<AudioManager>();
 				if (am) {
-					// TODO change to a more reasonable condition
 					if (getCost() != 5)	am->playOnce(SHOOT_BOMB);
 					else am->playOnce(SHOOT_ARROW);
 				}
@@ -45,6 +44,7 @@ void TowerController::update(float deltaTime) {
 			glm::vec3 p = glm::mix(brickPos, glm::vec3(32, 32, 0), fallTime / 100);
 			brickObj->setPosition(p);
 			if (brickPos.y < clickable->getBounds()[0].y + 1) {
+				clickable->setBounds({ glm::vec3(0,0,0),glm::vec3(0,0,0) });
 				brickObj->die();
 			}
 		}

@@ -36,7 +36,6 @@ TowerDefense::TowerDefense() : debugDraw(physicsScale){
 }
 
 TowerDefense::~TowerDefense() {
-	//ImGui::End();
 }
 
 void TowerDefense::update(float deltaTime) {
@@ -330,16 +329,14 @@ void TowerDefense::keyInput(SDL_Event& event) {
 			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
 				gameObjects[i]->getComponent<TowerController>()->setSpeed(gameObjects[i]->getComponent<TowerController>()->getSpeed() - 1);
 			break;
+		/* DEBUGGING END */
 		case SDLK_RETURN:
-			//if (state == GameOver) {
 				restart();
 				state = Running;
 				endMessageShown = false;
 				gameLost = false;
 				showMessage = false;
-			//}
 			break;
-		/* DEBUGGING END */
 		}
 		break;
 	case SDL_KEYUP:
@@ -497,7 +494,6 @@ void TowerDefense::setupSpawner() {
 	spawner = spawnObj->addComponent<SpawnController>();
 	spawner->setGameObjects(&gameObjects);
 
-	//spawner->startSpawningCycle({glm::vec2(5-3,-4)/*, glm::vec2(-3,-3)*/ });
 	spawner->startSpawningCycle(enemyPath);
 	gameObjects.push_back(spawnObj);
 }
@@ -576,6 +572,8 @@ void TowerDefense::drawBuildingOverview() {
 	if (ImGui::ImageButton(basicImg->getNativeTexturePtr(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0))) {
 		if (towerBeingBuilt) {
 			if (!towerBeingBuilt->isBuilt()) {
+				towerBeingBuilt->getGameObject()->removeComponent(towerBeingBuilt->getGameObject()
+															                     ->getComponent<ClickableComponent>());
 				towerBeingBuilt->destroy();
 			}
 			towerBeingBuilt.reset();
@@ -619,6 +617,7 @@ void TowerDefense::drawUpgradeOverview(std::shared_ptr<TowerController> tower) {
 		if (ImGui::ImageButton(loadedTextures.at(tex)->getNativeTexturePtr(), ImVec2(56, 56), ImVec2(0, 1), ImVec2(1, 0))) {
 			if (tex == "cross.png") {
 				tower->explode();
+
 				audioManager->playOnce(DESTROY_TURRET);
 			}
 			else {

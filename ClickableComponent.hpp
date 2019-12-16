@@ -5,14 +5,14 @@
 class ClickableComponent : public Component {
 public:
 	explicit ClickableComponent(GameObject* gameObject);
-	std::array<glm::vec3, 2> getBounds();
-	void setBounds(std::array<glm::vec3, 2> bounds);
-	bool isActive();
-	void setActive(bool state);
-	glm::vec3 getCenter();
+	std::array<glm::vec3, 2> getBounds(); // Axis-Aligned-Bounding-Box
+	void setBounds(std::array<glm::vec3, 2> bounds); // set the bounds of the component, this is the clickable area
+	bool isActive(); // returns true when the component is active
+	void setActive(bool state); // true: clickable, false: ignored
+	glm::vec3 getCenter(); // the center of the clickable area
 	void cleanComponent() override;
 
-	void click();
+	void click(); // perform an action. For future work, to assign actions performed when the clickable is clicked
 private:
 	bool selected = false;
 	std::array<glm::vec3, 2> bounds;

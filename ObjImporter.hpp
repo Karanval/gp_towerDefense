@@ -8,8 +8,11 @@
 
 // Class for loading 3D objects into SRE.
 namespace ObjImporter {
+	// Load material at given filepath, provide uv-vector from mesh
+	// used by loadObj
 	void loadMaterial(std::shared_ptr<sre::Material> &material, std::string filepath, std::vector<glm::vec4>& uvs,
 					  std::string texturePath = "");
+	// Load object, specify the mesh that the object should be applied on
 	void loadObj(std::shared_ptr<sre::Mesh> &mesh, std::string filepath, std::string &materialFilename);
 };
 

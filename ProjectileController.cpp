@@ -48,10 +48,6 @@ void ProjectileController::update(float deltaTime) {
 		float rotY = glm::degrees(std::atan2(enemyPos.z - pos.z, enemyPos.x - pos.x));
 		float rotXZ = 45 - glm::degrees(rad / 2);
 		gameObject->setRotation(glm::vec3(rotXZ, -rotY, rotXZ));
-		/*if (glm::distance(gameObject->getPosition(), enemyPos) < 0.1f) {
-			enemy->hurt(damage);
-			destinationReached = true;
-		}*/
 		std::shared_ptr<PhysicsComponent> phys = gameObject->getComponent<PhysicsComponent>();
 		phys->setPosition({p.x / PHYSICS_SCALE, p.z /PHYSICS_SCALE});
 		movementTime += deltaTime;

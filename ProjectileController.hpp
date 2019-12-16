@@ -10,13 +10,16 @@ public:
 	void update(float deltaTime) override;
 	void onCollisionStart(PhysicsComponent* comp) override;
 	void onCollisionEnd(PhysicsComponent* comp) override;
+	// Travelling speed
 	void setSpeed(float speed);
 	float getSpeed();
-	void setTarget(std::shared_ptr<EnemyController> enemy);
+	void setTarget(std::shared_ptr<EnemyController> enemy); // enemy to chase
+	// Damage dealt on impact
 	void setDamage(int damage);
 	float getDamage();
+	// Starting position, this is normally the tower's position where the projectile was spawned
 	void setStartingPos(glm::vec3 pos);
-	bool isDestinationReached();
+	bool isDestinationReached(); // true when target is either dead or reached
 	void cleanComponent() override;
 
 
