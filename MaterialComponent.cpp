@@ -13,4 +13,9 @@ std::shared_ptr<sre::Material> MaterialComponent::getMaterial() {
 
 void MaterialComponent::cleanComponent() {
 	material.reset();
+	gameObject = nullptr;
+}
+
+std::string MaterialComponent::getName() {
+	return "Material";
 }

@@ -23,6 +23,8 @@ public:
 
 	virtual void cleanComponent();
 
+    virtual std::string getName();
+
 protected:
     GameObject *gameObject;
 

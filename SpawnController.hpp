@@ -24,6 +24,8 @@ public:
 
 	void cleanComponent() override;
 
+	std::string getName() override;
+
 	std::shared_ptr<EnemyController> spawnEnemy();
 
 private:

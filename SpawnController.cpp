@@ -86,3 +86,7 @@ void SpawnController::cleanComponent() {
 	}
 	gameObjects = nullptr;
 }
+
+std::string SpawnController::getName() {
+	return "Spawn";
+}

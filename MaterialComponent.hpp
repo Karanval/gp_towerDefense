@@ -8,6 +8,7 @@ public:
 
 	void setMaterial(const std::shared_ptr<sre::Material> material);
 	void cleanComponent() override;
+	std::string getName() override;
 
 	std::shared_ptr<sre::Material> getMaterial();
 private:

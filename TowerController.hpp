@@ -47,6 +47,7 @@ public:
 	std::vector<std::shared_ptr<GameObject>> getBricks(); // access all the tower's bricks
 	std::shared_ptr<EnemyController> getTarget(); // get targeted enemy, used by projectiles
 	void cleanComponent() override;
+	std::string getName() override;
 
 
 private:

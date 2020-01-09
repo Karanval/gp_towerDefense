@@ -44,3 +44,9 @@ void ModelLoader::loadModel(std::shared_ptr<GameObject> obj, std::string objName
 	loadedMeshes.insert(std::pair <std::string, std::shared_ptr<sre::Mesh>>(objName, mesh));
 	loadedMaterials.insert(std::pair <std::string, std::shared_ptr<sre::Material>>(mtlName, material));
 }
+
+std::string ModelLoader::getLoadsCount() {
+	std::stringstream ss;
+	ss << "meshes (" << loadedMeshes.size() << "), materials (" << loadedMaterials.size() << ").\n";
+	return ss.str();
+}

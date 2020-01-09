@@ -18,6 +18,7 @@ class ModelLoader
 		// Load object with filename objName, mtlName and textureName. Texturename must contain its extension (e.g. .png)
 		// Object is added to given gameobject as a MeshComponent and MaterialComponent.
 		void loadModel(std::shared_ptr<GameObject> obj, std::string objName, std::string mtlName, std::string textureNameWithExt = "");
+		std::string getLoadsCount();
 
 	private:
 		std::map<std::string, std::shared_ptr<sre::Mesh>> loadedMeshes;

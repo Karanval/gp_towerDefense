@@ -15,5 +15,9 @@ void FieldController::setGridPos(glm::ivec2 pos) {
 }
 
 void FieldController::cleanComponent() {
+	gameObject = nullptr;
+}
 
+std::string FieldController::getName() {
+	return "Field";
 }

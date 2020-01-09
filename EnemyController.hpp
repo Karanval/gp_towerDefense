@@ -28,7 +28,7 @@ public:
 
 	void hurt(int hurtAmount);
 	void cleanComponent() override;
-
+	std::string getName() override;
 
 private:
 	glm::vec2 direction; 

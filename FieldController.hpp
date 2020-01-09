@@ -10,7 +10,7 @@ public:
 	glm::ivec2 getGridPos();
 	void setGridPos(glm::ivec2 pos);
 	void cleanComponent() override;
-
+	std::string getName() override;
 
 private:
 	glm::ivec2 gridPosition;

@@ -136,5 +136,9 @@ void EnemyController::cleanComponent() {
 	phys.reset();
 	for (int i = 0; i < healthPoints.size(); i++)
 		healthPoints[i].reset();
+	gameObject = nullptr;
+}
 
+std::string EnemyController::getName() {
+	return "Enemy";
 }

@@ -35,3 +35,7 @@ void Component::onCollisionEnd(PhysicsComponent* comp) {
 void Component::cleanComponent() {
 	gameObject = nullptr;
 }
+
+std::string Component::getName() {
+    return "Component";
+}

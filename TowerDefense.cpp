@@ -329,6 +329,12 @@ void TowerDefense::keyInput(SDL_Event& event) {
 			for (int i = 0; i < gameObjects.size(); i++) if (gameObjects[i]->getComponent<TowerController>())
 				gameObjects[i]->getComponent<TowerController>()->setSpeed(gameObjects[i]->getComponent<TowerController>()->getSpeed() - 1);
 			break;
+		case SDLK_p:
+			std::cout << "Load count: " << modelLoader->getLoadsCount() << "\n";
+			break;
+		case SDLK_o:
+			test = !test;
+			break;
 		/* DEBUGGING END */
 		case SDLK_RETURN:
 				restart();
@@ -488,7 +494,6 @@ void TowerDefense::setupLights() {
 		}
 	}
 }
-
 void TowerDefense::setupSpawner() {
 	std::shared_ptr<GameObject> spawnObj = GameObject::createGameObject();
 	spawner = spawnObj->addComponent<SpawnController>();
@@ -801,6 +806,8 @@ void TowerDefense::cleanUpGameObject(int index) {
 	std::shared_ptr<PhysicsComponent> phys = gameObjects[index]->getComponent<PhysicsComponent>();
 	if (phys) {
 		auto physB = physicsComponentLookup.find(phys->fixture);
+		phys->body->DestroyFixture(phys->fixture);
+		world->DestroyBody(physB->second->body);
 		deregisterPhysicsComponent(physB->second);
 	}
 

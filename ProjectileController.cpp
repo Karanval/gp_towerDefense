@@ -65,4 +65,9 @@ bool ProjectileController::isDestinationReached() {
 void ProjectileController::cleanComponent() {
 	phys.reset();
 	enemy.reset();
+	gameObject = nullptr;
+}
+
+std::string ProjectileController::getName() {
+	return "Projectile";
 }

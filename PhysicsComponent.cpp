@@ -151,4 +151,9 @@ void PhysicsComponent::cleanComponent() {
 	fixture = nullptr;
 	collidingBodies.clear();
 	world = nullptr;
+	gameObject = nullptr;
+}
+
+std::string PhysicsComponent::getName() {
+	return "Physics";
 }

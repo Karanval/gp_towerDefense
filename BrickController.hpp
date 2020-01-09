@@ -21,6 +21,7 @@ public:
 	bool isDirty(); // returns true when the brick should update
 	void setupDefaultMaterial(); // the default material for when the brick is not red (indicating unbuildable tower)
 	void setRotate(bool state);  // if true, then the brick rotates around itself, aiming at the tower's target
+	std::string getName() override;
 	
 
 private:

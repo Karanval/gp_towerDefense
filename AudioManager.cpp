@@ -15,6 +15,7 @@ AudioManager::AudioManager(GameObject* gameObject)
 
 
 void AudioManager::play(const char * filename) {
+	return;
 	music = Mix_LoadMUS(filename);
 	if (music == NULL)
 		printf("Music was NOT loaded");
@@ -22,6 +23,7 @@ void AudioManager::play(const char * filename) {
 }
 
 void AudioManager::playOnce(const char * filename) {
+	return;
 	Mix_Chunk* sound = Mix_LoadWAV(filename);;
 	if (sound == NULL)
 		printf("Sound was NOT loaded");
@@ -29,6 +31,7 @@ void AudioManager::playOnce(const char * filename) {
 }
 
 void AudioManager::playOnceWithVolume(const char * filename, int volume) {
+	return;
 	Mix_Chunk* sound = Mix_LoadWAV(filename);;
 	if (sound == NULL)
 		printf("Sound was NOT loaded");
@@ -37,11 +40,13 @@ void AudioManager::playOnceWithVolume(const char * filename, int volume) {
 }
 
 void AudioManager::cleanUP() {
+	return;
 	Mix_FreeMusic(music);
 	Mix_CloseAudio();
 }
 
 void AudioManager::pause() {
+	return;
 	if (Mix_PausedMusic() == 1)
 		Mix_ResumeMusic();
 	else

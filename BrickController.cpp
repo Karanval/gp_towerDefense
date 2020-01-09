@@ -1,6 +1,7 @@
 #include "BrickController.hpp"
 #include "ClickableComponent.hpp"
 #include "EnemyController.hpp"
+#include "TowerDefense.hpp"
 
 BrickController::BrickController(GameObject* gameObject) : Component(gameObject) {
 	BrickController::unbuildableMaterial = sre::Shader::getUnlit()->createMaterial();
@@ -67,4 +68,9 @@ void BrickController::cleanComponent() {
 	towerController.reset();
 	defaultMaterial.reset();
 	unbuildableMaterial.reset();
+	gameObject = nullptr;
+}
+
+std::string BrickController::getName() {
+	return "Brick";
 }

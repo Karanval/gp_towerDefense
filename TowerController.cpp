@@ -31,7 +31,6 @@ void TowerController::update(float deltaTime) {
 		}
 		timeSinceBuilt += deltaTime;
 	}
-
 	std::shared_ptr<ClickableComponent> clickable = gameObject->getComponent<ClickableComponent>();
 
 	if (exploding && clickable) {
@@ -170,6 +169,7 @@ void TowerController::shoot(std::shared_ptr<EnemyController> target) {
 	phys->initBox(b2_dynamicBody, { 1 / PHYSICS_SCALE , 5 / PHYSICS_SCALE }, 
 		{ projectileObj->getPosition().x / PHYSICS_SCALE, projectileObj->getPosition().z / PHYSICS_SCALE }, 1, true, -2);
 	phys->isSensor();
+	
 }
 
 void TowerController::explode() {
@@ -220,4 +220,9 @@ void TowerController::cleanComponent() {
 	phys.reset();
 	for (int i = 0; i < bricks.size(); i++)
 		bricks[i].reset();
+	gameObject = nullptr;
+}
+
+std::string TowerController::getName() {
+	return "Tower";
 }

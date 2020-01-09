@@ -2,6 +2,7 @@
 #include <cassert>
 #include <algorithm>
 #include "Component.hpp"
+#include <iostream>
 
 GameObject::~GameObject() {
     // remove reference to this in components
@@ -20,10 +21,12 @@ bool GameObject::removeComponent(std::shared_ptr<Component> component) {
 }
 
 void GameObject::cleanUp() {
-
-	for (int i = components.size() - 1; i > 0; i--) {
+    //std::cout << "Start cleaning on " << name << " (" << components.size() << " components)\n";
+	for (int i = components.size() - 1; i >= 0; i--) {
+        //std::cout << "Cleaning " << components[i]->getName() << "\n";
 		components[i]->cleanComponent();
 	}
+    //std::cout << "\n";
 	auto it = components.begin();
 	while (it != components.end()) {
 		it = components.erase(it);

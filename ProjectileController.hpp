@@ -21,7 +21,7 @@ public:
 	void setStartingPos(glm::vec3 pos);
 	bool isDestinationReached(); // true when target is either dead or reached
 	void cleanComponent() override;
-
+	std::string getName() override;
 
 private:
 	std::shared_ptr<PhysicsComponent> phys;

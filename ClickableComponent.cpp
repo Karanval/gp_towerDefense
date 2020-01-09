@@ -34,5 +34,9 @@ glm::vec3 ClickableComponent::getCenter() {
 }
 
 void ClickableComponent::cleanComponent() {
+	gameObject = nullptr;
+}
 
+std::string ClickableComponent::getName() {
+	return "Clickable";
 }

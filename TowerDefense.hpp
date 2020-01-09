@@ -43,6 +43,9 @@ public:
 	static constexpr float32 timeStep = 1.0f / 60.0f;
 	const float  physicsScale = 100;
 
+	bool test = false;
+
+
 private:
 	~TowerDefense();
 	void init(); // insantiate game
@@ -143,6 +146,7 @@ private:
 	float messageStayTime = 0.5f;
 	ImVec4 messageCol;
 	ImVec2 messageWindowSize = ImVec2(512, 80);
+
 
 
 	friend class PhysicsComponent;

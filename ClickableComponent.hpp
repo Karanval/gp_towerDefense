@@ -11,6 +11,7 @@ public:
 	void setActive(bool state); // true: clickable, false: ignored
 	glm::vec3 getCenter(); // the center of the clickable area
 	void cleanComponent() override;
+	std::string getName() override;
 
 	void click(); // perform an action. For future work, to assign actions performed when the clickable is clicked
 private:

@@ -17,4 +17,9 @@ std::shared_ptr<sre::Mesh> MeshComponent::getMesh() {
 
 void MeshComponent::cleanComponent() {
 	mesh.reset();
+	gameObject = nullptr;
+}
+
+std::string MeshComponent::getName() {
+	return "Mesh";
 }
