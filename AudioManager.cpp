@@ -28,6 +28,7 @@ void AudioManager::playOnce(const char * filename) {
 	if (sound == NULL)
 		printf("Sound was NOT loaded");
 	Mix_PlayChannel ( -1, sound, 0);
+	Mix_FreeChunk(sound);
 }
 
 void AudioManager::playOnceWithVolume(const char * filename, int volume) {
@@ -37,6 +38,7 @@ void AudioManager::playOnceWithVolume(const char * filename, int volume) {
 		printf("Sound was NOT loaded");
 	Mix_VolumeChunk(sound, volume);
 	Mix_PlayChannel ( -1, sound, 0);
+	Mix_FreeChunk(sound);
 }
 
 void AudioManager::cleanUP() {
