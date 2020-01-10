@@ -623,7 +623,7 @@ void TowerDefense::drawUpgradeOverview(std::shared_ptr<TowerController> tower) {
 			if (tex == "cross.png") {
 				tower->explode();
 
-				audioManager->playOnce(DESTROY_TURRET);
+				audioManager->playOnce(DESTROY_TURRET, 3);
 			}
 			else {
 				std::string name = tex.erase(tex.find('.'));
@@ -632,12 +632,12 @@ void TowerDefense::drawUpgradeOverview(std::shared_ptr<TowerController> tower) {
 				std::shared_ptr<AudioManager> am = newTowerObj->addComponent<AudioManager>();
 				std::shared_ptr<TowerController> newTower = newTowerObj->getComponent<TowerController>();
 				if (gold < newTower->getCost()) {
-					audioManager->playOnce(UI_ERROR);
+					audioManager->playOnce(UI_ERROR, 2);
 					displayMessage("Not enough gold!", ImVec4(1.0f, 0.8f, 0.05f, 1.0f));
 					newTower->destroy();
 				}
 				else {
-					audioManager->playOnce(UI_CONFIRM);
+					audioManager->playOnce(UI_CONFIRM, 2);
 					glm::vec3 pos = tower->getGameObject()->getPosition();
 					tower->destroy();
 					newTowerObj->setPosition(pos);
@@ -818,7 +818,11 @@ void TowerDefense::cleanUpGameObject(int index) {
 }
 
 void TowerDefense::enemyHurt() {
-	audioManager->playOnce(ENEMY_HURT);
+	audioManager->playOnce(ENEMY_HURT, 1);
+}
+
+float TowerDefense::getGameTime() {
+	return fixedTime;
 }
 
 int main() {

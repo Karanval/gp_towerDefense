@@ -2,6 +2,7 @@
 #include "Component.hpp"
 #include "SDL2_mixer-2.0.4\include\SDL_mixer.h"
 #include <iostream>
+#include <list>
 
 static const char* MAIN_MUSIC = "../data/sounds/main.wav";
 static const char* END_MUSIC = "../data/sounds/end.wav";
@@ -24,12 +25,19 @@ public:
 	explicit AudioManager(GameObject* gameObject);
 
 	void play(const char* filename);
-	void playOnce(const char* filename);
-	void playOnceWithVolume(const char* filename, int volume);
+	void playOnce(const char* filename, float lifespan);
+	void playOnceWithVolume(const char* filename, int volume, float lifespan);
 	void cleanUP();
 	void pause();
 
 private:
+	struct audio {
+		Mix_Chunk* sound; // sound being played
+		float deletionTime; // when the sound should be deleted (-1 means until cleanUP is called)
+	};
 
+	void AudioManager::registerSound(audio sound);
+
+	std::list<audio> soundregistry; // list of all active sounds
 };
 

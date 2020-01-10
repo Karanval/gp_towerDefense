@@ -15,8 +15,8 @@ void TowerController::update(float deltaTime) {
 			if (target && glm::distance(target->getGameObject()->getPosition(), gameObject->getPosition()) <= radius) {
 				std::shared_ptr<AudioManager> am = gameObject->getComponent<AudioManager>();
 				if (am) {
-					if (getCost() != 5)	am->playOnce(SHOOT_BOMB);
-					else am->playOnce(SHOOT_ARROW);
+					if (getCost() != 5)	am->playOnce(SHOOT_BOMB, 3);
+					else am->playOnce(SHOOT_ARROW, 1);
 				}
 				shoot(target);
 				lastShotTime = timeSinceBuilt;

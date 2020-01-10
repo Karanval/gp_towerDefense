@@ -38,6 +38,7 @@ public:
 	void enemyHurt();
 	int getGold();
 	sre::Camera getCamera();
+	float getGameTime();
 
 	static TowerDefense* instance;
 	static constexpr float32 timeStep = 1.0f / 60.0f;
